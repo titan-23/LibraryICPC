@@ -1,7 +1,6 @@
 struct UnionFind {
     int n;
     vector<int> par;
-
     UnionFind(int n) : n(n), par(n, -1) {}
     int root(int x) {
         if (par[x] < 0) return x;
@@ -11,7 +10,7 @@ struct UnionFind {
         x = root(x);
         y = root(y);
         if (x == y) return false;
-        if (par[x] >= par[y]) swap(x, y);
+        if (par[x] > par[y]) swap(x, y);
         par[x] += par[y];
         par[y] = x;
         return true;

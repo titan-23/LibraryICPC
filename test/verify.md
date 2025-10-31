@@ -1,2 +1,0 @@
-- [./union_find.cpp](./../akakoi_lib/ds/union_find.cpp)
-- [./fenwick_tree.cpp](./../akakoi_lib/ds/fenwick_tree.cpp)

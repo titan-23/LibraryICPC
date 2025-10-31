@@ -1,7 +1,6 @@
 struct BIT {
     int n;
     vector<ll> d;
-
     BIT(int n) : n(n), d(n+1) {}
     BIT(vector<ll> a) : n(a.size()), d(n+1) {
         rep(i, n) d[i+1] = a[i];

@@ -1,12 +1,7 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-template <class T, T (*op)(T, T), T (*e)()> // for seg
 struct HLD {
     vector<vector<int>> G;
     int n, time;
     vector<int> size, par, dep, head, hld, in, out;
-
     HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), time(0) {
         size.resize(n);
         par.resize(n);
@@ -69,38 +64,25 @@ struct HLD {
             return la(t, d-k);
         }
     }
-
-    // for seg ---
-    Segtree<T, op, e> seg, rseg;
-    void build_seg(vector<T> a) {
-        vector<T> b(a.size());
-        rep(i, n) b[i] = a[hld[i]];
-        seg = Segtree<T, op, e>(b);
-        reverse(b.begin(), b.end());
-        rseg = Segtree<T, op, e>(b);
-    }
-    T path_prod(int u, int v) {
-        T lv = e(), rv = e();
+    // {utov, s, t} // [s, t)
+    vector<tuple<bool, int, int>>  path_prod(int u, int v) {
+        vector<tuple<bool, int, int>> res;
         while (head[u] != head[v]) {
             if (dep[head[u]] > dep[head[v]]) {
-                lv = op(lv, rseg.prod(n-in[u]-1, n-in[head[u]]));
+                res.push_back({false, in[head[u]], in[u]+1});
                 u = par[head[u]];
             } else {
-                rv = op(seg.prod(in[head[v]], in[v]+1), rv);
+                res.push_back({true, in[head[v]], in[v]+1});
                 v = par[head[v]];
             }
         }
         if (dep[u] > dep[v]) {
-            lv = op(lv, rseg.prod(n-in[u]-1, n-in[v]));
+            res.push_back({false, in[v], in[u]+1});
         } else {
-            lv = op(lv, seg.prod(in[u], in[v]+1));
+            res.push_back({true, in[u], in[v]+1});
         }
-        return op(lv, rv);
+        return res;
     }
-    T get(int k) { return seg.get(in[k]); }
-    void set(int k, T v) {
-        seg.set(in[k], v);
-        rseg.set(n-in[k]-1, v);
-    }
-    T subtree_prod(int v) { return seg.prod(in[v], out[v]); }
+    int get(int k) { return in[k]; }
+    pair<int, int> subtree_prod(int v) { return {in[v], out[v]}; }
 };
