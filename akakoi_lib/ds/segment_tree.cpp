@@ -2,7 +2,7 @@ template <typename T, T (*op)(T, T), T (*e)()>
 struct Segtree {
     int n, s;
     vector<T> d;
-    Segtree(vector<int> a) : n(a.size()) {
+    Segtree(vector<T> a) : n(a.size()) {
         s = 1;
         while (s < n) s <<= 1;
         d.resize(2*s, e());

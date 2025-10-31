@@ -2,6 +2,8 @@ struct HLD {
     vector<vector<int>> G;
     int n, time;
     vector<int> size, par, dep, head, hld, in, out;
+    // in:  頂点idxのHLD配列上のインデックス(頂点→配列)
+    // hld: HLD配列のidx番目の要素が元の木のどの頂点か(配列→頂点)
     HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), time(0) {
         size.resize(n);
         par.resize(n);
@@ -29,7 +31,7 @@ struct HLD {
     void dfs_hld(int v, int p) {
         in[v] = time++;
         hld[in[v]] = v;
-        for (int &x : G[v]) {
+        for (int x : G[v]) {
             if (x == p) continue;
             head[x] = (G[v][0] == x ? head[v] : x);
             dfs_hld(x, v);
@@ -64,25 +66,32 @@ struct HLD {
             return la(t, d-k);
         }
     }
-    // {utov, s, t} // [s, t)
     vector<tuple<bool, int, int>>  path_prod(int u, int v) {
+        // 半開区間!
+        // true -> (uから遠い方、uに近い方)
+        // false -> (uに近い方、uに遠い方)
+        // rep(i, n) init[hld.in[i]] = A[i];
+        // seg.set(hld.in[p], v);
+        // auto path = hld.path_prod(u, v);
+        // ll lv = e(), rv = e();
+        // for (auto [f, l, r] : path) {
+        //     if (f) lv = op(lv, seg_rev.prod(l, r));
+        //     else rv = op_rev(rv, seg.prod(l, r));
+        // }
+        // ll res = op(lv, rv);
         vector<tuple<bool, int, int>> res;
         while (head[u] != head[v]) {
             if (dep[head[u]] > dep[head[v]]) {
-                res.push_back({false, in[head[u]], in[u]+1});
+                res.push_back({true, in[head[u]], in[u]+1});
                 u = par[head[u]];
             } else {
-                res.push_back({true, in[head[v]], in[v]+1});
+                res.push_back({false, in[head[v]], in[v]+1});
                 v = par[head[v]];
             }
         }
-        if (dep[u] > dep[v]) {
-            res.push_back({false, in[v], in[u]+1});
-        } else {
-            res.push_back({true, in[u], in[v]+1});
-        }
+        if (dep[u] > dep[v]) res.push_back({true, in[v], in[u]+1});
+        else res.push_back({false, in[u], in[v]+1});
         return res;
     }
-    int get(int k) { return in[k]; }
     pair<int, int> subtree_prod(int v) { return {in[v], out[v]}; }
 };
