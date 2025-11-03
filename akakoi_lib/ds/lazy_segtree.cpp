@@ -4,7 +4,6 @@ private:
     int n, log, s;
     vector<T> d;
     vector<F> lazy;
-
     void update(int k) {  d[k] = op(d[k<<1], d[k<<1|1]); }
     void all_apply(int k, F f) {
         d[k] = mapping(f, d[k]);
@@ -46,8 +45,7 @@ public:
     }
     void apply(int l, int r, F f) {
         if (l == r) return;
-        l += s;
-        r += s;
+        l += s; r += s;
         upper_push(l, r);
         int pl = l, pr = r;
         while (l < r) {
@@ -66,8 +64,7 @@ public:
     void all_apply(F f) { all_apply(1, f); }
     T prod(int l, int r) {
         if (l == r) return e();
-        l += s;
-        r += s;
+        l += s; r += s;
         upper_push(l, r);
         T lv = e(), rv = e();
         while (l < r) {

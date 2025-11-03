@@ -6,11 +6,8 @@ struct SCC {
 };
 SCC get_scc_graph(const vector<vector<int>> G) {
     int n = G.size();
-    vector<int> st(n, 0);
-    int ptr = 0;
-    vector<int> lowlink(n, -1), order(n, -1), ids(n, 0);
-    int time = 0;
-    int group_cnt = 0;
+    vector<int> st(n, 0), lowlink(n, -1), order(n, -1), ids(n, 0);
+    int ptr = 0, time = 0, group_cnt = 0;
     auto dfs = [&] (auto &&dfs, int v) -> void {
         order[v] = time;
         lowlink[v] = time;
@@ -40,13 +37,11 @@ SCC get_scc_graph(const vector<vector<int>> G) {
         dfs(dfs, v);
     }
     vector<vector<int>> groups(group_cnt);
-    rep(v, n) {
-        groups[group_cnt-1-ids[v]].push_back(v);
-    }
+    rep(v, n) groups[group_cnt-1-ids[v]].emplace_back(v);
     vector<vector<int>> F(*max_element(ids.begin(), ids.end())+1);
     rep(v, n) {
         for (int x : G[v]) if (ids[v] != ids[x]) {
-            F[ids[v]].push_back(ids[x]);
+            F[ids[v]].emplace_back(ids[x]);
         }
     }
     for (vector<int> &f : F) {
@@ -54,8 +49,6 @@ SCC get_scc_graph(const vector<vector<int>> G) {
         f.erase(unique(f.begin(), f.end()), f.end());
     }
     vector<vector<int>> ids_inv(F.size());
-    rep(i, ids.size()) {
-        ids_inv[ids[i]].push_back(i);
-    }
+    rep(i, ids.size()) ids_inv[ids[i]].emplace_back(i);
     return {groups, F, ids_inv, ids};
 }

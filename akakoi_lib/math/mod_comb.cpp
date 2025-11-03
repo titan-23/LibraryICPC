@@ -1,4 +1,3 @@
-template<typename mint>
 struct ModComb {
     vector<mint> fact, factinv, inv;
     ModComb() {}

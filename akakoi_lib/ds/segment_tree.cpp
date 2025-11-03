@@ -19,8 +19,7 @@ struct Segtree {
     }
     T prod(int l, int r) {
         T lv = e(), rv = e();
-        l += s;
-        r += s;
+        l += s; r += s;
         while (l < r) {
             if (l & 1) lv = op(lv, d[l++]);
             if (r & 1) rv = op(d[--r], rv);
