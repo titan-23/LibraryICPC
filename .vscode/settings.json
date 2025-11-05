@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.codon": "python",
+        "istream": "cpp",
+        "streambuf": "cpp"
+    }
+}

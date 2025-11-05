@@ -1,26 +1,40 @@
 struct Mo {
-    int n;
-    vector<pair<int, int>> lr;
-    Mo(int n) : n(n) {}
-    void add_query(int l, int r) { lr.emplace_back(l, r); }
-    template<typename add_l, typename add_r, typename erase_l, typename erase_r, typename output>
-    void run(const add_l& al, const add_r& ar, const erase_l& el, const erase_r& er, const output& out) {
-        int q = lr.size();
-        int block_size = max(1, n / max<int>(1, sqrt(q)));
-        vector<int> ord(q);
-        iota(ord.begin(), ord.end(), 0);
-        sort(ord.begin(), ord.end(), [&](int a, int b) {
-            int ba = lr[a].first / block_size, bb = lr[b].first / block_size;
-            if (ba != bb) return ba < bb;
-            return (ba & 1) ? lr[a].second > lr[b].second : lr[a].second < lr[b].second;
-        });
-        int l = 0, r = 0;
-        for(auto i : ord) {
-            while(l > lr[i].first) al(--l);   // 左端を拡張
-            while(r < lr[i].second) ar(r++);  // 右端を拡張
-            while(l < lr[i].first) el(l++);   // 左端を縮小
-            while(r > lr[i].second) er(--r);  // 右端を縮小
-            out(i);
-        }
+  using u64 = unsigned long long;
+  u64 max_n;
+  int n;
+  vector<pair<int, int>> lr;
+  u64 hilbertorder(u64 x, u64 y) {
+    u64 res = 0;
+    for (u64 s = max_n>>1; s; s >>= 1) {
+      bool rx = x&s, ry = y&s;
+      res = (res << 2) | (rx ? ry ? 2 : 1 : ry ? 3 : 0);
+      if (!rx) {
+        if (ry) x ^= max_n, y ^= max_n;
+        swap(x, y);
+      }
     }
+    return res;
+  }
+  Mo(int n) : n(n) {
+    max_n = 1 << 20;
+    while (max_n < n) max_n <<= 1;
+  }
+  void add_query(int l, int r) { lr.emplace_back(l, r); }
+  template<typename add_l, typename add_r, typename erase_l, typename erase_r, typename output>
+  void run(const add_l& al, const add_r& ar, const erase_l& el, const erase_r& er, const output& out) {
+    int q = lr.size();
+    vector<int> qi(q); iota(qi.begin(), qi.end(), 0);
+    vector<u64> eval(q);
+    rep(i, q) eval[i] = hilbertorder(lr[i].first, lr[i].second);
+    sort(qi.begin(), qi.end(), [&] (int i, int j) { return eval[i] < eval[j]; });
+    int l = 0, r = 0;
+    for (int i : qi) {
+      const auto [li, ri] = lr[i];
+      while (l > li) al(--l);   // 左端を拡張
+      while (r < ri) ar(r++);  // 右端を拡張
+      while (l < li) el(l++);   // 左端を縮小
+      while (r > ri) er(--r);  // 右端を縮小
+      out(i);
+    }
+  }
 };
