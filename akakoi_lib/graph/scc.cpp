@@ -1,54 +1,30 @@
-struct SCC {
-  // {groups, G, ids_inv, ids}
-  // scc, 頂点を縮約した隣接リスト, 新たなグラフの頂点->もとの頂点集合, もとの頂点->新たなグラフの頂点
-  vector<vector<int>> groups, G, ids_inv;
-  vector<int> ids;
+struct SccInfo {
+  vector<vector<int>> members;  ///< 各強連結成分の頂点
+  vector<vector<int>> graph_decomposed;  ///< 強連結成分による分解グラフ
+  vector<int> group;  ///< 各頂点の所属する強連結成分の番号
 };
-SCC get_scc_graph(const vector<vector<int>> G) {
-  int n = G.size();
-  vector<int> st(n, 0), lowlink(n, -1), order(n, -1), ids(n, 0);
-  int ptr = 0, time = 0, group_cnt = 0;
-  auto dfs = [&] (auto &&dfs, int v) -> void {
-    order[v] = time;
-    lowlink[v] = time;
-    time++;
-    st[ptr] = v;
-    ptr++;
-    for (int x : G[v]) {
-      if (order[x] == -1) {
-        dfs(dfs, x);
-        lowlink[v] = min(lowlink[v], lowlink[x]);
-      } else {
-        lowlink[v] = min(lowlink[v], order[x]);
-      }
-    }
-    if (lowlink[v] == order[v]) {
-      while (1) {
-        int u = st[ptr-1];
-        ptr--;
-        order[u] = n;
-        ids[u] = group_cnt;
-        if (u == v) break;
-      }
-      group_cnt++;
-    }
+SccInfo SccDecomposition(const vector<vector<int>>& g) {
+  int n = g.size();
+  vector<vector<int>> g2(n);
+  rep(i, n) for (int j : g[i]) g2[j].push_back(i);
+  vector<int> order, component(n, -1), seen(n, false);
+  auto dfs = [&](auto dfs, int now) -> void {
+    seen[now] = true;
+    for (int nxt : g[now]) if (!seen[nxt]) dfs(dfs, nxt);
+    order.push_back(now);
   };
-  rep(v, n) if (order[v] == -1) {
-    dfs(dfs, v);
-  }
-  vector<vector<int>> groups(group_cnt);
-  rep(v, n) groups[group_cnt-1-ids[v]].emplace_back(v);
-  vector<vector<int>> F(*max_element(ids.begin(), ids.end())+1);
-  rep(v, n) {
-    for (int x : G[v]) if (ids[v] != ids[x]) {
-      F[ids[v]].emplace_back(ids[x]);
-    }
-  }
-  for (vector<int> &f : F) {
-    sort(f.begin(), f.end());
-    f.erase(unique(f.begin(), f.end()), f.end());
-  }
-  vector<vector<int>> ids_inv(F.size());
-  rep(i, ids.size()) ids_inv[ids[i]].emplace_back(i);
-  return {groups, F, ids_inv, ids};
+  auto dfs2 = [&](auto dfs2, int now, int idx) -> void {
+    component[now] = idx;
+    for (int nxt : g2[now]) if (component[nxt] == -1) dfs2(dfs2, nxt, idx);
+  };
+  rep(i, n) if (!seen[i]) dfs(dfs, i);
+  reverse(order.begin(), order.end());
+  int idx = 0;
+  for (int now : order) if (component[now] == -1) dfs2(dfs2, now, idx), idx++;
+  int n_n = *max_element(component.begin(), component.end()) + 1;
+  vector<vector<int>> ret(n_n), ret2(n_n);
+  rep(i, n) ret[component[i]].push_back(i);
+  rep(i, n) for (int j : g[i]) if (component[i] != component[j]) ret2[component[i]].push_back(component[j]);
+  rep(i, n_n) sort(ret2[i].begin(), ret2[i].end()), ret2[i].erase(unique(ret2[i].begin(), ret2[i].end()), ret2[i].end());
+  return {ret, ret2, component};
 }
