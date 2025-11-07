@@ -53,11 +53,8 @@ public:
       int k = lower_bound(xy.begin(), xy.end(), make_pair(x, y_)) - xy.begin();
       int i_y = lower_bound(y.begin(), y.end(), y_) - y.begin();
       for (int bit = log-1; bit >= 0; --bit) {
-        if (i_y >> bit & 1) {
-          k = v[bit].rank1(k) + mid[bit];
-        } else {
-          k = v[bit].rank0(k);
-        }
+        if (i_y >> bit & 1) k = v[bit].rank1(k) + mid[bit];
+        else k = v[bit].rank0(k);
         ws[bit][k] = op(ws[bit][k], w);
       }
     }
