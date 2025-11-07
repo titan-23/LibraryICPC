@@ -1,7 +1,7 @@
 using u64 = unsigned long long;
 struct BitVector {
   int n, bs;
-  const int msk = 63;
+  static const int msk = 63;
   vector<u64> bit, acc;
   BitVector() {}
   BitVector(int n) : n(n), bs((n+msk)>>6), bit(bs+1, 0), acc(bs+1, 0) {}
