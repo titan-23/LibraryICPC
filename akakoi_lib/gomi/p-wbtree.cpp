@@ -13,33 +13,33 @@ public:
       Data() : rev(0) {}
       Data(T k, T d, F l, int8_t r) : key(k), data(d), lazy(l), rev(r) {}
     };
-    vector<Node> tree;
-    vector<Data> data;
+    vector<Node> ch;
+    vector<Data> dat;
     size_t ptr;
     MemoeyAllocator() : ptr(1) {
-      tree.emplace_back(0, 0, 0);
-      data.emplace_back(T{}, T{}, F{}, 0);
+      ch.emplace_back(0, 0, 0);
+      dat.emplace_back(T{}, T{}, F{}, 0);
     }
     SizeType copy(SizeType node) {
-      SizeType idx = new_node(data[node].key, data[node].lazy);
-      tree[idx] = {tree[node].left, tree[node].right, tree[node].size};
-      data[idx].data = data[node].data;
-      data[idx].rev = data[node].rev;
+      SizeType idx = new_node(dat[node].key, dat[node].lazy);
+      ch[idx] = {ch[node].left, ch[node].right, ch[node].size};
+      dat[idx].data = dat[node].data;
+      dat[idx].rev = dat[node].rev;
       return idx;
     }
     SizeType new_node(const T key, const F f) {
-      if (tree.size() > ptr) {
-        tree[ptr] = {0, 0, 1};
-        data[ptr] = {key, key, f, 0};
+      if (ch.size() > ptr) {
+        ch[ptr] = {0, 0, 1};
+        dat[ptr] = {key, key, f, 0};
       } else {
-        tree.emplace_back(0, 0, 1);
-        data.emplace_back(key, key, f, 0);
+        ch.emplace_back(0, 0, 1);
+        dat.emplace_back(key, key, f, 0);
       }
       ptr++;
       return ptr - 1;
     }
     void reserve(SizeType n) {
-      tree.reserve(n); data.reserve(n);
+      ch.reserve(n); dat.reserve(n);
     }
     void reset() { ptr = 1; }
   };
@@ -48,40 +48,40 @@ private:
   using PLTM = PersistentLazyWBTree<SizeType, T, F, op, mapping, composition, e, id>;
   static constexpr int DELTA = 3, GAMMA = 2;
   SizeType root;
-  inline SizeType weight_right(SizeType node) const { return ma.tree[ma.tree[node].right].size + 1; }
-  inline SizeType weight_left(SizeType node) const { return ma.tree[ma.tree[node].left].size + 1; }
-  inline SizeType weight(SizeType node) const { return ma.tree[node].size + 1; }
+  inline SizeType weight_right(SizeType node) const { return ma.ch[ma.ch[node].right].size + 1; }
+  inline SizeType weight_left(SizeType node) const { return ma.ch[ma.ch[node].left].size + 1; }
+  inline SizeType weight(SizeType node) const { return ma.ch[node].size + 1; }
   void update(SizeType node) {
-    ma.tree[node].size = 1 + ma.tree[ma.tree[node].left].size + ma.tree[ma.tree[node].right].size;
-    ma.data[node].data = ma.data[node].key;
-    if (ma.tree[node].left) ma.data[node].data = op(ma.data[ma.tree[node].left].data, ma.data[node].key);
-    if (ma.tree[node].right) ma.data[node].data = op(ma.data[node].data, ma.data[ma.tree[node].right].data);
+    ma.ch[node].size = 1 + ma.ch[ma.ch[node].left].size + ma.ch[ma.ch[node].right].size;
+    ma.dat[node].data = ma.dat[node].key;
+    if (ma.ch[node].left) ma.dat[node].data = op(ma.dat[ma.ch[node].left].data, ma.dat[node].key);
+    if (ma.ch[node].right) ma.dat[node].data = op(ma.dat[node].data, ma.dat[ma.ch[node].right].data);
   }
   void push(SizeType node, F f) {
-    ma.data[node].key = mapping(f, ma.data[node].key);
-    ma.data[node].data = mapping(f, ma.data[node].data);
-    ma.data[node].lazy = composition(f, ma.data[node].lazy);
+    ma.dat[node].key = mapping(f, ma.dat[node].key);
+    ma.dat[node].data = mapping(f, ma.dat[node].data);
+    ma.dat[node].lazy = composition(f, ma.dat[node].lazy);
   }
   void propagate(SizeType node) {
-    if (ma.data[node].rev) {
-      SizeType l = ma.tree[node].left ? ma.copy(ma.tree[node].left) : 0;
-      SizeType r = ma.tree[node].right ? ma.copy(ma.tree[node].right) : 0;
-      ma.tree[node].left = r;
-      ma.tree[node].right = l;
-      if (ma.tree[node].left) ma.data[ma.tree[node].left].rev ^= 1;
-      if (ma.tree[node].right) ma.data[ma.tree[node].right].rev ^= 1;
-      ma.data[node].rev = 0;
+    if (ma.dat[node].rev) {
+      SizeType l = ma.ch[node].left ? ma.copy(ma.ch[node].left) : 0;
+      SizeType r = ma.ch[node].right ? ma.copy(ma.ch[node].right) : 0;
+      ma.ch[node].left = r;
+      ma.ch[node].right = l;
+      if (ma.ch[node].left) ma.dat[ma.ch[node].left].rev ^= 1;
+      if (ma.ch[node].right) ma.dat[ma.ch[node].right].rev ^= 1;
+      ma.dat[node].rev = 0;
     }
-    if (ma.data[node].lazy != id()) {
-      if (ma.tree[node].left) {
-        ma.tree[node].left = ma.copy(ma.tree[node].left);
-        push(ma.tree[node].left, ma.data[node].lazy);
+    if (ma.dat[node].lazy != id()) {
+      if (ma.ch[node].left) {
+        ma.ch[node].left = ma.copy(ma.ch[node].left);
+        push(ma.ch[node].left, ma.dat[node].lazy);
       }
-      if (ma.tree[node].right) {
-        ma.tree[node].right = ma.copy(ma.tree[node].right);
-        push(ma.tree[node].right, ma.data[node].lazy);
+      if (ma.ch[node].right) {
+        ma.ch[node].right = ma.copy(ma.ch[node].right);
+        push(ma.ch[node].right, ma.dat[node].lazy);
       }
-      ma.data[node].lazy = id();
+      ma.dat[node].lazy = id();
     }
   }
   void balance_check(SizeType node) const {
@@ -92,8 +92,8 @@ private:
     auto build = [&] (auto &&build, SizeType l, SizeType r) -> SizeType {
       SizeType mid = (l + r) >> 1;
       SizeType node = ma.new_node(a[mid], id());
-      if (l != mid) ma.tree[node].left = build(build, l, mid);
-      if (mid+1 != r) ma.tree[node].right = build(build, mid+1, r);
+      if (l != mid) ma.ch[node].left = build(build, l, mid);
+      if (mid+1 != r) ma.ch[node].right = build(build, mid+1, r);
       update(node);
       return node;
     };
@@ -103,37 +103,37 @@ private:
     root = build(build, 0, (SizeType)a.size());
   }
   SizeType _rotate_right(SizeType node) {
-    SizeType u = ma.copy(ma.tree[node].left);
-    ma.tree[node].left = ma.tree[u].right;
-    ma.tree[u].right = node;
+    SizeType u = ma.copy(ma.ch[node].left);
+    ma.ch[node].left = ma.ch[u].right;
+    ma.ch[u].right = node;
     update(node);
     update(u);
     return u;
   }
   SizeType _rotate_left(SizeType node) {
-    SizeType u = ma.copy(ma.tree[node].right);
-    ma.tree[node].right = ma.tree[u].left;
-    ma.tree[u].left = node;
+    SizeType u = ma.copy(ma.ch[node].right);
+    ma.ch[node].right = ma.ch[u].left;
+    ma.ch[u].left = node;
     update(node);
     update(u);
     return u;
   }
   SizeType _balance_left(SizeType node) {
-    propagate(ma.tree[node].right);
-    SizeType u = ma.tree[node].right;
-    if (weight_left(ma.tree[node].right) >= weight_right(ma.tree[node].right) * GAMMA) {
-      propagate(ma.tree[u].left);
-      ma.tree[node].right = _rotate_right(u);
+    propagate(ma.ch[node].right);
+    SizeType u = ma.ch[node].right;
+    if (weight_left(ma.ch[node].right) >= weight_right(ma.ch[node].right) * GAMMA) {
+      propagate(ma.ch[u].left);
+      ma.ch[node].right = _rotate_right(u);
     }
     u = _rotate_left(node);
     return u;
   }
   SizeType _balance_right(SizeType node) {
-    propagate(ma.tree[node].left);
-    SizeType u = ma.tree[node].left;
-    if (weight_right(ma.tree[node].left) >= weight_left(ma.tree[node].left) * GAMMA) {
-      propagate(ma.tree[u].right);
-      ma.tree[node].left = _rotate_left(u);
+    propagate(ma.ch[node].left);
+    SizeType u = ma.ch[node].left;
+    if (weight_right(ma.ch[node].left) >= weight_left(ma.ch[node].left) * GAMMA) {
+      propagate(ma.ch[u].right);
+      ma.ch[node].left = _rotate_left(u);
     }
     u = _rotate_right(node);
     return u;
@@ -142,25 +142,25 @@ private:
     if (weight(r) * DELTA < weight(l)) {
       propagate(l);
       l = ma.copy(l);
-      ma.tree[l].right = _merge_with_root(ma.tree[l].right, root, r);
+      ma.ch[l].right = _merge_with_root(ma.ch[l].right, root, r);
       update(l);
-      if (weight(ma.tree[l].left) * DELTA < weight(ma.tree[l].right)) return _balance_left(l);
+      if (weight(ma.ch[l].left) * DELTA < weight(ma.ch[l].right)) return _balance_left(l);
       return l;
     } else if (weight(l) * DELTA < weight(r)) {
       propagate(r);
       r = ma.copy(r);
-      ma.tree[r].left = _merge_with_root(l, root, ma.tree[r].left);
+      ma.ch[r].left = _merge_with_root(l, root, ma.ch[r].left);
       update(r);
-      if (weight(ma.tree[r].right) * DELTA < weight(ma.tree[r].left)) return _balance_right(r);
+      if (weight(ma.ch[r].right) * DELTA < weight(ma.ch[r].left)) return _balance_right(r);
       return r;
     }
     root = ma.copy(root);
-    ma.tree[root].left = l;
-    ma.tree[root].right = r;
+    ma.ch[root].left = l;
+    ma.ch[root].right = r;
     update(root);
     return root;
   }
-  pair<SizeType, SizeType> _pop_right(SizeType node) { return _split_node(node, ma.tree[node].size-1); }
+  pair<SizeType, SizeType> _pop_right(SizeType node) { return _split_node(node, ma.ch[node].size-1); }
   SizeType _merge_node(SizeType l, SizeType r) {
     if ((!l) && (!r)) { return 0; }
     if (!l) return ma.copy(r);
@@ -173,8 +173,8 @@ private:
   pair<SizeType, SizeType> _split_node(SizeType node, SizeType k) {
     if (!node) { return {0, 0}; }
     propagate(node);
-    SizeType lch = ma.tree[node].left, rch = ma.tree[node].right;
-    SizeType tmp = lch ? k-ma.tree[lch].size : k;
+    SizeType lch = ma.ch[node].left, rch = ma.ch[node].right;
+    SizeType tmp = lch ? k-ma.ch[lch].size : k;
     if (tmp == 0) {
       return {lch, _merge_with_root(0, node, rch)};
     } else if (tmp < 0) {
@@ -209,10 +209,10 @@ private:
         push(nnode, f);
         return nnode;
       }
-      SizeType lsize = ma.tree[ma.tree[nnode].left].size;
-      if (ma.tree[nnode].left) ma.tree[nnode].left = dfs(dfs, ma.tree[nnode].left, left, left+lsize);
-      if (l <= left+lsize && left+lsize < r) ma.data[nnode].key = mapping(f, ma.data[nnode].key);
-      if (ma.tree[nnode].right) ma.tree[nnode].right = dfs(dfs, ma.tree[nnode].right, left+lsize+1, right);
+      SizeType lsize = ma.ch[ma.ch[nnode].left].size;
+      if (ma.ch[nnode].left) ma.ch[nnode].left = dfs(dfs, ma.ch[nnode].left, left, left+lsize);
+      if (l <= left+lsize && left+lsize < r) ma.dat[nnode].key = mapping(f, ma.dat[nnode].key);
+      if (ma.ch[nnode].right) ma.ch[nnode].right = dfs(dfs, ma.ch[nnode].right, left+lsize+1, right);
       update(nnode);
       return nnode;
     };
@@ -223,13 +223,13 @@ private:
     if (l == r) return e();
     auto dfs = [&] (auto &&dfs, SizeType node, SizeType left, SizeType right) -> T {
       if (right <= l || r <= left) return e();
-      if (l <= left && right < r) return ma.data[node].data;
+      if (l <= left && right < r) return ma.dat[node].data;
       propagate(node);
-      SizeType lsize = ma.tree[ma.tree[node].left].size;
+      SizeType lsize = ma.ch[ma.ch[node].left].size;
       T res = e();
-      if (ma.tree[node].left) res = dfs(dfs, ma.tree[node].left, left, left+lsize);
-      if (l <= left+lsize && left+lsize < r) res = op(res, ma.data[node].key);
-      if (ma.tree[node].right) res = op(res, dfs(dfs, ma.tree[node].right, left+lsize+1, right));
+      if (ma.ch[node].left) res = dfs(dfs, ma.ch[node].left, left, left+lsize);
+      if (l <= left+lsize && left+lsize < r) res = op(res, ma.dat[node].key);
+      if (ma.ch[node].right) res = op(res, dfs(dfs, ma.ch[node].right, left+lsize+1, right));
       return res;
     };
     return dfs(dfs, root, 0, len());
@@ -244,7 +244,7 @@ private:
     assert(0 <= k && k < len());
     auto [s_, t] = _split_node(this->root, k+1);
     auto [s, tmp] = _pop_right(s_);
-    T res = ma.data[tmp].key;
+    T res = ma.dat[tmp].key;
     SizeType root = _merge_node(s, t);
     return {_new(root), res};
   }
@@ -253,7 +253,7 @@ private:
     if (l >= r) return _new(ma.copy(root));
     auto [s_, t] = _split_node(root, r);
     auto [u, s] = _split_node(s_, l);
-    ma.data[s].rev ^= 1;
+    ma.dat[s].rev ^= 1;
     SizeType root = _merge_node(_merge_node(u, s), t);
     return _new(root);
   }
@@ -266,11 +266,11 @@ private:
       if (node) {
         propagate(node);
         s.emplace(node);
-        node = ma.tree[node].left;
+        node = ma.ch[node].left;
       } else {
         node = s.top(); s.pop();
-        a.emplace_back(ma.data[node].key);
-        node = ma.tree[node].right;
+        a.emplace_back(ma.dat[node].key);
+        node = ma.ch[node].right;
       }
     }
     return a;
@@ -285,13 +285,13 @@ private:
     stack<SizeType> path = {node};
     while (1) {
       propagate(node);
-      SizeType t = ma.tree[ma.tree[node].left].size;
+      SizeType t = ma.ch[ma.ch[node].left].size;
       if (t == k) {
         node = ma.copy(node);
-        ma.data[node].key = v;
+        ma.dat[node].key = v;
         path.emplace(node);
-        if (d) ma.tree[pnode].left = node;
-        else ma.tree[pnode].right = node;
+        if (d) ma.ch[pnode].left = node;
+        else ma.ch[pnode].right = node;
         while (!path.empty()) {
           update(path.top());
           path.pop();
@@ -301,15 +301,15 @@ private:
       pnode = node;
       if (t < k) {
         k -= t + 1;
-        node = ma.copy(ma.tree[node].right);
+        node = ma.copy(ma.ch[node].right);
         d = 0;
       } else {
         d = 1;
-        node = ma.copy(ma.tree[node].left);
+        node = ma.copy(ma.ch[node].left);
       }
       path.emplace_back(node);
-      if (d) ma.tree[pnode].left = node;
-      else ma.tree[pnode].right = node;
+      if (d) ma.ch[pnode].left = node;
+      else ma.ch[pnode].right = node;
     }
   }
   T get(SizeType k) {
@@ -317,19 +317,19 @@ private:
     SizeType node = root;
     while (1) {
       propagate(node);
-      SizeType t = ma.tree[ma.tree[node].left].size;
+      SizeType t = ma.ch[ma.ch[node].left].size;
       if (t == k) {
-        return ma.data[node].key;
+        return ma.dat[node].key;
       }
       if (t < k) {
         k -= t + 1;
-        node = ma.tree[node].right;
+        node = ma.ch[node].right;
       } else {
-        node = ma.tree[node].left;
+        node = ma.ch[node].left;
       }
     }
   }
-  SizeType len() const { return ma.tree[root].size; }
+  SizeType len() const { return ma.ch[root].size; }
   static void rebuild(PLTM &tree) {
     PLTM::ma.reset();
     vector<T> a = tree.tovector();

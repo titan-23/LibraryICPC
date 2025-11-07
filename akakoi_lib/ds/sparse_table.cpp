@@ -3,7 +3,7 @@ struct SparseTable {
   int n;
   vector<T> data;
   vector<int> offset;
-  SparseTable(vector<T> &a) : n((int)a.size()) {
+  SparseTable(vector<T> a) : n(a.size()) {
     int log = 32 - __builtin_clz(n) - 1;
     offset.resize(log+1);
     int sm = 0;
@@ -13,16 +13,14 @@ struct SparseTable {
     }
     data.resize(sm);
     memcpy(data.data(), a.data(), n*sizeof(T));
-    for (int i = 0; i < log; ++i) {
+    rep(i, log) {
       int l = 1 << i;
       int s = n - l + 1;
       const int x = s - l;
       const auto pre1 = &data[offset[i]];
       const auto pre2 = &data[offset[i]+l];
       auto nxt = &data[offset[i+1]];
-      for (int j = 0; j < x; ++j) {
-        nxt[j] = op(pre1[j], pre2[j]);
-      }
+      rep(j, x) nxt[j] = op(pre1[j], pre2[j]);
     }
   }
   T prod(int l, int r) {

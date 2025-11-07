@@ -30,10 +30,10 @@ struct Mo {
     int l = 0, r = 0;
     for (int i : qi) {
       const auto [li, ri] = lr[i];
-      while (l > li) al(--l);   // 左端を拡張
-      while (r < ri) ar(r++);  // 右端を拡張
-      while (l < li) el(l++);   // 左端を縮小
-      while (r > ri) er(--r);  // 右端を縮小
+      while (l > li) al(--l); // 左端を拡張
+      while (r < ri) ar(r++); // 右端を拡張
+      while (l < li) el(l++); // 左端を縮小
+      while (r > ri) er(--r); // 右端を縮小
       out(i);
     }
   }

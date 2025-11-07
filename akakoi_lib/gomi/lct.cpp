@@ -3,13 +3,13 @@ template <class T, T (*op)(T, T), T (*e)(),
 struct LazyLinkCutTree {
 private:
   struct Node;
-  using NodePtr = Node*;
-  vector<NodePtr> pool;
+  using NP = Node*;
+  vector<NP> pool;
   struct Node {
     int idx, size, rev;
     T key, data, rdata;
     F lazy;
-    NodePtr left, right, par;
+    NP left, right, par;
     Node(const int idx, const T key, const F lazy) :
         idx(idx), size(1), rev(0),
         key(key), data(key), rdata(key),
@@ -20,18 +20,18 @@ private:
       return (!par) || (!(par->left == this || par->right == this));
     }
   };
-  void _apply_rev(const NodePtr node) {
+  void _apply_rev(const NP node) {
     if (!node) return;
     node->rev ^= 1;
   }
-  void _apply_f(const NodePtr node, const F f) {
+  void _apply_f(const NP node, const F f) {
     if (!node) return;
     node->key = mapping(f, node->key);
     node->data = mapping(f, node->data);
     node->rdata = mapping(f, node->rdata);
     node->lazy = composition(f, node->lazy);
   }
-  void _propagate(const NodePtr node) {
+  void _propagate(const NP node) {
     if (!node) return;
     if (node->rev) {
       swap(node->data, node->rdata);
@@ -46,7 +46,7 @@ private:
       node->lazy = id();
     }
   }
-  void _update(const NodePtr node) {
+  void _update(const NP node) {
     if (!node) return;
     _propagate(node->left);
     _propagate(node->right);
@@ -64,9 +64,9 @@ private:
       node->size += node->right->size;
     }
   }
-  void _rotate(const NodePtr node) {
-    const NodePtr pnode = node->par;
-    const NodePtr gnode = pnode->par;
+  void _rotate(const NP node) {
+    const NP pnode = node->par;
+    const NP gnode = pnode->par;
     _propagate(pnode);
     _propagate(node);
     if (gnode) {
@@ -90,7 +90,7 @@ private:
     _update(pnode);
     _update(node);
   }
-  void _splay(const NodePtr node) {
+  void _splay(const NP node) {
     while ((!node->is_root()) && (!node->par->is_root())) {
       _propagate(node->par->par);
       _propagate(node->par);
@@ -105,21 +105,21 @@ private:
     if (!node->is_root()) _rotate(node);
     _propagate(node);
   }
-  void _link(const NodePtr c, const NodePtr p) {
+  void _link(const NP c, const NP p) {
     _expose(c);
     _expose(p);
     c->par = p;
     p->right = c;
     _update(p);
   }
-  void _cut(const NodePtr c) {
+  void _cut(const NP c) {
     _expose(c);
     c->left->par = nullptr;
     c->left = nullptr;
     _update(c);
   }
-  NodePtr _expose(const NodePtr node) {
-    NodePtr pre = node;
+  NP _expose(const NP node) {
+    NP pre = node;
     while (node->par) {
       _splay(node);
       node->right = nullptr;
@@ -134,7 +134,7 @@ private:
     _update(node);
     return pre;
   }
-  NodePtr _root(NodePtr v) {
+  NP _root(NP v) {
     _expose(v);
     _propagate(v);
     while (v->left) {
@@ -144,7 +144,7 @@ private:
     _splay(v);
     return v;
   }
-  void _evert(NodePtr v) {
+  void _evert(NP v) {
     _expose(v);
     _apply_rev(v);
     _propagate(v);
@@ -184,19 +184,19 @@ public:
     return pool[k]->key;
   }
   void set(int k, T v) {
-    NodePtr node = pool[k];
+    NP node = pool[k];
     _splay(node);
     node->key = v;
     _update(node);
   }
   int path_length(int s, int t) {
     evert(s); expose(t);
-    NodePtr node = pool[t];
+    NP node = pool[t];
     return node->size;
   }
   int path_kth_elm(int s, int t, int k) {
     evert(s); expose(t);
-    NodePtr node = pool[t];
+    NP node = pool[t];
     if (node->size <= k) return -1;
     while (1) {
       _propagate(node);

@@ -8,8 +8,7 @@ vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
   vector<vector<T>> dp(n);
   rep(i, n) dp[i].resize(G[i].size(), e());
   int root = 0;
-  vector<int> pdx(n, -1);
-  vector<int> topo;
+  vector<int> pdx(n, -1), topo;
   stack<int> s;
   pdx[root] = -2;
   s.emplace(root);
@@ -38,9 +37,7 @@ vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
   }
   for (int v : topo) {
     int d = G[v].size();
-    rep(i, d) {
-      rs[i+1] = merge(rs[i], dp[v][d-i-1]);
-    }
+    rep(i, d) rs[i+1] = merge(rs[i], dp[v][d-i-1]);
     T ls = e();
     rep(i, d) {
       if (i != pdx[v]) {
