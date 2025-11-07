@@ -1,3 +1,5 @@
+// https://judge.yosupo.jp/submission/327250
+
 #include "./../../akakoi_lib/template/template.cpp"
 #include "./../../akakoi_lib/algorithm/mo.cpp"
 
