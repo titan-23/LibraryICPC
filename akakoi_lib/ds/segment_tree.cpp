@@ -32,6 +32,7 @@ struct Segtree {
   template <typename F>
   int max_right(int l, F f) {
     assert(f(e()));
+    if (l == n) return n;
     T v = e();
     l += s;
     do {
@@ -49,11 +50,12 @@ struct Segtree {
       v = op(v, d[l]);
       l++;
     } while ((l & -l) != l);
-    return s;
+    return n;
   }
   template <typename F>
   int min_left(int r, F f) {
     assert(f(e()));
+    if (r == 0) return 0;
     T v = e();
     r += s;
     do {
