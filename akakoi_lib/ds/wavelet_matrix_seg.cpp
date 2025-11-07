@@ -7,7 +7,7 @@ private:
   vector<pair<T, T>> xy;
   vector<T> y;
   vector<int> mid;
-  vector<SegTree<Mono, op, e>> seg;
+  vector<Segtree<Mono, op, e>> seg;
 public:
   WaveletMatrixSeg() {}
   void set_point(T x, T y, Mono w) { pos.emplace_back(x, y, w); }
@@ -58,7 +58,7 @@ public:
         ws[bit][k] = op(ws[bit][k], w);
       }
     }
-    rep(i, log) seg[i] = SegTree<Mono, op, e>(ws[i]);
+    rep(i, log) seg[i] = Segtree<Mono, op, e>(ws[i]);
   }
   void update_point(T x, T y, Mono val) {
     int k = lower_bound(xy.begin(), xy.end(), make_pair(x, y)) - xy.begin();
@@ -73,7 +73,7 @@ public:
     }
   }
   // 領域 [x1, x2) x [y1, y2) の prod を求める / O(log^2N)
-  Mono range_prod(T x1, T x2, T y1, T y2) const {
+  Mono range_prod(T x1, T x2, T y1, T y2) {
     assert(0 <= x1 && x1 <= x2);
     assert(0 <= y1 && y1 <= y2);
     int l = lower_bound(xy.begin(), xy.end(), make_pair(x1, (T)0)) - xy.begin();
