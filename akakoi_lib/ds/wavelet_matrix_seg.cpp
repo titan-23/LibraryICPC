@@ -91,8 +91,7 @@ public:
       if (bit < 0 || nl >= nr) continue;
       if (y_r <= y1_idx || y_l >= y2_idx) continue;
       int y_mid = y_l | (1<<bit);
-      int l0 = v[bit].rank0(nl);
-      int r0 = v[bit].rank0(nr);
+      int l0 = v[bit].rank0(nl), r0 = v[bit].rank0(nr);
       int l1 = v[bit].rank1(nl) + mid[bit];
       int r1 = v[bit].rank1(nr) + mid[bit];
       if (y1_idx <= y_l && y_r <= y2_idx) {
@@ -104,12 +103,8 @@ public:
         if (y_l < y2_idx && y_mid > y1_idx) s.emplace(bit-1, l0, r0, y_l, y_mid);
         if (y_mid < y2_idx && y_r > y1_idx) s.emplace(bit-1, l1, r1, y_mid, y_r);
       } else {
-        if (l0 < r0 && y_l < y2_idx && y_mid > y1_idx) {
-          ans = op(ans, seg[bit].prod(l0, r0));
-        }
-        if (l1 < r1 && y_mid < y2_idx && y_r > y1_idx) {
-          ans = op(ans, seg[bit].prod(l1, r1));
-        }
+        if (l0 < r0 && y_l < y2_idx && y_mid > y1_idx) ans = op(ans, seg[bit].prod(l0, r0));
+        if (l1 < r1 && y_mid < y2_idx && y_r > y1_idx) ans = op(ans, seg[bit].prod(l1, r1));
       }
     }
     return ans;

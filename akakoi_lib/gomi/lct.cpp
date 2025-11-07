@@ -16,9 +16,7 @@ private:
         lazy(lazy),
         left(nullptr), right(nullptr), par(nullptr) {
     }
-    bool is_root() const {
-      return (!par) || (!(par->left == this || par->right == this));
-    }
+    bool is_root() const { return (!par) || (!(par->left == this || par->right == this)); }
   };
   void _apply_rev(const NP node) {
     if (!node) return;
@@ -164,10 +162,7 @@ public:
   int root(int v) { return _root(pool[v])->idx; }
   bool same(int u, int v) { return root(u) == root(v); }
   void evert(int v) { _evert(pool[v]); }
-  T path_prod(int u, int v) {
-    evert(u); expose(v);
-    return pool[v]->data;
-  }
+  T path_prod(int u, int v) { evert(u); expose(v); return pool[v]->data; }
   void path_apply(int u, int v, F f) {
     evert(u); expose(v);
     _apply_f(pool[v], f);
@@ -179,10 +174,7 @@ public:
     return true;
   }
   void split(int u, int v) { evert(u); cut(v); }
-  T get(int k) {
-    _splay(pool[k]);
-    return pool[k]->key;
-  }
+  T get(int k) { _splay(pool[k]); return pool[k]->key; }
   void set(int k, T v) {
     NP node = pool[k];
     _splay(node);

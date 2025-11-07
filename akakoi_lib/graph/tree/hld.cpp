@@ -31,7 +31,7 @@ struct HLD {
     out[v] = time;
   }
 
-  int dist(int u, int v) { return dep[u] + dep[v] - 2*dep[lca(u, v)]; }
+  int dist(int u, int v) {return dep[u]+dep[v]-2*dep[lca(u, v)];}
   int lca(int u, int v) {
     while (1) {
       if (in[u] > in[v]) swap(u, v);
@@ -52,21 +52,16 @@ struct HLD {
     int x = lca(s, t);
     int d = dep[s] + dep[t] - 2*dep[x];
     if (k > d) return -1;
-    if (dep[s] - dep[x] >= k) {
-      return la(s, k);
-    } else {
-      return la(t, d-k);
-    }
+    if (dep[s] - dep[x] >= k) return la(s, k);
+    else return la(t, d-k);
   }
   vector<tuple<bool, int, int>>  path_prod(int u, int v) {
-    // 半開区間!
     // true -> (uから遠い方、uに近い方)
     // false -> (uに近い方、uに遠い方)
     // rep(i, n) init[hld.in[i]] = A[i];
     // seg.set(hld.in[p], v);
-    // auto path = hld.path_prod(u, v);
     // ll lv = e(), rv = e();
-    // for (auto [f, l, r] : path) {
+    // for (auto [f, l, r] : hld.path_prod(u, v)) { 半開区間!
     //     if (f) lv = op(lv, seg_rev.prod(l, r));
     //     else rv = op_rev(rv, seg.prod(l, r));
     // }

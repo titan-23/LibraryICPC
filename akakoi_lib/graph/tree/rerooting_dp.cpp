@@ -52,10 +52,7 @@ vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
 }
 using T = int; // dpの型
 using E = int; // 辺の型
-// 辺込みの部分木のdp値dp_xに頂点vを付加する
-T apply_vertex(T dp_x, int v) {}
-// 辺込みの部分木のdp値s,tを結合する
-T merge(T s, T t) {}
-// 部分木のdp値dp_xに辺edgeを付加する 頂点xの親がv
-T apply_edge(T dp_x, E edge, int x, int v) {}
+T apply_vertex(T dp_x, int v) {} // 辺込みの部分木の値dp_xに頂点vを付加
+T merge(T s, T t) {} // 辺込みの部分木のdp値s,tを結合
+T apply_edge(T dp_x, E edge, int x, int v) {} // 部分木のdp値dp_xに辺edgeを付加 頂点xの親がv
 T e() {} // dp値の単位元

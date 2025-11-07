@@ -58,8 +58,7 @@ struct WaveletMatrix {
         l = l - l0 + mid[bit];
         r = r - r0 + mid[bit];
       } else {
-        l = l0;
-        r = r0;
+        l = l0; r = r0;
       }
     }
     return s;
@@ -74,8 +73,7 @@ struct WaveletMatrix {
         l += mid[bit] - l0;
         r += mid[bit] - r0;
       } else {
-        l = l0;
-        r = r0;
+        l = l0; r = r0;
       }
     }
     return ans;

@@ -12,15 +12,12 @@ private:
     F lazy;
     NodePtr par, left, right;
     Node() {}
-    Node(T key, F lazy) :
-      key(key), data(key), lazy(lazy),
+    Node(T key, F lazy) : key(key), data(key), lazy(lazy),
       par(nullptr), left(nullptr), right(nullptr) {}
   };
   void _init_build(vector<T> &a) {
     ptr_vertex.resize(n);
-    for (int i = 0; i < n; ++i) {
-      ptr_vertex[i] = new Node(a[i], id());
-    }
+    rep(i, n) ptr_vertex[i] = new Node(a[i], id());
   }
   NodePtr _popleft(NodePtr v) {
     v = _left_splay(v);
@@ -135,9 +132,7 @@ public:
     vector<T> a(n, e());
     _init_build(a);
   }
-  EulerTourTree(vector<T> a) : n((int)a.size()), group_numbers((int)a.size()) {
-    _init_build(a);
-  }
+  EulerTourTree(vector<T> a) : n(a.size()), group_numbers(a.size()) { _init_build(a); }
   void build(vector<vector<int>> &G) {
     vector<int> seen(n, 0);
     vector<long long> a;
@@ -173,16 +168,14 @@ public:
       _update(node);
       return node;
     };
-    for (int root = 0; root < n; ++root) {
-      if (seen[root]) continue;
+    rep(root, n) if (!seen[root]) {
       a.clear();
       dfs(dfs, root, -1);
       rec(rec, 0, (int)a.size());
     }
   }
   void link(int u, int v) {
-    reroot(u);
-    reroot(v);
+    reroot(u); reroot(v);
     NodePtr uv_node = new Node(e(), id());
     NodePtr vu_node = new Node(e(), id());
     ptr_edge[(long long)u*n+v] = uv_node;
@@ -195,8 +188,7 @@ public:
     --group_numbers;
   }
   void cut(int u, int v) {
-    reroot(v);
-    reroot(u);
+    reroot(v); reroot(u);
     NodePtr uv_node = ptr_edge[(long long)u*n+v];
     NodePtr vu_node = ptr_edge[(long long)v*n+u];
     ptr_edge.erase((long long)u*n+v);
@@ -260,10 +252,7 @@ public:
   T subtree_sum(int v, int p) {
     NodePtr v_node = ptr_vertex[v];
     reroot(v);
-    if (p == -1) {
-      _splay(v_node);
-      return v_node->data;
-    }
+    if (p == -1) { _splay(v_node); return v_node->data; }
     reroot(p);
     NodePtr a, b, d;
     tie(a, b) = _split_right(ptr_edge[(long long)p*n+v]);

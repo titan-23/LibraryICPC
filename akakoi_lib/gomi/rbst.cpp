@@ -1,44 +1,32 @@
-#include <iostream>
-#include <stack>
-#include "titan_cpplib/algorithm/random.cpp"
-#include "titan_cpplib/data_structures/fast_stack.cpp"
-using namespace std;
-
 template <class T, T (*op)(T, T), T (*e)(),
      class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 class LazyRBST {
   class Node;
   using NodePtr = Node*;
   using RBST = LazyRBST<T, op, e, F, mapping, composition, id>;
+  Random trnd;
+  FastStack<NodePtr> left_path, right_path, path;
   NodePtr root;
-  static titan23::Random trnd;
-  static titan23::FastStack<NodePtr> left_path, right_path, path;
   struct Node {
     NodePtr left, right;
     T key, data;
     F lazy;
-    bool rev, has_lazy;
+    bool rev;
     int size;
-    Node(T key, F lazy) : left(nullptr), right(nullptr), key(key), data(key), lazy(lazy), rev(false), has_lazy(false), size(1) {}
+    Node(T key, F lazy) : left(nullptr), right(nullptr), key(key), data(key), lazy(lazy), rev(false), size(1) {}
     void update() {
-      size = 1;
-      data = key;
+      size = 1; data = key;
       if (left) {
-        size += left->size;
-        data = op(left->data, data);
+        size += left->size; data = op(left->data, data);
       }
       if (right) {
-        size += right->size;
-        data = op(data, right->data);
+        size += right->size; data = op(data, right->data);
       }
     }
     void push(F f) {
       key = mapping(f, key);
       data = mapping(f, data);
-      if (left || right) {
-        lazy = composition(f, lazy);
-        has_lazy = true;
-      }
+      if (left || right) lazy = composition(f, lazy);
     }
     void propagate() {
       if (rev) {
@@ -47,12 +35,9 @@ class LazyRBST {
         if (right) right->rev ^= 1;
         rev = 0;
       }
-      if (has_lazy) {
-        if (left) { left->push(lazy); }
-        if (right) { right->push(lazy); }
-        lazy = id();
-        has_lazy = false;
-      }
+      if (left) left->push(lazy);
+      if (right) right->push(lazy);
+      lazy = id();
     }
   };
   void _build(vector<T> const &a) {

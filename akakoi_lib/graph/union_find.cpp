@@ -7,8 +7,7 @@ struct UnionFind {
     return par[x] = root(par[x]);
   }
   bool unite(int x, int y) {
-    x = root(x);
-    y = root(y);
+    x = root(x); y = root(y);
     if (x == y) return false;
     if (par[x] > par[y]) swap(x, y);
     par[x] += par[y];
