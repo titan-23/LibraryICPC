@@ -60,9 +60,9 @@ public:
     }
     rep(i, log) seg[i] = Segtree<Mono, op, e>(ws[i]);
   }
-  void update_point(T x, T y, Mono val) {
-    int k = lower_bound(xy.begin(), xy.end(), make_pair(x, y)) - xy.begin();
-    int i_y = lower_bound(y.begin(), y.end(), y) - y.begin();
+  void update_point(T x1, T y1, Mono val) {
+    int k = lower_bound(xy.begin(), xy.end(), make_pair(x1, y1)) - xy.begin();
+    int i_y = lower_bound(y.begin(), y.end(), y1) - y.begin();
     for (int bit = log - 1; bit >= 0; --bit) {
       if (i_y >> bit & 1) {
         k = v[bit].rank1(k) + mid[bit];
