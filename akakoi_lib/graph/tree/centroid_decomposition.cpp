@@ -1,60 +1,47 @@
-struct CentroidDecomposition {
-private:
-  int C;
-  vector<vector<int>> G, T;
-  vector<int> sub;
-  vector<bool> banned;
-  int dfs(int v, int p) {
-    sub[v] = 1;
-    for (int x : G[v]) {
-      if (x == p || banned[x]) continue;
-      sub[v] += dfs(x, v);
+/**
+ * @brief 重心分解
+ * @param seen 探索済みフラグ
+ * @param sz 各頂点の部分木のサイズ
+ *
+ * ```cpp
+ * vector<int> sz(N);
+ * vector<bool> seen(N);
+ * auto centroid_decomposition = [&](auto self, int root) -> void {
+ *     int centroid = TreeCentroid(g, root, seen, sz);
+ *     seen[centroid] = true;
+ *
+ *     // ここに処理を書く
+ *
+ *     for (int nxt : g[centroid]) {
+ *         if (seen[nxt]) continue;
+ *         self(self, nxt);
+ *     }
+ * };
+ * centroid_decomposition(centroid_decomposition, 0);
+ * ```
+ */
+int TreeCentroid(const vector<vector<int>>& g, int root, vector<int>& seen, vector<int>& sz) {
+  int n = g.size();
+  if (sz.empty()) sz = vector<int>(n);
+  if (seen.empty()) seen = vector<int>(n, false);
+  auto dfs = [&](auto dfs, int now, int pre) -> int {
+    sz[now] = 1;
+    for (int nxt : g[now]) {
+      if (nxt == pre || seen[nxt]) continue;
+      sz[now] += dfs(dfs, nxt, now);
     }
-    return sub[v];
-  }
-  int find_centroid(int v, int p, int mid) {
-    for (int x : G[v]) {
-      if (x == p || banned[x]) continue;
-      if (sub[x] > mid) return find_centroid(x, v, mid);
+    return sz[now];
+  };
+  int total = dfs(dfs, root, -1), centroid = root;
+  auto dfs2 = [&](auto dfs2, int now, int pre) -> void {
+    bool ok = (total - sz[now]) * 2 <= total;
+    for (int nxt : g[now]) {
+      if (nxt == pre || seen[nxt]) continue;
+      dfs2(dfs2, nxt, now);
+      if (sz[nxt] * 2 > total) ok = false;
     }
-    return v;
-  }
-  int build(int v) {
-    int total = dfs(v, -1);
-    int c = find_centroid(v, -1, total/2);
-    banned[c] = true;
-    for (int x : G[c]) if (!banned[x]) {
-      int w = build(x);
-      T[c].push_back(w);
-      T[w].push_back(c);
-    }
-    return c;
-  }
-  template <typename F>
-  void inner_solve(int v, int p, F& func) {
-    func(v, banned);
-    banned[v] = true;
-    for (int x : T[v]) if (x != p) {
-      inner_solve(x, v, func);
-    }
-  }
-public:
-  CentroidDecomposition(vector<vector<int>> G) : G(G) {
-    int n = G.size();
-    T.resize(n);
-    sub.resize(n);
-    banned.resize(n, false);
-    banned.resize(n, false);
-    C = build(0);
-  }
-  pair<int, vector<vector<int>>> get_result() {return {C, T}; }
-  // vをまたぐパスについて考える vのみ / vを端点 / vを端点としない などの場合分け
-  // パスの重複に注意 / 元の木と重心分解の木の混同に注意
-  // bannedを見てはいけない
-  // cd.solve([&] (int v, const vector<bool>& banned) {});
-  template <typename F>
-  void solve(F func) {
-    fill(banned.begin(), banned.end(), false);
-    inner_solve(C, -1, func);
-  }
-};
+    if (ok) centroid = now;
+  };
+  dfs2(dfs2, root, -1);
+  return centroid;
+}
