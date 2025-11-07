@@ -1,19 +1,15 @@
-template <class T, T (*op)(T, T), T (*e)(),
-    class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
+template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 class EulerTourTree {
 private:
   struct Node;
   using NodePtr = Node*;
   int n, group_numbers;
   vector<NodePtr> ptr_vertex;
-  unordered_map<long long, NodePtr> ptr_edge;
+  unordered_map<ll, NodePtr> ptr_edge;
   struct Node {
-    T key, data;
-    F lazy;
-    NodePtr par, left, right;
+    T key, data; F lazy; NodePtr par, left, right;
     Node() {}
-    Node(T key, F lazy) : key(key), data(key), lazy(lazy),
-      par(nullptr), left(nullptr), right(nullptr) {}
+    Node(T key, F lazy) : key(key), data(key), lazy(lazy), par(nullptr), left(nullptr), right(nullptr) {}
   };
   void _init_build(vector<T> &a) {
     ptr_vertex.resize(n);
@@ -49,21 +45,16 @@ private:
     if ((!u) || (!v)) return;
     u = _right_splay(u);
     _splay(v);
-    u->right = v;
-    v->par = u;
+    u->right = v; v->par = u;
     _update(u);
   }
   void _rotate(const NodePtr node) {
     const NodePtr pnode = node->par;
     const NodePtr gnode = pnode->par;
-    _propagate(pnode);
-    _propagate(node);
+    _propagate(pnode); _propagate(node);
     if (gnode) {
-      if (gnode->left == pnode) {
-        gnode->left = node;
-      } else if (gnode->right == pnode) {
-        gnode->right = node;
-      }
+      if (gnode->left == pnode) gnode->left = node;
+      else if (gnode->right == pnode) gnode->right = node;
     }
     node->par = gnode;
     if (pnode->left == node) {
@@ -76,21 +67,15 @@ private:
       node->left = pnode;
     }
     pnode->par = node;
-    _update(pnode);
-    _update(node);
+    _update(pnode); _update(node);
   }
   void _splay(NodePtr node) {
     _propagate(node);
     while (node->par && node->par->par) {
       NodePtr pnode = node->par, gnode = pnode->par;
-      _propagate(gnode);
-      _propagate(pnode);
-      _propagate(node);
-      if ((node->par->par->left == node->par) == (node->par->left == node)) {
-        _rotate(node->par);
-      } else {
-        _rotate(node);
-      }
+      _propagate(gnode); _propagate(pnode); _propagate(node);
+      if ((node->par->par->left == node->par) == (node->par->left == node)) _rotate(node->par);
+      else _rotate(node);
       _rotate(node);
     }
     if (node->par) _rotate(node);
@@ -99,14 +84,12 @@ private:
   NodePtr _left_splay(NodePtr node) {
     _splay(node);
     while (node->left) node = node->left;
-    _splay(node);
-    return node;
+    _splay(node); return node;
   }
   NodePtr _right_splay(NodePtr node) {
     _splay(node);
     while (node->right) node = node->right;
-    _splay(node);
-    return node;
+    _splay(node); return node;
   }
   void _push(NodePtr node, F f) {
     if (!node) return;
@@ -129,21 +112,19 @@ private:
   }
 public:
   EulerTourTree(int n) : n(n), group_numbers(n) {
-    vector<T> a(n, e());
-    _init_build(a);
+    vector<T> a(n, e()); _init_build(a);
   }
   EulerTourTree(vector<T> a) : n(a.size()), group_numbers(a.size()) { _init_build(a); }
   void build(vector<vector<int>> &G) {
     vector<int> seen(n, 0);
-    vector<long long> a;
+    vector<ll> a;
     vector<NodePtr> pool;
     auto dfs = [&] (auto &&dfs, int v, int p) -> void {
-      a.emplace_back((long long)v*n+v);
-      for (const int &x: G[v]) {
-        if (x == p) continue;
-        a.emplace_back((long long)v*n+x);
+      a.emplace_back((ll)v*n+v);
+      for (const int &x: G[v]) if (x != p) {
+        a.emplace_back((ll)v*n+x);
         dfs(dfs, x, v);
-        a.emplace_back((long long)x*n+v);
+        a.emplace_back((ll)x*n+v);
       }
     };
     auto rec = [&] (auto &&rec, int l, int r) -> NodePtr {
@@ -151,8 +132,7 @@ public:
       int u = a[mid]/n, v = a[mid]%n;
       NodePtr node;
       if (u == v) {
-        node = ptr_vertex[u];
-        seen[u] = 1;
+        node = ptr_vertex[u]; seen[u] = 1;
       } else {
         node = new Node(e(), id());
         ptr_edge[a[mid]] = node;
@@ -165,8 +145,7 @@ public:
         node->right = rec(rec, mid+1, r);
         node->right->par = node;
       }
-      _update(node);
-      return node;
+      _update(node); return node;
     };
     rep(root, n) if (!seen[root]) {
       a.clear();
@@ -176,12 +155,10 @@ public:
   }
   void link(int u, int v) {
     reroot(u); reroot(v);
-    NodePtr uv_node = new Node(e(), id());
-    NodePtr vu_node = new Node(e(), id());
-    ptr_edge[(long long)u*n+v] = uv_node;
-    ptr_edge[(long long)v*n+u] = vu_node;
-    NodePtr u_node = ptr_vertex[u];
-    NodePtr v_node = ptr_vertex[v];
+    NodePtr uv_node = new Node(e(), id()), vu_node = new Node(e(), id());
+    ptr_edge[(ll)u*n+v] = uv_node;
+    ptr_edge[(ll)v*n+u] = vu_node;
+    NodePtr u_node = ptr_vertex[u], v_node = ptr_vertex[v];
     _merge(u_node, uv_node);
     _merge(uv_node, v_node);
     _merge(v_node, vu_node);
@@ -189,10 +166,10 @@ public:
   }
   void cut(int u, int v) {
     reroot(v); reroot(u);
-    NodePtr uv_node = ptr_edge[(long long)u*n+v];
-    NodePtr vu_node = ptr_edge[(long long)v*n+u];
-    ptr_edge.erase((long long)u*n+v);
-    ptr_edge.erase((long long)v*n+u);
+    NodePtr uv_node = ptr_edge[(ll)u*n+v];
+    NodePtr vu_node = ptr_edge[(ll)v*n+u];
+    ptr_edge.erase((ll)u*n+v);
+    ptr_edge.erase((ll)v*n+u);
     NodePtr a, c, _;
     tie(a, _) = _split_left(uv_node);
     tie(_, c) = _split_right(vu_node);
@@ -207,9 +184,7 @@ public:
     return true;
   }
   bool split(int u, int v) {
-    if (ptr_edge.find((long long)u*n+v) == ptr_edge.end() || ptr_edge.find((long long)v*n+u) == ptr_edge.end()) {
-      return false;
-    }
+    if (ptr_edge.find((ll)u*n+v) == ptr_edge.end() || ptr_edge.find((ll)v*n+u) == ptr_edge.end()) return false;
     cut(u, v);
     return true;
   }
@@ -217,14 +192,12 @@ public:
   void reroot(int v) {
     NodePtr node = ptr_vertex[v];
     auto[x, y] = _split_right(node);
-    _merge(y, x);
-    _splay(node);
+    _merge(y, x); _splay(node);
   }
   bool same(int u, int v) {
     NodePtr u_node = ptr_vertex[u];
     NodePtr v_node = ptr_vertex[v];
-    _splay(u_node);
-    _splay(v_node);
+    _splay(u_node); _splay(v_node);
     return (u_node->par != nullptr || u_node == v_node);
   }
   void subtree_apply(int v, int p, F f) {
@@ -232,22 +205,17 @@ public:
     reroot(v);
     if (p == -1) {
       _splay(v_node);
-      v_node->key = mapping(f, v_node->key);
-      v_node->data = mapping(f, v_node->data);
-      v_node->lazy = composition(f, v_node->lazy);
+      _push(v_node, f);
       return;
     }
     reroot(p);
     NodePtr a, b, d;
-    tie(a, b) = _split_right(ptr_edge[(long long)p*n+v]);
-    tie(b, d) = _split_left(ptr_edge[(long long)v*n+p]);
+    tie(a, b) = _split_right(ptr_edge[(ll)p*n+v]);
+    tie(b, d) = _split_left(ptr_edge[(ll)v*n+p]);
     _splay(v_node);
-    v_node->key = mapping(f, v_node->key);
-    v_node->data = mapping(f, v_node->data);
-    v_node->lazy = composition(f, v_node->lazy);
+    _push(v_node, f);
     _propagate(v_node);
-    _merge(a, b);
-    _merge(b, d);
+    _merge(a, b); _merge(b, d);
   }
   T subtree_sum(int v, int p) {
     NodePtr v_node = ptr_vertex[v];
@@ -255,19 +223,17 @@ public:
     if (p == -1) { _splay(v_node); return v_node->data; }
     reroot(p);
     NodePtr a, b, d;
-    tie(a, b) = _split_right(ptr_edge[(long long)p*n+v]);
-    tie(b, d) = _split_left(ptr_edge[(long long)v*n+p]);
+    tie(a, b) = _split_right(ptr_edge[(ll)p*n+v]);
+    tie(b, d) = _split_left(ptr_edge[(ll)v*n+p]);
     _splay(v_node);
     T res = v_node->data;
-    _merge(a, b);
-    _merge(b, d);
+    _merge(a, b); _merge(b, d);
     return res;
   }
   int group_count() { return group_numbers; }
   T get_vertex(int v) {
     NodePtr node = ptr_vertex[v];
-    _splay(node);
-    return node->key;
+    _splay(node); return node->key;
   }
   void set_vertex(int v, T val) {
     NodePtr node = ptr_vertex[v];

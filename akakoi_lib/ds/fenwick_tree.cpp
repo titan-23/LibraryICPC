@@ -21,10 +21,7 @@ struct BIT {
   int bisect_left(ll w) {
     int i = 0, s = 1<<(32-__builtin_clz(n));
     while (s) {
-      if (i+s <= n && d[i+s] < w) {
-        w -= d[i+s];
-        i += s;
-      }
+      if (i+s <= n && d[i+s] < w) { w -= d[i+s]; i += s; }
       s >>= 1;
     }
     return (w ? i : -1);
@@ -32,10 +29,7 @@ struct BIT {
   int bisect_right(ll w) {
     int i = 0, s = 1<<(32-__builtin_clz(n));
     while (s) {
-      if (i+s <= n && d[i+s] <= w) {
-        w -= d[i+s];
-        i += s;
-      }
+      if (i+s <= n && d[i+s] <= w) { w -= d[i+s]; i += s; }
       s >>= 1;
     }
     return i;

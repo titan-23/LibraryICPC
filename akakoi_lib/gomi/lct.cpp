@@ -1,5 +1,4 @@
-template <class T, T (*op)(T, T), T (*e)(),
-    class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
+template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 struct LazyLinkCutTree {
 private:
   struct Node;
@@ -7,29 +6,27 @@ private:
   vector<NP> pool;
   struct Node {
     int idx, size, rev;
-    T key, data, rdata;
-    F lazy;
+    T key, data, rdata; F lazy;
     NP left, right, par;
-    Node(const int idx, const T key, const F lazy) :
+    Node(int idx, T key, F lazy) :
         idx(idx), size(1), rev(0),
-        key(key), data(key), rdata(key),
-        lazy(lazy),
+        key(key), data(key), rdata(key), lazy(lazy),
         left(nullptr), right(nullptr), par(nullptr) {
     }
     bool is_root() const { return (!par) || (!(par->left == this || par->right == this)); }
   };
-  void _apply_rev(const NP node) {
+  void _apply_rev(NP node) {
     if (!node) return;
     node->rev ^= 1;
   }
-  void _apply_f(const NP node, const F f) {
+  void _apply_f(NP node, F f) {
     if (!node) return;
     node->key = mapping(f, node->key);
     node->data = mapping(f, node->data);
     node->rdata = mapping(f, node->rdata);
     node->lazy = composition(f, node->lazy);
   }
-  void _propagate(const NP node) {
+  void _propagate(NP node) {
     if (!node) return;
     if (node->rev) {
       swap(node->data, node->rdata);
@@ -44,7 +41,7 @@ private:
       node->lazy = id();
     }
   }
-  void _update(const NP node) {
+  void _update(NP node) {
     if (!node) return;
     _propagate(node->left);
     _propagate(node->right);
@@ -62,17 +59,13 @@ private:
       node->size += node->right->size;
     }
   }
-  void _rotate(const NP node) {
-    const NP pnode = node->par;
-    const NP gnode = pnode->par;
-    _propagate(pnode);
-    _propagate(node);
+  void _rotate(NP node) {
+    NP pnode = node->par;
+    NP gnode = pnode->par;
+    _propagate(pnode); _propagate(node);
     if (gnode) {
-      if (gnode->left == pnode) {
-        gnode->left = node;
-      } else if (gnode->right == pnode) {
-        gnode->right = node;
-      }
+      if (gnode->left == pnode) gnode->left = node;
+      else if (gnode->right == pnode) gnode->right = node;
     }
     node->par = gnode;
     if (pnode->left == node) {
@@ -88,29 +81,23 @@ private:
     _update(pnode);
     _update(node);
   }
-  void _splay(const NP node) {
+  void _splay(NP node) {
     while ((!node->is_root()) && (!node->par->is_root())) {
-      _propagate(node->par->par);
-      _propagate(node->par);
+      _propagate(node->par->par); _propagate(node->par);
       _propagate(node);
-      if ((node->par->par->left == node->par) == (node->par->left == node)) {
-        _rotate(node->par);
-      } else {
-        _rotate(node);
-      }
+      if ((node->par->par->left == node->par) == (node->par->left == node)) _rotate(node->par);
+      else _rotate(node);
       _rotate(node);
     }
     if (!node->is_root()) _rotate(node);
     _propagate(node);
   }
-  void _link(const NP c, const NP p) {
-    _expose(c);
-    _expose(p);
-    c->par = p;
-    p->right = c;
+  void _link(NP c, NP p) {
+    _expose(c); _expose(p);
+    c->par = p; p->right = c;
     _update(p);
   }
-  void _cut(const NP c) {
+  void _cut(NP c) {
     _expose(c);
     c->left->par = nullptr;
     c->left = nullptr;
@@ -143,14 +130,10 @@ private:
     return v;
   }
   void _evert(NP v) {
-    _expose(v);
-    _apply_rev(v);
-    _propagate(v);
+    _expose(v); _apply_rev(v); _propagate(v);
   }
 public:
-  LazyLinkCutTree(int n) : pool(n) {
-    rep(i, n) pool[i] = new Node(i, e(), id());
-  }
+  LazyLinkCutTree(int n) : pool(n) { rep(i, n) pool[i] = new Node(i, e(), id()); }
   int expose(int v) { return _expose(pool[v])->idx; }
   int lca(int u, int v, int root=-1) {
     if (root != -1) evert(root);
@@ -164,8 +147,7 @@ public:
   void evert(int v) { _evert(pool[v]); }
   T path_prod(int u, int v) { evert(u); expose(v); return pool[v]->data; }
   void path_apply(int u, int v, F f) {
-    evert(u); expose(v);
-    _apply_f(pool[v], f);
+    evert(u); expose(v); _apply_f(pool[v], f);
     _propagate(pool[v]);
   }
   bool merge(int u, int v) {
@@ -193,10 +175,7 @@ public:
     while (1) {
       _propagate(node);
       t = node->left ? node->left->size: 0;
-      if (t == k) {
-        _splay(node);
-        return node->idx;
-      }
+      if (t == k) { _splay(node); return node->idx; }
       if (t > k) {
         node = node->left;
       } else {

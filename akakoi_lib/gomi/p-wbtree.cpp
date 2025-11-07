@@ -1,12 +1,11 @@
-template <class SizeType, class T, T (*op)(T, T), T (*e)(),
-    class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
+template <class U, class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 class PersistentLazyWBTree {
 public:
   struct MemoeyAllocator {
     struct Node {
-      SizeType left, right, size;
+      U left, right, size;
       Node() : left(0), right(0), size(0) {}
-      Node(SizeType l, SizeType r, SizeType s) : left(l), right(r), size(s) {}
+      Node(U l, U r, U s) : left(l), right(r), size(s) {}
     };
     struct Data {
       T key, data; F lazy; int8_t rev;
@@ -15,19 +14,19 @@ public:
     };
     vector<Node> ch;
     vector<Data> dat;
-    size_t ptr;
+    int ptr;
     MemoeyAllocator() : ptr(1) {
       ch.emplace_back(0, 0, 0);
       dat.emplace_back(T{}, T{}, F{}, 0);
     }
-    SizeType copy(SizeType node) {
-      SizeType idx = new_node(dat[node].key, dat[node].lazy);
+    U copy(U node) {
+      U idx = new_node(dat[node].key, dat[node].lazy);
       ch[idx] = {ch[node].left, ch[node].right, ch[node].size};
       dat[idx].data = dat[node].data;
       dat[idx].rev = dat[node].rev;
       return idx;
     }
-    SizeType new_node(const T key, const F f) {
+    U new_node(T key, F f) {
       if (ch.size() > ptr) {
         ch[ptr] = {0, 0, 1};
         dat[ptr] = {key, key, f, 0};
@@ -38,143 +37,136 @@ public:
       ptr++;
       return ptr - 1;
     }
-    void reserve(SizeType n) {
-      ch.reserve(n); dat.reserve(n);
-    }
+    void reserve(U n) { ch.reserve(n); dat.reserve(n); }
     void reset() { ptr = 1; }
   };
-  static MemoeyAllocator ma;
+  static MemoeyAllocator M;
 private:
-  using PLTM = PersistentLazyWBTree<SizeType, T, F, op, mapping, composition, e, id>;
+  using PLTM = PersistentLazyWBTree<U, T, F, op, mapping, composition, e, id>;
   static constexpr int DELTA = 3, GAMMA = 2;
-  SizeType root;
-  inline SizeType weight_right(SizeType node) const { return ma.ch[ma.ch[node].right].size + 1; }
-  inline SizeType weight_left(SizeType node) const { return ma.ch[ma.ch[node].left].size + 1; }
-  inline SizeType weight(SizeType node) const { return ma.ch[node].size + 1; }
-  void update(SizeType node) {
-    ma.ch[node].size = 1 + ma.ch[ma.ch[node].left].size + ma.ch[ma.ch[node].right].size;
-    ma.dat[node].data = ma.dat[node].key;
-    if (ma.ch[node].left) ma.dat[node].data = op(ma.dat[ma.ch[node].left].data, ma.dat[node].key);
-    if (ma.ch[node].right) ma.dat[node].data = op(ma.dat[node].data, ma.dat[ma.ch[node].right].data);
+  U root;
+  inline U weight_right(U node) const { return M.ch[M.ch[node].right].size + 1; }
+  inline U weight_left(U node) const { return M.ch[M.ch[node].left].size + 1; }
+  inline U weight(U node) const { return M.ch[node].size + 1; }
+  void update(U node) {
+    M.ch[node].size = 1 + M.ch[M.ch[node].left].size + M.ch[M.ch[node].right].size;
+    M.dat[node].data = M.dat[node].key;
+    if (M.ch[node].left) M.dat[node].data = op(M.dat[M.ch[node].left].data, M.dat[node].key);
+    if (M.ch[node].right) M.dat[node].data = op(M.dat[node].data, M.dat[M.ch[node].right].data);
   }
-  void push(SizeType node, F f) {
-    ma.dat[node].key = mapping(f, ma.dat[node].key);
-    ma.dat[node].data = mapping(f, ma.dat[node].data);
-    ma.dat[node].lazy = composition(f, ma.dat[node].lazy);
+  void push(U node, F f) {
+    M.dat[node].key = mapping(f, M.dat[node].key);
+    M.dat[node].data = mapping(f, M.dat[node].data);
+    M.dat[node].lazy = composition(f, M.dat[node].lazy);
   }
-  void propagate(SizeType node) {
-    if (ma.dat[node].rev) {
-      SizeType l = ma.ch[node].left ? ma.copy(ma.ch[node].left) : 0;
-      SizeType r = ma.ch[node].right ? ma.copy(ma.ch[node].right) : 0;
-      ma.ch[node].left = r;
-      ma.ch[node].right = l;
-      if (ma.ch[node].left) ma.dat[ma.ch[node].left].rev ^= 1;
-      if (ma.ch[node].right) ma.dat[ma.ch[node].right].rev ^= 1;
-      ma.dat[node].rev = 0;
+  void propagate(U node) {
+    if (M.dat[node].rev) {
+      U l = M.ch[node].left ? M.copy(M.ch[node].left) : 0;
+      U r = M.ch[node].right ? M.copy(M.ch[node].right) : 0;
+      M.ch[node].left = r;
+      M.ch[node].right = l;
+      if (M.ch[node].left) M.dat[M.ch[node].left].rev ^= 1;
+      if (M.ch[node].right) M.dat[M.ch[node].right].rev ^= 1;
+      M.dat[node].rev = 0;
     }
-    if (ma.dat[node].lazy != id()) {
-      if (ma.ch[node].left) {
-        ma.ch[node].left = ma.copy(ma.ch[node].left);
-        push(ma.ch[node].left, ma.dat[node].lazy);
+    if (M.dat[node].lazy != id()) {
+      if (M.ch[node].left) {
+        M.ch[node].left = M.copy(M.ch[node].left);
+        push(M.ch[node].left, M.dat[node].lazy);
       }
-      if (ma.ch[node].right) {
-        ma.ch[node].right = ma.copy(ma.ch[node].right);
-        push(ma.ch[node].right, ma.dat[node].lazy);
+      if (M.ch[node].right) {
+        M.ch[node].right = M.copy(M.ch[node].right);
+        push(M.ch[node].right, M.dat[node].lazy);
       }
-      ma.dat[node].lazy = id();
+      M.dat[node].lazy = id();
     }
   }
-  void balance_check(SizeType node) const {
+  void balance_check(U node) const {
     if (!(weight_left(node)*DELTA >= weight_right(node))) assert(false);
     if (!(weight_right(node) * DELTA >= weight_left(node))) assert(false);
   }
   void _build(vector<T> const &a) {
-    auto build = [&] (auto &&build, SizeType l, SizeType r) -> SizeType {
-      SizeType mid = (l + r) >> 1;
-      SizeType node = ma.new_node(a[mid], id());
-      if (l != mid) ma.ch[node].left = build(build, l, mid);
-      if (mid+1 != r) ma.ch[node].right = build(build, mid+1, r);
+    auto dfs = [&] (auto &&dfs, U l, U r) -> U {
+      U mid = (l + r) >> 1;
+      U node = M.new_node(a[mid], id());
+      if (l != mid) M.ch[node].left = dfs(dfs, l, mid);
+      if (mid+1 != r) M.ch[node].right = dfs(dfs, mid+1, r);
       update(node);
       return node;
     };
-    if (a.empty()) {
-      root = 0; return;
-    }
-    root = build(build, 0, (SizeType)a.size());
+    if (a.empty()) { root = 0; return; }
+    root = dfs(dfs, 0, (U)a.size());
   }
-  SizeType _rotate_right(SizeType node) {
-    SizeType u = ma.copy(ma.ch[node].left);
-    ma.ch[node].left = ma.ch[u].right;
-    ma.ch[u].right = node;
-    update(node);
-    update(u);
+  U _rotate_right(U node) {
+    U u = M.copy(M.ch[node].left);
+    M.ch[node].left = M.ch[u].right;
+    M.ch[u].right = node;
+    update(node); update(u);
     return u;
   }
-  SizeType _rotate_left(SizeType node) {
-    SizeType u = ma.copy(ma.ch[node].right);
-    ma.ch[node].right = ma.ch[u].left;
-    ma.ch[u].left = node;
-    update(node);
-    update(u);
+  U _rotate_left(U node) {
+    U u = M.copy(M.ch[node].right);
+    M.ch[node].right = M.ch[u].left;
+    M.ch[u].left = node;
+    update(node); update(u);
     return u;
   }
-  SizeType _balance_left(SizeType node) {
-    propagate(ma.ch[node].right);
-    SizeType u = ma.ch[node].right;
-    if (weight_left(ma.ch[node].right) >= weight_right(ma.ch[node].right) * GAMMA) {
-      propagate(ma.ch[u].left);
-      ma.ch[node].right = _rotate_right(u);
+  U _balance_left(U node) {
+    propagate(M.ch[node].right);
+    U u = M.ch[node].right;
+    if (weight_left(M.ch[node].right) >= weight_right(M.ch[node].right) * GAMMA) {
+      propagate(M.ch[u].left);
+      M.ch[node].right = _rotate_right(u);
     }
     u = _rotate_left(node);
     return u;
   }
-  SizeType _balance_right(SizeType node) {
-    propagate(ma.ch[node].left);
-    SizeType u = ma.ch[node].left;
-    if (weight_right(ma.ch[node].left) >= weight_left(ma.ch[node].left) * GAMMA) {
-      propagate(ma.ch[u].right);
-      ma.ch[node].left = _rotate_left(u);
+  U _balance_right(U node) {
+    propagate(M.ch[node].left);
+    U u = M.ch[node].left;
+    if (weight_right(M.ch[node].left) >= weight_left(M.ch[node].left) * GAMMA) {
+      propagate(M.ch[u].right);
+      M.ch[node].left = _rotate_left(u);
     }
     u = _rotate_right(node);
     return u;
   }
-  SizeType _merge_with_root(SizeType l, SizeType root, SizeType r) {
+  U _merge_with_root(U l, U root, U r) {
     if (weight(r) * DELTA < weight(l)) {
       propagate(l);
-      l = ma.copy(l);
-      ma.ch[l].right = _merge_with_root(ma.ch[l].right, root, r);
+      l = M.copy(l);
+      M.ch[l].right = _merge_with_root(M.ch[l].right, root, r);
       update(l);
-      if (weight(ma.ch[l].left) * DELTA < weight(ma.ch[l].right)) return _balance_left(l);
+      if (weight(M.ch[l].left) * DELTA < weight(M.ch[l].right)) return _balance_left(l);
       return l;
     } else if (weight(l) * DELTA < weight(r)) {
       propagate(r);
-      r = ma.copy(r);
-      ma.ch[r].left = _merge_with_root(l, root, ma.ch[r].left);
+      r = M.copy(r);
+      M.ch[r].left = _merge_with_root(l, root, M.ch[r].left);
       update(r);
-      if (weight(ma.ch[r].right) * DELTA < weight(ma.ch[r].left)) return _balance_right(r);
+      if (weight(M.ch[r].right) * DELTA < weight(M.ch[r].left)) return _balance_right(r);
       return r;
     }
-    root = ma.copy(root);
-    ma.ch[root].left = l;
-    ma.ch[root].right = r;
+    root = M.copy(root);
+    M.ch[root].left = l;
+    M.ch[root].right = r;
     update(root);
     return root;
   }
-  pair<SizeType, SizeType> _pop_right(SizeType node) { return _split_node(node, ma.ch[node].size-1); }
-  SizeType _merge_node(SizeType l, SizeType r) {
+  pair<U, U> _pop_right(U node) { return _split_node(node, M.ch[node].size-1); }
+  U _merge_node(U l, U r) {
     if ((!l) && (!r)) { return 0; }
-    if (!l) return ma.copy(r);
-    if (!r) return ma.copy(l);
-    l = ma.copy(l);
-    r = ma.copy(r);
+    if (!l) return M.copy(r);
+    if (!r) return M.copy(l);
+    l = M.copy(l); r = M.copy(r);
     auto [l_, root_] = _pop_right(l);
     return _merge_with_root(l_, root_, r);
   }
-  pair<SizeType, SizeType> _split_node(SizeType node, SizeType k) {
+  pair<U, U> _split_node(U node, U k) {
     if (!node) { return {0, 0}; }
     propagate(node);
-    SizeType lch = ma.ch[node].left, rch = ma.ch[node].right;
-    SizeType tmp = lch ? k-ma.ch[lch].size : k;
+    U lch = M.ch[node].left, rch = M.ch[node].right;
+    U tmp = lch ? k-M.ch[lch].size : k;
     if (tmp == 0) {
       return {lch, _merge_with_root(0, node, rch)};
     } else if (tmp < 0) {
@@ -185,157 +177,145 @@ private:
       return {_merge_with_root(lch, node, l), r};
     }
   }
-  PLTM _new(SizeType root) { return PLTM(root); }
-  PersistentLazyWBTree(SizeType root) : root(root) {}
+  PLTM _new(U root) { return PLTM(root); }
+  PersistentLazyWBTree(U root) : root(root) {}
  public:
   PersistentLazyWBTree() : root(0) {}
   PersistentLazyWBTree(vector<T> &a) { _build(a); }
   PLTM merge(PLTM other) {
-    SizeType root = _merge_node(this->root, other.root);
+    U root = _merge_node(this->root, other.root);
     return _new(root);
   }
-  pair<PLTM, PLTM> split(SizeType k) {
+  pair<PLTM, PLTM> split(U k) {
     auto [l, r] = _split_node(this->root, k);
     return {_new(l), _new(r)};
   }
-  PLTM apply(SizeType l, SizeType r, F f) {
-    assert(0 <= l && l <= r && r <= len());
-    if (l == r) return _new(ma.copy(root));
-    auto dfs = [&] (auto &&dfs, SizeType node, SizeType left, SizeType right) -> SizeType {
+  PLTM apply(U l, U r, F f) {
+    if (l == r) return _new(M.copy(root));
+    auto dfs = [&] (auto &&dfs, U node, U left, U right) -> U {
       if (right <= l || r <= left) return node;
       propagate(node);
-      SizeType nnode = ma.copy(node);
-      if (l <= left && right < r) {
-        push(nnode, f);
-        return nnode;
-      }
-      SizeType lsize = ma.ch[ma.ch[nnode].left].size;
-      if (ma.ch[nnode].left) ma.ch[nnode].left = dfs(dfs, ma.ch[nnode].left, left, left+lsize);
-      if (l <= left+lsize && left+lsize < r) ma.dat[nnode].key = mapping(f, ma.dat[nnode].key);
-      if (ma.ch[nnode].right) ma.ch[nnode].right = dfs(dfs, ma.ch[nnode].right, left+lsize+1, right);
+      U nnode = M.copy(node);
+      if (l <= left && right < r) { push(nnode, f); return nnode; }
+      U lsize = M.ch[M.ch[nnode].left].size;
+      if (M.ch[nnode].left) M.ch[nnode].left = dfs(dfs, M.ch[nnode].left, left, left+lsize);
+      if (l <= left+lsize && left+lsize < r) M.dat[nnode].key = mapping(f, M.dat[nnode].key);
+      if (M.ch[nnode].right) M.ch[nnode].right = dfs(dfs, M.ch[nnode].right, left+lsize+1, right);
       update(nnode);
       return nnode;
     };
     return _new(dfs(dfs, root, 0, len()));
   }
-  T prod(SizeType l, SizeType r) {
-    assert(0 <= l && l <= r && r <= len());
+  T prod(U l, U r) {
     if (l == r) return e();
-    auto dfs = [&] (auto &&dfs, SizeType node, SizeType left, SizeType right) -> T {
+    auto dfs = [&] (auto &&dfs, U node, U left, U right) -> T {
       if (right <= l || r <= left) return e();
-      if (l <= left && right < r) return ma.dat[node].data;
+      if (l <= left && right < r) return M.dat[node].data;
       propagate(node);
-      SizeType lsize = ma.ch[ma.ch[node].left].size;
+      U lsize = M.ch[M.ch[node].left].size;
       T res = e();
-      if (ma.ch[node].left) res = dfs(dfs, ma.ch[node].left, left, left+lsize);
-      if (l <= left+lsize && left+lsize < r) res = op(res, ma.dat[node].key);
-      if (ma.ch[node].right) res = op(res, dfs(dfs, ma.ch[node].right, left+lsize+1, right));
+      if (M.ch[node].left) res = dfs(dfs, M.ch[node].left, left, left+lsize);
+      if (l <= left+lsize && left+lsize < r) res = op(res, M.dat[node].key);
+      if (M.ch[node].right) res = op(res, dfs(dfs, M.ch[node].right, left+lsize+1, right));
       return res;
     };
     return dfs(dfs, root, 0, len());
   }
-  PLTM insert(SizeType k, T key) {
-    assert(0 <= k && k <= len());
+  PLTM insert(U k, T key) {
     auto [s, t] = _split_node(root, k);
-    SizeType new_node = ma.new_node(key, id());
+    U new_node = M.new_node(key, id());
     return _new(_merge_with_root(s, new_node, t));
   }
-  pair<PLTM, T> pop(SizeType k) {
-    assert(0 <= k && k < len());
+  pair<PLTM, T> pop(U k) {
     auto [s_, t] = _split_node(this->root, k+1);
     auto [s, tmp] = _pop_right(s_);
-    T res = ma.dat[tmp].key;
-    SizeType root = _merge_node(s, t);
+    T res = M.dat[tmp].key;
+    U root = _merge_node(s, t);
     return {_new(root), res};
   }
-  PLTM reverse(SizeType l, SizeType r) {
-    assert(0 <= l && l <= r && r <= len());
-    if (l >= r) return _new(ma.copy(root));
+  PLTM reverse(U l, U r) {
+    if (l >= r) return _new(M.copy(root));
     auto [s_, t] = _split_node(root, r);
     auto [u, s] = _split_node(s_, l);
-    ma.dat[s].rev ^= 1;
-    SizeType root = _merge_node(_merge_node(u, s), t);
+    M.dat[s].rev ^= 1;
+    U root = _merge_node(_merge_node(u, s), t);
     return _new(root);
   }
   vector<T> tovector() {
-    SizeType node = root;
-    stack<SizeType> s;
+    U node = root;
+    stack<U> s;
     vector<T> a;
     a.reserve(len());
     while (!s.empty() || node) {
       if (node) {
         propagate(node);
         s.emplace(node);
-        node = ma.ch[node].left;
+        node = M.ch[node].left;
       } else {
         node = s.top(); s.pop();
-        a.emplace_back(ma.dat[node].key);
-        node = ma.ch[node].right;
+        a.emplace_back(M.dat[node].key);
+        node = M.ch[node].right;
       }
     }
     return a;
   }
-  PLTM copy() const { return _new(copy(root)); }
-  PLTM set(SizeType k, T v) {
-    assert(0 <= k && k < len());
-    SizeType node = ma.copy(root);
-    SizeType root = node;
-    SizeType pnode = 0;
+  PLTM copy() { return _new(copy(root)); }
+  PLTM set(U k, T v) {
+    U node = M.copy(root);
+    U root = node;
+    U pnode = 0;
     int d = 0;
-    stack<SizeType> path = {node};
+    stack<U> path = {node};
     while (1) {
       propagate(node);
-      SizeType t = ma.ch[ma.ch[node].left].size;
+      U t = M.ch[M.ch[node].left].size;
       if (t == k) {
-        node = ma.copy(node);
-        ma.dat[node].key = v;
+        node = M.copy(node);
+        M.dat[node].key = v;
         path.emplace(node);
-        if (d) ma.ch[pnode].left = node;
-        else ma.ch[pnode].right = node;
+        if (d) M.ch[pnode].left = node;
+        else M.ch[pnode].right = node;
         while (!path.empty()) {
-          update(path.top());
-          path.pop();
+          update(path.top()); path.pop();
         }
         return _new(root);
       }
       pnode = node;
       if (t < k) {
         k -= t + 1;
-        node = ma.copy(ma.ch[node].right);
         d = 0;
+        node = M.copy(M.ch[node].right);
       } else {
         d = 1;
-        node = ma.copy(ma.ch[node].left);
+        node = M.copy(M.ch[node].left);
       }
       path.emplace_back(node);
-      if (d) ma.ch[pnode].left = node;
-      else ma.ch[pnode].right = node;
+      if (d) M.ch[pnode].left = node;
+      else M.ch[pnode].right = node;
     }
   }
-  T get(SizeType k) {
-    assert(0 <= k && k < len());
-    SizeType node = root;
+  T get(U k) {
+    U node = root;
     while (1) {
       propagate(node);
-      SizeType t = ma.ch[ma.ch[node].left].size;
+      U t = M.ch[M.ch[node].left].size;
       if (t == k) {
-        return ma.dat[node].key;
+        return M.dat[node].key;
       }
       if (t < k) {
         k -= t + 1;
-        node = ma.ch[node].right;
+        node = M.ch[node].right;
       } else {
-        node = ma.ch[node].left;
+        node = M.ch[node].left;
       }
     }
   }
-  SizeType len() const { return ma.ch[root].size; }
+  U len() const { return M.ch[root].size; }
   static void rebuild(PLTM &tree) {
-    PLTM::ma.reset();
+    PLTM::M.reset();
     vector<T> a = tree.tovector();
     tree = PLTM(a);
   }
 };
-template <class SizeType, class T, T (*op)(T, T), T (*e)(),
-    class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
-typename PersistentLazyWBTree<SizeType, T, op, e, F, mapping, composition, id>::MemoeyAllocator PersistentLazyWBTree<SizeType, T, op, e, F, mapping, composition, id>::ma;
+template <class U, class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
+typename PersistentLazyWBTree<U, T, op, e, F, mapping, composition, id>::MemoeyAllocator PersistentLazyWBTree<U, T, op, e, F, mapping, composition, id>::M;
