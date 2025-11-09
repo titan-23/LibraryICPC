@@ -4,8 +4,7 @@ struct HLD {
   vector<int> size, par, dep, head, hld, in, out;
   // in:  頂点idxのHLD配列上のインデックス(頂点→配列)
   // hld: HLD配列のidx番目の要素が元の木のどの頂点か(配列→頂点)
-  HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), time(0),
-      size(n), par(n), dep(n), head(n), hld(n), in(n), out(n) {
+  HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), time(0), size(n), par(n), dep(n), head(n), hld(n), in(n), out(n) {
     dfs_sz(root, -1);
     head[root] = root;
     dfs_hld(root, -1);
@@ -58,11 +57,12 @@ struct HLD {
   vector<tuple<bool, int, int>>  path_prod(int u, int v) {
     // true -> (uから遠い方、uに近い方)
     // false -> (uに近い方、uに遠い方)
-    // rep(i, n) init[hld.in[i]] = A[i];
-    // seg.set(hld.in[p], v);
+    // rep(i, n) v[hld.in[i]] = A[i];
+    // Segtree<ll, op, e> seg(v); Segtree<ll, op_rev, e> rev(v);
+    // seg.set(hld.in[p], v); rev.set(hld.in[p], v);
     // ll lv = e(), rv = e();
     // for (auto [f, l, r] : hld.path_prod(u, v)) { 半開区間!
-    //     if (f) lv = op(lv, seg_rev.prod(l, r));
+    //     if (f) lv = op(lv, rev.prod(l, r));
     //     else rv = op_rev(rv, seg.prod(l, r));
     // }
     // ll res = op(lv, rv);

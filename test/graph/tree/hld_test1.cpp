@@ -1,6 +1,6 @@
 #include "./../../../akakoi_lib/template/template.cpp"
 
-#include "./../../../akakoi_lib/ds/segment_tree.cpp"
+#include "./../../../akakoi_lib/ds/segtree.cpp"
 #include "./../../../akakoi_lib/graph/tree/hld.cpp"
 
 
