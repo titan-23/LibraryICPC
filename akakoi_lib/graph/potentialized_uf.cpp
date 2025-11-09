@@ -1,32 +1,36 @@
 template <typename T>
 struct PotUF {
-  vector<int> par, sz;
+  int n;
+  vector<int> par;
   vector<T> dw;
-  PotUF(int n) {
-    par.resize(n);
-    iota(par.begin(), par.end(), 0);
-    sz.assign(n, 1);
-    dw.assign(n, 0);
-  }
-  int find(int x) {
-    if (par[x] == x) return x;
-    int root = find(par[x]);
+  PotUF(int n) : n(n), par(n, -1), dw(n, T(0)) {}
+  int root(int x) {
+    if (par[x] < 0) return x;
+    int r = root(par[x]);
     dw[x] = dw[x] + dw[par[x]];
-    return par[x] = root;
+    return par[x] = r;
   }
-  bool merge(int x, int y, T w) {
-    w = -dw[y] + (w + dw[x]);
-    x = find(x), y = find(y);
-    if (x == y) return false;
-    if (sz[x] < sz[y]) {
+  // weight[y] = weight[x]+w, 矛盾があればfalse
+  bool unite(int x, int y, T w) {
+    x = root(x); y = root(y);
+    if (x == y) {
+      auto [ok, val] = diff(x, y);
+      return ok && (val == w);
+    }
+    w = w + dw[x] - dw[y];
+    if (par[x] > par[y]) {
       swap(x, y);
       w = -w;
     }
+    par[x] += par[y];
     par[y] = x;
-    sz[x] += sz[y];
     dw[y] = w;
     return true;
   }
-  T weight(int x) { return dw[find(x)]; }
-  T diff(int x, int y) { return dw[y] - dw[x]; }
+  int size(int x) { return -par[root(x)]; }
+  bool same(int x, int y) { return root(x) == root(y); }
+  pair<bool, T> diff(int x, int y) {
+    if (!same(x, y)) return {false, T{}};
+    return {true, dw[y]-dw[x]};
+  }
 };
