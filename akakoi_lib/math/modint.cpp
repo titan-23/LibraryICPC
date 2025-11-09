@@ -39,5 +39,5 @@ struct mint {
     return r;
   }
   mint inv() const { return pow(mod - 2); }
-  bool operator==(const mint &y) { return x == y.x; }
+  bool operator==(const mint &y) const { return x == y.x; }
 };
