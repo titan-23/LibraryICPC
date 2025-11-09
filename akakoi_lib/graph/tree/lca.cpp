@@ -1,9 +1,9 @@
 int op_lca(int s, int t) { return min(s, t); }
-int e_lca() { return INF; }
+int e_lca() { return 1e9; }
 struct LCA {
   int n;
   vector<int> path, in;
-  SegTree<int, op_lca, e_lca> seg;
+  Segtree<int, op_lca, e_lca> seg;
   LCA(vector<vector<int>> G, int root) : n((int)G.size()), path(n), in(n, -1) {
     vector<int> par(n, -1), a(n);
     int time = -1, ptr = 0, s[n];
@@ -20,9 +20,9 @@ struct LCA {
       }
     }
     rep(i, n) a[i] = in[path[i]];
-    seg = SegTree<int, op_lca, e_lca>(a);
+    seg = Segtree<int, op_lca, e_lca>(a);
   }
-  int lca(const int u, const int v) const {
+  int lca(int u, int v) {
     if (u == v) return u;
     int l = in[u], r = in[v];
     if (l > r) swap(l, r);
