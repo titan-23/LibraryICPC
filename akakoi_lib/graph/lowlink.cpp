@@ -8,6 +8,8 @@ struct LowLink {
     rep(i, n) if (ord[i] == -1) {
       dfs(i, k, -1);
     }
+    sort(arti.begin(), arti.end());
+    sort(bridge.begin(), bridge.end());
   }
   int dfs(int x, int k, int p) {
     low[x] = (ord[x] = k++);
