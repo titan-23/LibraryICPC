@@ -1,4 +1,4 @@
-// https://judge.yosupo.jp/submission/327576
+// https://judge.yosupo.jp/submission/327578
 #include "./../../akakoi_lib/template/template.cpp"
 #include "./../../akakoi_lib/graph/scc.cpp"
 #include "./../../akakoi_lib/graph/twosat.cpp"
@@ -22,7 +22,7 @@ void solve() {
     for (int i = 1; i <= n; ++i) {
         cout << (res[i] > 0 ? i : -i) << " ";
     }
-    cout << "\n";
+    cout << 0;
 }
 
 int main() {
