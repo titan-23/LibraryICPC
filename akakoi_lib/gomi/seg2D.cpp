@@ -31,8 +31,7 @@ private:
     } else {
       if (!X[node].rch) X[node].rch = new_node_x();
       inner_setX(X[node].rch, x, v, M, R);
-    }
-    updateX(node);
+    } updateX(node);
   }
   void inner_setY(int node, S y, S x, T v, S U, S D) {
     if (!Y[node].root) Y[node].root = new_node_x();
@@ -60,21 +59,17 @@ private:
     return op(inner_prodY(Y[node].uch, u, d, l, r, U, M), inner_prodY(Y[node].dch, u, d, l, r, M, D));
   }
 public:
-  Seg2D() : root(0) {}
   Seg2D(S H, S W) : H(H), W(W) {
     new_node_y(); new_node_x(); // for dammy
-    root = new_node_y();
-    Y[root].root = new_node_x();
+    root = new_node_y(); Y[root].root = new_node_x();
   }
-  void reserve(int cap) { X.reserve(cap); Y.reserve(cap); }
   T get(S y, S x) const {
     assert(0 <= y && y < H); assert(0 <= x && x < W);
     return inner_getY(root, y, x, 0, H);
   }
   void set(S y, S x, T v) { inner_setY(root, y, x, v, 0, H); }
   T prod(S u, S d, S l, S r) const {
-    assert(0 <= u && u <= d && d <= H);
-    assert(0 <= l && l <= r && r <= W);
+    // 0 <= u <= d <= H && 0 <= l <= r <= W
     return inner_prodY(root, u, d, l, r, 0, H);
   }
 };

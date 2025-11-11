@@ -1,8 +1,7 @@
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 struct LazyLinkCutTree {
 private:
-  struct Node;
-  using NP = Node*;
+  struct Node; using NP = Node*;
   vector<NP> pool;
   struct Node {
     int idx, size, rev; T key, dat, rdat; F lazy;
@@ -14,9 +13,7 @@ private:
     }
     bool is_root() const { return (!par) || (!(par->left == this || par->right == this)); }
   };
-  void _apply_rev(NP node) {
-    if (node) node->rev ^= 1;
-  }
+  void _apply_rev(NP node) { if (node) node->rev ^= 1; }
   void _apply_f(NP node, F f) {
     if (!node) return;
     node->key = mapping(f, node->key);
@@ -85,16 +82,8 @@ private:
     if (!node->is_root()) _rotate(node);
     _propagate(node);
   }
-  void _link(NP c, NP p) {
-    _expose(c); _expose(p);
-    c->par = p; p->right = c;
-    _update(p);
-  }
-  void _cut(NP c) {
-    _expose(c);
-    c->left->par = nullptr; c->left = nullptr;
-    _update(c);
-  }
+  void _link(NP c, NP p) { _expose(c); _expose(p); c->par = p; p->right = c; _update(p); }
+  void _cut(NP c) { _expose(c); c->left->par = nullptr; c->left = nullptr; _update(c); }
   NP _expose(const NP node) {
     NP pre = node;
     while (node->par) {
@@ -125,9 +114,7 @@ public:
   bool same(int u, int v) { return root(u) == root(v); }
   void evert(int v) { _evert(pool[v]); }
   T path_prod(int u, int v) { evert(u); expose(v); return pool[v]->dat; }
-  void path_apply(int u, int v, F f) {
-    evert(u); expose(v); _apply_f(pool[v], f); _propagate(pool[v]);
-  }
+  void path_apply(int u, int v, F f) { evert(u); expose(v); _apply_f(pool[v], f); _propagate(pool[v]); }
   bool merge(int u, int v) {
     if (same(u, v)) return false;
     evert(u); link(u, v); return true;
@@ -144,8 +131,7 @@ public:
   int path_kth_elm(int s, int t, int k) {
     evert(s); expose(t); NP node = pool[t];
     if (node->size <= k) return -1;
-    while (1) {
-      _propagate(node);
+    while (1) { _propagate(node);
       t = node->left ? node->left->size : 0;
       if (t == k) { _splay(node); return node->idx; }
       if (t > k) { node = node->left; }
