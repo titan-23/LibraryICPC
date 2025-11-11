@@ -4,7 +4,7 @@ struct LazyRBST {
   struct Node;
   using NP = Node*;
   using RBST = LazyRBST<T, op, e, F, mapping, composition, id>;
-  FastStack<NP> left_path, right_path, path;
+  FastStack<NP> pathL, pathR, path;
   NP root;
   struct Node {
     NP left, right; T key, data; F lazy;
@@ -65,24 +65,24 @@ struct LazyRBST {
     return r_root;
   }
   pair<NP, NP> _split_node(NP node, int k) {
-    left_path.clear(); right_path.clear();
+    pathL.clear(); pathR.clear();
     while (node) {
       node->propagate();
       int s = node->left ? k-node->left->size : k;
       if (s <= 0) {
-        right_path.emplace(node); node = node->left;
+        pathR.emplace(node); node = node->left;
       } else {
         k = s-1;
-        left_path.emplace(node);  node = node->right;
+        pathL.emplace(node);  node = node->right;
       }
     }
     NP l = nullptr, r = nullptr;
-    while (!left_path.empty()) {
-      NP node = left_path.top(); left_path.pop();
+    while (!pathL.empty()) {
+      NP node = pathL.top(); pathL.pop();
       node->right = l; l = node; l->update();
     }
-    while (!right_path.empty()) {
-      NP node = right_path.top(); right_path.pop();
+    while (!pathR.empty()) {
+      NP node = pathR.top(); pathR.pop();
       node->left = r; r = node; r->update();
     }
     return {l, r};
@@ -93,8 +93,7 @@ public:
   LazyRBST(vector<T> a) : root(nullptr) { _build(a); }
   void merge(RBST &other) { root = _merge_node(root, other.root); }
   pair<RBST, RBST> split(int k) {
-    auto [l, r] = _split_node(root, k);
-    return {RBST(l), RBST(r)};
+    auto [l, r] = _split_node(root, k); return {RBST(l), RBST(r)};
   }
   void apply(int l, int r, F f) {
     if (l == r) return;
@@ -132,21 +131,6 @@ public:
     s->propagate();
     root = _merge_node(_merge_node(u, s), t);
   }
-  vector<T> tovector() {
-    NP node = root;
-    stack<NP> s; vector<T> a; a.reserve(len());
-    while (!s.empty() || node) {
-      if (node) {
-        node->propagate(); s.emplace(node);
-        node = node->left;
-      } else {
-        node = s.top(); s.pop();
-        a.emplace_back(node->key);
-        node = node->right;
-      }
-    }
-    return a;
-  }
   T get(int k) {
     NP node = root;
     while (1) {
@@ -158,21 +142,19 @@ public:
     }
   }
   void set(int k, T key) {
-    NP node = root; left_path.clear();
+    NP node = root; pathL.clear();
     while (1) {
-      node->propagate(); left_path.emplace(node);
+      node->propagate(); pathL.emplace(node);
       int t = node->left ? node->left->size : 0;
       if (t == k) { node->key = key; break; }
       if (t < k) { k -= t + 1; node = node->right; }
       else { node = node->left; }
     }
-    while (!left_path.empty()) {
-      left_path.top()->update(); left_path.pop();
-    }
+    while (!pathL.empty()) { pathL.top()->update(); pathL.pop(); }
   }
   int len() const { return root ? root->size : 0; }
 };
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
-FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::left_path;
+FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::pathL;
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
-FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::right_path;
+FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::pathR;
