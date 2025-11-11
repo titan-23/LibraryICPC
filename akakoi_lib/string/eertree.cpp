@@ -108,7 +108,7 @@ public:
     dfs(dfs, 0, 0); dfs(dfs, 1, 0);
     cout << res.size() << "\n";
     for (auto [p, s] : res) cout << p << " " << s << "\n";
-    for (int i = 0; i < n; ++i) cout << suff[i]-1 << " ";
+    rep(i, n) cout << suff[i]-1 << " ";
     cout << endl;
     cout << "---" << endl;
     auto freq = get_freq();
