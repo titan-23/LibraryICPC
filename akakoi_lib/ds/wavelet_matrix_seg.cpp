@@ -1,3 +1,4 @@
+// applyはgetの点のみでよい
 template<typename T, typename Mono, Mono(*op)(Mono, Mono), Mono(*e)()>
 class WaveletMatrixSeg {
 private:
@@ -13,22 +14,20 @@ public:
   void set_point(T x, T y, Mono w) { pos.emplace_back(x, y, w); }
   void build() {
     xy.reserve(pos.size());
-    for (const auto &[x, y, _]: pos) xy.emplace_back(x, y);
+    for (auto &[x, y, _]: pos) xy.emplace_back(x, y);
     sort(xy.begin(), xy.end());
     xy.erase(unique(xy.begin(), xy.end()), xy.end());
 
     y.reserve(xy.size());
-    for (const auto &[x, y_]: xy) y.emplace_back(y_);
+    for (auto &[x, y_]: xy) y.emplace_back(y_);
     sort(y.begin(), y.end());
     y.erase(unique(y.begin(), y.end()), y.end());
 
     log = y.size() == 0 ? 0 : 32 - __builtin_clz(y.size());
-    v.resize(log);
-    mid.resize(log);
-    seg.resize(log);
+    v.resize(log); mid.resize(log); seg.resize(log);
 
     vector<T> a; a.reserve(xy.size());
-    for (const auto &[x, y_]: xy) {
+    for (auto &[x, y_]: xy) {
       a.emplace_back(lower_bound(y.begin(), y.end(), y_) - y.begin());
     }
     for (int bit = log-1; bit >= 0; --bit) {
@@ -44,12 +43,11 @@ public:
       }
       v[bit].build();
       mid[bit] = zero.size();
-      a = zero;
-      a.insert(a.end(), one.begin(), one.end());
+      a = zero; a.insert(a.end(), one.begin(), one.end());
     }
 
     vector<vector<Mono>> ws(log, vector<Mono>(xy.size(), e()));
-    for (const auto [x, y_, w]: pos) {
+    for (const auto &[x, y_, w]: pos) {
       int k = lower_bound(xy.begin(), xy.end(), make_pair(x, y_)) - xy.begin();
       int i_y = lower_bound(y.begin(), y.end(), y_) - y.begin();
       for (int bit = log-1; bit >= 0; --bit) {
@@ -64,18 +62,14 @@ public:
     int k = lower_bound(xy.begin(), xy.end(), make_pair(x1, y1)) - xy.begin();
     int i_y = lower_bound(y.begin(), y.end(), y1) - y.begin();
     for (int bit = log - 1; bit >= 0; --bit) {
-      if (i_y >> bit & 1) {
-        k = v[bit].rank1(k) + mid[bit];
-      } else {
-        k = v[bit].rank0(k);
-      }
+      if (i_y >> bit & 1) k = v[bit].rank1(k) + mid[bit];
+      else k = v[bit].rank0(k);
       seg[bit].set(k, val);
     }
   }
   // 領域 [x1, x2) x [y1, y2) の prod を求める / O(log^2N)
   Mono range_prod(T x1, T x2, T y1, T y2) {
-    assert(0 <= x1 && x1 <= x2);
-    assert(0 <= y1 && y1 <= y2);
+    assert(0 <= x1 && x1 <= x2); assert(0 <= y1 && y1 <= y2);
     int l = lower_bound(xy.begin(), xy.end(), make_pair(x1, (T)0)) - xy.begin();
     int r = lower_bound(xy.begin(), xy.end(), make_pair(x2, (T)0)) - xy.begin();
     int y1_idx = lower_bound(y.begin(), y.end(), y1) - y.begin();
@@ -102,6 +96,22 @@ public:
       } else {
         if (l0 < r0 && y_l < y2_idx && y_mid > y1_idx) ans = op(ans, seg[bit].prod(l0, r0));
         if (l1 < r1 && y_mid < y2_idx && y_r > y1_idx) ans = op(ans, seg[bit].prod(l1, r1));
+      }
+    }
+    return ans;
+  }
+  Mono sum(T x1, T x2, T y2) {
+    int l = lower_bound(xy.begin(), xy.end(), make_pair(x1, (T)0)) - xy.begin();
+    int r = lower_bound(xy.begin(), xy.end(), make_pair(x2, (T)0)) - xy.begin();
+    int y2_idx = lower_bound(y.begin(), y.end(), y2) - y.begin();
+    Mono ans = e();
+    for (int bit = log-1; bit >= 0; --bit) {
+      int l0 = v[bit].rank0(l), r0 = v[bit].rank0(r);
+      if (y2_idx>>bit & 1) {
+        l += mid[bit] - l0; r += mid[bit] - r0;
+        ans += seg[bit].prod(l0, r0);
+      } else {
+        l = l0; r = r0;
       }
     }
     return ans;

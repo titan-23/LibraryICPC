@@ -2,6 +2,7 @@ template <class U, class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T)
 class PersistentLazyWBTree {
 public:
   struct MemoeyAllocator {
+    // (memo) #pragma pack(push, 1) #pragma pack(pop)
     struct Node {
       U left, right, size;
       Node() : left(0), right(0), size(0) {}
