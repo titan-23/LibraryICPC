@@ -1,3 +1,23 @@
+## 数列の和
+- $\sum_{i=0}^{\infty}p^i=\frac{1}{1-p}$
+- $\sum_{i=0}^{\infty}p^ii=\frac{p}{(1-p)^2}$
+- $\sum_{k=0}{n-1}{a r^k}=\frac{a(r^n-1)}{r-1}$
+- $\sum_{k=1}^{n}{k^2} = \frac{1}{6}n(n+1)(2n+1)$
+- $\sum_{k=1}^{n}{k^3} = (\frac{1}{2}n(n+1))^2$
+
+## ビット演算に関する公式
+- $a+b=(a \oplus b) +(a\land b)\times 2$
+- $a+b=(a\lor b) + (a\land b)$
+- $a\lor b=(a\oplus b)+(a\land b)$
+- $a\,|\,b=1-(1-a)(1-b)$ ただし、 $a,b\in\{0,1\}$
+
+## mod に関する公式
+- $x^{y^z}\mod P = x^{y^z \mod P-1} \mod P$
+- $x^n=x^m\mod P \leftrightarrow n=m\mod P-1$
+
+## その他
+- $\min(a,b)=\frac{a+b-\mid a-b \mid}{2}$
+- $\max(a,b)=\frac{a+b+\mid a-b \mid}{2}$
 
 ## 二項係数
 |n\k|0|1|2|3|4|5|6|7|8|9|10|
