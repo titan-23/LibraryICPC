@@ -4,7 +4,7 @@ struct LazyRBST {
   struct Node;
   using NP = Node*;
   using RBST = LazyRBST<T, op, e, F, mapping, composition, id>;
-  FastStack<NP> pathL, pathR, path;
+  stack<NP> pathL, pathR;
   NP root;
   struct Node {
     NP left, right; T key, data; F lazy;
@@ -49,7 +49,7 @@ struct LazyRBST {
   NP _merge_node(NP l, NP r) {
     NP root = nullptr, r_root = nullptr;
     int d = -1;
-    while (l && r) {
+    while (l && r) { // 乱数を始めに列挙しておくのも手
       int nd = trnd.randint(0, l->size+r->size-1) < l->size;
       NP node = nd ? l : r;
       node->propagate();
@@ -65,7 +65,6 @@ struct LazyRBST {
     return r_root;
   }
   pair<NP, NP> _split_node(NP node, int k) {
-    pathL.clear(); pathR.clear();
     while (node) {
       node->propagate();
       int s = node->left ? k-node->left->size : k;
@@ -142,7 +141,7 @@ public:
     }
   }
   void set(int k, T key) {
-    NP node = root; pathL.clear();
+    NP node = root;
     while (1) {
       node->propagate(); pathL.emplace(node);
       int t = node->left ? node->left->size : 0;
@@ -154,7 +153,3 @@ public:
   }
   int len() const { return root ? root->size : 0; }
 };
-template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
-FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::pathL;
-template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
-FastStack<typename LazyRBST<T, op, e, F, mapping, composition, id>::Node*> LazyRBST<T, op, e, F, mapping, composition, id>::pathR;
