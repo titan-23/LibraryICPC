@@ -5,6 +5,7 @@ vector<ll> bellman_ford(vector<vector<pair<int, ll>>> G, int s) {
   rep(i, n) {
     bool upd = false;
     rep(v, n) for (auto [x, c] : G[v]) {
+      if (dist[v] == INF) continue; // !need
       if (chmin(dist[x], dist[v]+c)) upd = true;
     }
     if (!upd) { negcycle = false; break; }
