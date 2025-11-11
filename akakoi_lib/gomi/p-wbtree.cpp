@@ -14,17 +14,10 @@ struct Data {
 vector<Node> ch;
 vector<Data> dat;
 int ptr;
-void init() {
+void init() { // !!! 最初に必ず呼ぶこと !!!
   ptr = 1;
   ch.emplace_back(0, 0, 0);
   dat.emplace_back(T{}, T{}, F{}, 0);
-}
-U node_copy(U node) {
-  U idx = new_node(dat[node].key, dat[node].lazy);
-  ch[idx] = {ch[node].left, ch[node].right, ch[node].size};
-  dat[idx].data = dat[node].data;
-  dat[idx].rev = dat[node].rev;
-  return idx;
 }
 U new_node(T key, F f) {
   if (ch.size() > ptr) {
@@ -36,6 +29,13 @@ U new_node(T key, F f) {
   }
   ptr++;
   return ptr - 1;
+}
+U node_copy(U node) {
+  U idx = new_node(dat[node].key, dat[node].lazy);
+  ch[idx] = {ch[node].left, ch[node].right, ch[node].size};
+  dat[idx].data = dat[node].data;
+  dat[idx].rev = dat[node].rev;
+  return idx;
 }
 void reserve(U n) { ch.reserve(n); dat.reserve(n); }
 void reset() { ptr = 1; }
@@ -86,7 +86,7 @@ private:
   void _build(vector<T> const &a) {
     auto dfs = [&] (auto &&dfs, U l, U r) -> U {
       U mid = (l + r) >> 1;
-      U node = M.new_node(a[mid], id());
+      U node = new_node(a[mid], id());
       if (l != mid) ch[node].left = dfs(dfs, l, mid);
       if (mid+1 != r) ch[node].right = dfs(dfs, mid+1, r);
       update(node); return node;
@@ -185,7 +185,7 @@ private:
       if (right <= l || r <= left) return node;
       propagate(node);
       U nnode = node_copy(node);
-      if (l <= left && right < r) { push(nnode, f); return nnode; }
+      if (l <= left && right <= r) { push(nnode, f); return nnode; }
       U lsize = ch[ch[nnode].left].size;
       if (ch[nnode].left) ch[nnode].left = dfs(dfs, ch[nnode].left, left, left+lsize);
       if (l <= left+lsize && left+lsize < r) dat[nnode].key = mapping(f, dat[nnode].key);
@@ -199,7 +199,7 @@ private:
     if (l == r) return e();
     auto dfs = [&] (auto &&dfs, U node, U left, U right) -> T {
       if (right <= l || r <= left) return e();
-      if (l <= left && right < r) return dat[node].data;
+      if (l <= left && right <= r) return dat[node].data;
       propagate(node);
       U lsize = ch[ch[node].left].size;
       T res = e();
@@ -212,8 +212,8 @@ private:
   }
   PLWT insert(U k, T key) {
     auto [s, t] = _split_node(root, k);
-    U new_node = M.new_node(key, id());
-    return _new(_merge_with_root(s, new_node, t));
+    U x = new_node(key, id());
+    return _new(_merge_with_root(s, x, t));
   }
   pair<PLWT, T> pop(U k) {
     auto [s_, t] = _split_node(this->root, k+1);
@@ -246,8 +246,8 @@ private:
     }
     return a;
   }
-  PLWT copy() { return _new(copy(root)); }
-  PLTM set(U k, T v) {
+  PLWT copy() { return _new(node_copy(root)); }
+  PLWT set(U k, T v) {
     U new_root = inner_set(root, k, v);
     return _new(new_root);
   }
