@@ -75,7 +75,6 @@ public:
     rep(i, q) S[i] = -INT_MAX;
     shuffle(rd.begin(), rd.end(), mt19937(1321312));
   }
-  void reserve(int cap) { mp.reserve(cap); Q.reserve(cap); }
   int add_edge(int u, int v) { assert(t < q);
     if (u > v) swap(u, v);
     Q.emplace_back(ADD, u, v, -1);
@@ -102,8 +101,7 @@ public:
     Q.emplace_back(IS_SAME, u, v, -1); return t++;
   }
   vector<T> run() { assert(t <= q); vector<T> res(Q.size());
-    rep(i, Q.size()) {
-      auto [type, u, v, w] = Q[i];
+    rep(i, Q.size()) { auto [type, u, v, w] = Q[i];
       switch (type) {
         case ADD : { inner_add_edge(u, v, S[i]); break; }
         case DEL : { inner_delete_edge(u, v, S[i]); break; }

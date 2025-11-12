@@ -29,11 +29,9 @@ private:
       _apply_rev(node->left); _apply_rev(node->right);
       node->rev = 0;
     }
-    if (node->lazy != id()) {
-      _apply_f(node->left, node->lazy);
-      _apply_f(node->right, node->lazy);
-      node->lazy = id();
-    }
+    _apply_f(node->left, node->lazy);
+    _apply_f(node->right, node->lazy);
+    node->lazy = id();
   }
   void _update(NP node) {
     if (!node) return;
@@ -52,8 +50,7 @@ private:
     }
   }
   void _rotate(NP node) {
-    NP pnode = node->par;
-    NP gnode = pnode->par;
+    NP pnode = node->par; NP gnode = pnode->par;
     _propagate(pnode); _propagate(node);
     if (gnode) {
       if (gnode->left == pnode) gnode->left = node;
@@ -84,19 +81,16 @@ private:
   }
   void _link(NP c, NP p) { _expose(c); _expose(p); c->par = p; p->right = c; _update(p); }
   void _cut(NP c) { _expose(c); c->left->par = nullptr; c->left = nullptr; _update(c); }
-  NP _expose(const NP node) {
-    NP pre = node;
+  NP _expose(const NP node) { NP pre = node;
     while (node->par) {
       _splay(node); node->right = nullptr; _update(node);
       if (!node->par) break;
-      pre = node->par;
-      _splay(node->par); node->par->right = node;
-      _update(node->par);
+      pre = node->par; _splay(node->par);
+      node->par->right = node; _update(node->par);
     }
     node->right = nullptr; _update(node); return pre;
   }
-  NP _root(NP v) {
-    _expose(v); _propagate(v);
+  NP _root(NP v) { _expose(v); _propagate(v);
     while (v->left) { v = v->left; _propagate(v); }
     _splay(v); return v;
   }
@@ -121,13 +115,8 @@ public:
   }
   void split(int u, int v) { evert(u); cut(v); }
   T get(int k) { _splay(pool[k]); return pool[k]->key; }
-  void set(int k, T v) {
-    NP node = pool[k];
-    _splay(node); node->key = v; _update(node);
-  }
-  int path_length(int s, int t) {
-    evert(s); expose(t); NP node = pool[t]; return node->size;
-  }
+  void set(int k, T v) { NP node = pool[k]; _splay(node); node->key = v; _update(node); }
+  int path_length(int s, int t) { evert(s); expose(t); NP node = pool[t]; return node->size; }
   int path_kth_elm(int s, int t, int k) {
     evert(s); expose(t); NP node = pool[t];
     if (node->size <= k) return -1;

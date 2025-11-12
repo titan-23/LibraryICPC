@@ -1,6 +1,3 @@
-#include "../../kyopro_library/template.hpp"
-
-/// @brief 幾何ライブラリ
 namespace Geometry {
  using Real = long double;
  const Real EPS = 1e-9;

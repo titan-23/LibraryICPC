@@ -48,6 +48,16 @@ $\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}$
 $\binom{n}{k}=\frac{n}{k}\binom{n-1}{k-1}$
 $\binom{L}{k}+\dots+\binom{R-1}{k}=\binom{R}{k+1}-\binom{L}{k+1}$
 
+- \改行
+- \改行
+- \改行
+- \改行
+- \改行
+- \改行
+- \改行
+- \改行
+- \改行
+
 ## 第一種スターリング数
 $c(n,k)$: $1,2,\dots,n$ の順列で巡回置換 $k$ 個に分割できるものの個数
 

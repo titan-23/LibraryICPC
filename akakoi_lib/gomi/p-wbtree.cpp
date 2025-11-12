@@ -57,8 +57,7 @@ private:
     if (dat[node].rev) {
       U l = ch[node].left ? node_copy(ch[node].left) : 0;
       U r = ch[node].right ? node_copy(ch[node].right) : 0;
-      ch[node].left = r;
-      ch[node].right = l;
+      ch[node].left = r; ch[node].right = l;
       if (ch[node].left) dat[ch[node].left].rev ^= 1;
       if (ch[node].right) dat[ch[node].right].rev ^= 1;
       dat[node].rev = 0;
@@ -75,8 +74,8 @@ private:
       dat[node].lazy = id();
     }
   }
-  // if (!(weight_left(node)*DELTA>=weight_right(node))) assert(0);
-  // if (!(weight_right(node)*DELTA>=weight_left(node))) assert(0);
+  // assert(weight_left(node)*DELTA>=weight_right(node));
+  // assert(weight_right(node)*DELTA>=weight_left(node));
   void _build(vector<T> const &a) {
     auto dfs = [&] (auto &&dfs, U l, U r) -> U {
       U mid = (l + r) >> 1;
@@ -90,14 +89,12 @@ private:
   }
   U _rotate_right(U node) {
     U u = node_copy(ch[node].left);
-    ch[node].left = ch[u].right;
-    ch[u].right = node;
+    ch[node].left = ch[u].right; ch[u].right = node;
     update(node); update(u); return u;
   }
   U _rotate_left(U node) {
     U u = node_copy(ch[node].right);
-    ch[node].right = ch[u].left;
-    ch[u].left = node;
+    ch[node].right = ch[u].left; ch[u].left = node;
     update(node); update(u); return u;
   }
   U _balance_left(U node) {
@@ -176,20 +173,16 @@ private:
     if (l == r) return PLWT(node_copy(root));
     auto dfs = [&] (auto &&dfs, U node, U left, U right) -> U {
       if (right <= l || r <= left) return node;
-      propagate(node);
-      U nnode = node_copy(node);
+      propagate(node); U nnode = node_copy(node);
       if (l <= left && right <= r) { push(nnode, f); return nnode; }
       U lsize = ch[ch[nnode].left].size;
       if (ch[nnode].left) ch[nnode].left = dfs(dfs, ch[nnode].left, left, left+lsize);
       if (l <= left+lsize && left+lsize < r) dat[nnode].key = mapping(f, dat[nnode].key);
       if (ch[nnode].right) ch[nnode].right = dfs(dfs, ch[nnode].right, left+lsize+1, right);
-      update(nnode);
-      return nnode;
-    };
-    return PLWT(dfs(dfs, root, 0, len()));
+      update(nnode); return nnode;
+    }; return PLWT(dfs(dfs, root, 0, len()));
   }
-  T prod(U l, U r) {
-    if (l == r) return e();
+  T prod(U l, U r) { if (l == r) return e();
     auto dfs = [&] (auto &&dfs, U node, U left, U right) -> T {
       if (right <= l || r <= left) return e();
       if (l <= left && right <= r) return dat[node].data;
@@ -199,8 +192,7 @@ private:
       if (l <= left+lsize && left+lsize < r) res = op(res, dat[node].key);
       if (ch[node].right) res = op(res, dfs(dfs, ch[node].right, left+lsize+1, right));
       return res;
-    };
-    return dfs(dfs, root, 0, len());
+    }; return dfs(dfs, root, 0, len());
   }
   PLWT insert(U k, T key) {
     auto [s, t] = _split_node(root, k);
