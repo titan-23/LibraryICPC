@@ -11,12 +11,9 @@ struct Data {
   Data() : rev(0) {}
   Data(T k, T d, F l, int8_t r) : key(k), data(d), lazy(l), rev(r) {}
 };
-vector<Node> ch;
-vector<Data> dat;
-int ptr;
+vector<Node> ch; vector<Data> dat; int ptr;
 void init() { // !!! 最初に必ず呼ぶこと !!!
-  ptr = 1;
-  ch.emplace_back(0, 0, 0);
+  ptr = 1; ch.emplace_back(0, 0, 0);
   dat.emplace_back(T{}, T{}, F{}, 0);
 }
 U new_node(T key, F f) {
@@ -27,8 +24,7 @@ U new_node(T key, F f) {
     ch.emplace_back(0, 0, 1);
     dat.emplace_back(key, key, f, 0);
   }
-  ptr++;
-  return ptr - 1;
+  ptr++; return ptr - 1;
 }
 U node_copy(U node) {
   U idx = new_node(dat[node].key, dat[node].lazy);
@@ -79,10 +75,8 @@ private:
       dat[node].lazy = id();
     }
   }
-  void balance_check(U node) const {
-    if (!(weight_left(node)*DELTA >= weight_right(node))) assert(false);
-    if (!(weight_right(node) * DELTA >= weight_left(node))) assert(false);
-  }
+  // if (!(weight_left(node)*DELTA>=weight_right(node))) assert(0);
+  // if (!(weight_right(node)*DELTA>=weight_left(node))) assert(0);
   void _build(vector<T> const &a) {
     auto dfs = [&] (auto &&dfs, U l, U r) -> U {
       U mid = (l + r) >> 1;
@@ -152,7 +146,7 @@ private:
     return _merge_with_root(l_, root_, r);
   }
   pair<U, U> _split_node(U node, U k) {
-    if (!node) { return {0, 0}; }
+    if (!node) return {0, 0};
     propagate(node);
     U lch = ch[node].left, rch = ch[node].right;
     U tmp = lch ? k-ch[lch].size : k;
@@ -166,21 +160,20 @@ private:
       return {_merge_with_root(lch, node, l), r};
     }
   }
-  PLWT _new(U root) { return PLWT(root); }
   PLWT(U root) : root(root) {}
  public:
   PLWT() : root(0) {}
   PLWT(vector<T> &a) { _build(a); }
   PLWT merge(PLWT other) {
     U root = _merge_node(this->root, other.root);
-    return _new(root);
+    return PLWT(root);
   }
   pair<PLWT, PLWT> split(U k) {
     auto [l, r] = _split_node(this->root, k);
-    return {_new(l), _new(r)};
+    return {PLWT(l), PLWT(r)};
   }
   PLWT apply(U l, U r, F f) {
-    if (l == r) return _new(node_copy(root));
+    if (l == r) return PLWT(node_copy(root));
     auto dfs = [&] (auto &&dfs, U node, U left, U right) -> U {
       if (right <= l || r <= left) return node;
       propagate(node);
@@ -193,7 +186,7 @@ private:
       update(nnode);
       return nnode;
     };
-    return _new(dfs(dfs, root, 0, len()));
+    return PLWT(dfs(dfs, root, 0, len()));
   }
   T prod(U l, U r) {
     if (l == r) return e();
@@ -201,8 +194,7 @@ private:
       if (right <= l || r <= left) return e();
       if (l <= left && right <= r) return dat[node].data;
       propagate(node);
-      U lsize = ch[ch[node].left].size;
-      T res = e();
+      U lsize = ch[ch[node].left].size; T res = e();
       if (ch[node].left) res = dfs(dfs, ch[node].left, left, left+lsize);
       if (l <= left+lsize && left+lsize < r) res = op(res, dat[node].key);
       if (ch[node].right) res = op(res, dfs(dfs, ch[node].right, left+lsize+1, right));
@@ -213,27 +205,25 @@ private:
   PLWT insert(U k, T key) {
     auto [s, t] = _split_node(root, k);
     U x = new_node(key, id());
-    return _new(_merge_with_root(s, x, t));
+    return PLWT(_merge_with_root(s, x, t));
   }
   pair<PLWT, T> pop(U k) {
     auto [s_, t] = _split_node(this->root, k+1);
     auto [s, tmp] = _pop_right(s_);
-    T res = dat[tmp].key;
-    U root = _merge_node(s, t);
-    return {_new(root), res};
+    T res = dat[tmp].key; U root = _merge_node(s, t);
+    return {PLWT(root), res};
   }
   PLWT reverse(U l, U r) {
-    if (l >= r) return _new(node_copy(root));
+    if (l >= r) return PLWT(node_copy(root));
     auto [s_, t] = _split_node(root, r);
     auto [u, s] = _split_node(s_, l);
     dat[s].rev ^= 1;
     U root = _merge_node(_merge_node(u, s), t);
-    return _new(root);
+    return PLWT(root);
   }
   vector<T> tovector() {
     U node = root;
-    stack<U> s;
-    vector<T> a; a.reserve(len());
+    stack<U> s; vector<T> a; a.reserve(len());
     while (!s.empty() || node) {
       if (node) {
         propagate(node); s.emplace(node);
@@ -243,13 +233,12 @@ private:
         a.emplace_back(dat[node].key);
         node = ch[node].right;
       }
-    }
-    return a;
+    } return a;
   }
-  PLWT copy() { return _new(node_copy(root)); }
+  PLWT copy() { return PLWT(node_copy(root)); }
   PLWT set(U k, T v) {
     U new_root = inner_set(root, k, v);
-    return _new(new_root);
+    return PLWT(new_root);
   }
   U inner_set(U node, U k, T v) {
     U nxt = node_copy(node); propagate(nxt);
@@ -270,13 +259,12 @@ private:
       propagate(node); U t = ch[ch[node].left].size;
       if (t == k) { return dat[node].key; }
       if (t < k) { k -= t + 1; node = ch[node].right; }
-      else {  node = ch[node].left; }
+      else { node = ch[node].left; }
     }
   }
   U len() const { return ch[root].size; }
   static void rebuild(PLWT &tree) {
-    reset();
-    vector<T> a = tree.tovector();
+    reset(); vector<T> a = tree.tovector();
     tree = PLWT(a);
   }
 };} // namespace ptree

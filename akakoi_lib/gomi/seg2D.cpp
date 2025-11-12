@@ -8,14 +8,14 @@ private:
   void updateX(int node) { X[node].data = op(X[X[node].lch].data, X[X[node].rch].data); }
   int new_node_x() { X.emplace_back(NodeX{e(), 0, 0}); return X.size()-1; }
   int new_node_y() { Y.emplace_back(NodeY{0, 0, 0}); return Y.size()-1; }
-  T inner_getX(int node, S x, S L, S R) const {
+  T inner_getX(int node, S x, S L, S R) {
     if (!node) return e();
     if (R-L == 1) return X[node].data;
     S M = L+(R-L)/2;
     if (x < M) return inner_getX(X[node].lch, x, L, M);
     else return inner_getX(X[node].rch, x, M, R);
   }
-  T inner_getY(int node, S y, S x, S U, S D) const {
+  T inner_getY(int node, S y, S x, S U, S D) {
     if (!node) return e();
     if (D-U == 1) return inner_getX(Y[node].root, x, 0, W);
     S M = U+(D-U)/2;
@@ -43,16 +43,15 @@ private:
     } else {
       if (!Y[node].dch) Y[node].dch = new_node_y();
       inner_setY(Y[node].dch, y, x, v, M, D);
-    }
-    inner_setX(Y[node].root, x, op(inner_getX(Y[Y[node].uch].root, x, 0, W), inner_getX(Y[Y[node].dch].root, x, 0, W)), 0, W);
+    } inner_setX(Y[node].root, x, op(inner_getX(Y[Y[node].uch].root, x, 0, W), inner_getX(Y[Y[node].dch].root, x, 0, W)), 0, W);
   }
-  T inner_prodX(int node, S l, S r, S L, S R) const {
+  T inner_prodX(int node, S l, S r, S L, S R) {
     if (!node || l >= r || r <= L || R <= l) return e();
     if (l <= L && R <= r) return X[node].data;
     S M = L+(R-L)/2;
     return op(inner_prodX(X[node].lch, l, r, L, M), inner_prodX(X[node].rch, l, r, M, R));
   }
-  T inner_prodY(int node, S u, S d, S l, S r, S U, S D) const {
+  T inner_prodY(int node, S u, S d, S l, S r, S U, S D) {
     if (!node || u >= d || d <= U || D <= u) return e();
     if (u <= U && D <= d) return inner_prodX(Y[node].root, l, r, 0, W);
     S M = U+(D-U)/2;
@@ -63,12 +62,12 @@ public:
     new_node_y(); new_node_x(); // for dammy
     root = new_node_y(); Y[root].root = new_node_x();
   }
-  T get(S y, S x) const {
+  T get(S y, S x) {
     assert(0 <= y && y < H); assert(0 <= x && x < W);
     return inner_getY(root, y, x, 0, H);
   }
   void set(S y, S x, T v) { inner_setY(root, y, x, v, 0, H); }
-  T prod(S u, S d, S l, S r) const {
+  T prod(S u, S d, S l, S r) {
     // 0 <= u <= d <= H && 0 <= l <= r <= W
     return inner_prodY(root, u, d, l, r, 0, H);
   }
