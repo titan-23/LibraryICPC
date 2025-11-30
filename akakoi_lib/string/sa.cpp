@@ -1,3 +1,5 @@
+// sa[i] : sのi番目に小さい接尾辞が始まる位置
+// lcp[i] : sa[i] と sa[i-1] が持つ最長共通接頭辞長
 pair<vector<ll>, vector<ll>> SA(string s) {
   ll n = s.size() + 1, lim = 256;
   vector<ll> sa(n), lcp(n), x(s.begin(), s.end()) + 1, y(n), ws(max(n, lim)), rk(n);

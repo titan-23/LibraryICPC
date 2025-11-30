@@ -1,3 +1,4 @@
+// r[i]: 中心 i の奇数長回文の最大半径(回文長 = 2*r[i]-1)
 vector<ll> Manacher(string s) {
   int n = s.size();
   int i = 0, j = 0;

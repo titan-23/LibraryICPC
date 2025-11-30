@@ -1,3 +1,4 @@
+// z[i]: s と s[i..] のLCP長
 vector<ll> ZAlgorithm(const vector<ll>& s) {
   int n = s.size(), l = -1, r = -1;
   vector<ll> z(n, n);
