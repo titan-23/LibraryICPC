@@ -1,4 +1,4 @@
-vector<ll> bellman_ford(vector<vector<pair<int, ll>>> G, int s) {
+vector<ll> bellman_ford(vector<vector<pair<int, ll>>> G, int s){
   int n = G.size();
   vector<ll> dist(n, INF); dist[s] = 0;
   bool negcycle = n > 0;
