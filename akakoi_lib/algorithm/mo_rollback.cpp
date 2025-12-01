@@ -22,8 +22,9 @@ struct MoRollBack {
   using ROLLBACK = function< void() >;
   int width;
   vector< int > left, right, order;
-  MoRollBack(int N, int Q) : width((int) sqrt(N)), order(Q) {
+  MoRollBack(int n, int q) : width(max(1, (int)sqrt(n))), order(q) {
     iota(begin(order), end(order), 0);
+  }
   void add(int l, int r) { /* [l, r) */
     left.emplace_back(l);
     right.emplace_back(r);
