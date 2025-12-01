@@ -255,6 +255,34 @@ bool isConvex(const vector<Point>& points) {
   return !(has_positive && has_negative);
 }
 
+// 凸多角形に対する点の包含関係 / 2: pを含む, 1: pが辺上, 0: それ以外
+int convexPolygonContainsPoint(const vector<Point>& hull, const Point& p) {
+  int n = hull.size();
+  if (n == 0) return 0;
+  if (n == 1) {
+    if (almostEqual(hull[0].x, p.x) && almostEqual(hull[0].y, p.y)) return 1;
+    return 0;
+  }
+  if (n == 2) {
+    Segment s(hull[0], hull[1]);
+    if (isPointOnSegment(p, s)) return 1;
+    return 0;
+  }
+  Real b1 = (hull[1]-hull[0]).cross(p-hull[0]);
+  Real b2 = (hull.back()-hull[0]).cross(p-hull[0]);
+  if (lessThan(b1, 0) || greaterThan(b2, 0)) return 0;
+  int l = 1, r = n-1;
+  while (r - l > 1) {
+    int mid = (l + r) / 2;
+    Real c = (p-hull[0]).cross(hull[mid]-hull[0]);
+    (greaterThanOrEqual(c, 0) ? r : l) = mid;
+  }
+  Real v = (hull[l]-p).cross(hull[r]-p);
+  if (almostEqual(v, 0)) return 1;
+  if (greaterThan(v, 0)) return (almostEqual(b1, 0) || almostEqual(b2, 0) ? 1 : 2);
+  return 0;
+}
+
 /// @brief 点が凸多角形の辺上に存在するか判定
 bool isPointOnPolygon(const vector<Point>& polygon, const Point& p) {
   int n = polygon.size();
