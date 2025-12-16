@@ -1,24 +1,17 @@
 template<class T>
-class SternBrocotTree {
-public:
+struct SternBrocotTree {
   struct Node {
-    // 開区間 (p/q, r/s)
-    // (p+r)/(q+s) がこのノードの値
+    // 開区間 (p/q, r/s), (p+r)/(q+s) がこのノードの値
     T p, q, r, s;
     T den() const { return q + s; } /// @brief 分母
     T num() const { return p + r; } /// @brief 分子
-    /// @brief 左の子へd進む
     Node left(T d) const { return {p, q, r+p*d, s+q*d}; }
-    /// @brief 右の子へd進む
     Node right(T d) const { return {p+r*d, q+s*d, r, s}; }
-    /// @brief 開区間を返す
-    pair<pair<T, T>, pair<T, T>> range() const { return {{p, q}, {r, s}}; }
+    pair<pair<T, T>, pair<T, T>> range() const { return {{p, q}, {r, s}}; } // 開区間を返す
   };
-private:
   Node root() { return {0, 1, 1, 0}; }
-  pair<char, T> get_parent_step(const Node &node) {
-    T ls = node.p + node.q;
-    T rs = node.r + node.s;
+  pair<char, T> get_parent_step(const Node &v) {
+    T ls = v.p + v.q, rs = v.r + v.s;
     if (ls == rs) return {'?', T(0)};
     if (ls < rs) {
       T k = rs / ls;
@@ -31,33 +24,24 @@ private:
     }
   }
   constexpr T internal_gcd(T a, T b) {
-    while (b != 0) {
-      T temp = b;
-      b = a % b;
-      a = temp;
-    }
+    while (b != 0) { T temp = b; b = a % b; a = temp; }
     return a;
   }
-public:
-  /// @brief p/qに対応するノードを返す
-  Node get_node(T p, T q) {
+  Node get_node(T p, T q) { // p/qに対応するノードを返す
     T g = internal_gcd(p, q);
-    p /= g;
-    q /= g;
-    Node now = root();
+    p /= g; q /= g;
     T tp = p, tq = q;
+    Node now = root();
     while (tp != 1 || tq != 1) {
       if (tp == tq) break;
       if (tp > tq) {
         T k = tp / tq;
         if (tp % tq == 0) --k;
-        now = now.right(k);
-        tp -= tq * k;
+        now = now.right(k); tp -= tq * k;
       } else {
         T k = tq / tp;
         if (tq % tp == 0) --k;
-        now = now.left(k);
-        tq -= tp * k;
+        now = now.left(k);  tq -= tp * k;
       }
     }
     return now;
@@ -120,36 +104,30 @@ public:
     }
     return {true, res};
   }
-  /// @brief SBT上で単調性を持つ判定関数fの境界を探索する / O(log d)
+  /// @brief 判定関数fの境界を探索する / O(log d)
   /// @brief f(0/1) != f(1/0) であること
-  /// @param f 単調関数
   /// @param d 探索する分母分子の上限
   /// @return 境界の区間を持つノード
-  /// node.p/node.q: 境界の左側の分数(f(0/1)と同じ値を返す最大の分数)
-  /// node.r/node.s: 境界の右側の分数(f(1/0)と同じ値を返す最小の分数)
+  /// node.p/node.q: f(0/1)と同じ値を返す最大の分数)
+  /// node.r/node.s: f(1/0)と同じ値を返す最小の分数)
   template<class F>
   Node binary_search(F f, T d) {
-    Node now = root();
+    Node v = root();
     bool bl = f(0, 1), bm = f(1, 1);
     while (1) {
       bool R = (bl == bm);
-      T cx = R ? now.p : now.r, cy = R ? now.q : now.s;
-      T sx = R ? now.r : now.p, sy = R ? now.s : now.q;
+      T cx = R ? v.p : v.r, cy = R ? v.q : v.s;
+      T sx = R ? v.r : v.p, sy = R ? v.s : v.q;
       T lim = d;
       if (sx) lim = min(lim, (d - cx) / sx);
       if (sy) lim = min(lim, (d - cy) / sy);
-      if (lim == 0) return now;
-      auto nxt = [&] (T k) { return R ? now.right(k) : now.left(k); };
-      auto check = [&] (T k) {
-        Node n = nxt(k);
-        return (R ? f(n.p, n.q) : f(n.r, n.s)) == (R ? bl : !bl);
+      if (lim == 0) return v;
+      auto check = [&] (T k) -> bool {
+        return (f(cx+sx*k, cy+sy*k) == bl) == R;
       };
       T k = 1;
       while (k <= lim && check(k)) {
-        if (k > lim / 2) {
-          k = lim + 1;
-          break;
-        }
+        if (k > lim / 2) { k = lim + 1; break; }
         k *= 2;
       }
       T ok = max((T)1, k / 2), ng = min(k, lim + 1);
@@ -158,9 +136,9 @@ public:
         (check(mid) ? ok : ng) = mid;
       }
       if (ok > lim) ok = lim;
-      now = nxt(ok);
-      if (ok == lim) return now;
-      bm = f(now.num(), now.den());
+      v = R ? v.right(ok) : v.left(ok);
+      if (ok == lim) return v;
+      bm = f(v.num(), v.den());
     }
   }
 };
