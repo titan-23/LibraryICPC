@@ -1,5 +1,6 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/pbds.cpp"
+// https://judge.yosupo.jp/submission/337595
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/pbds.cpp"
 
 void solve() {
     int n, q; cin >> n >> q;
