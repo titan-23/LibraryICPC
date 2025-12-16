@@ -1,5 +1,5 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/fast_set.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/fast_set.cpp"
 
 void solve() {
     int n, q; cin >> n >> q;

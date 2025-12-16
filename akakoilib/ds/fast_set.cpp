@@ -7,7 +7,7 @@ struct FastSet {
     int m = n;
     do { a.push_back(vector<u64>((m+W)>>6)); m = (m+W)>>6;
     } while (m > 1);
-    log = (int)a.size();
+    log = a.size();
   }
   bool contains(int i) { return (a[0][i>>6]>>(i&W)) & 1; }
   void insert(int i) {
@@ -22,7 +22,7 @@ struct FastSet {
   int ge(int v) { // i以上で最小の要素
     int d = 0;
     while (1) {
-      if (d >= (int)a.size() || ((v>>6) >= a[d].size())) { return -1; }
+      if (d >= (int)a.size() || (v>>6) >= a[d].size()) return -1;
       u64 m = a[d][v>>6] & ((~(u64)0) << (v & W));
       if (m == 0) { d++; v = (v >> 6) + 1;}
       else {
@@ -30,7 +30,8 @@ struct FastSet {
         if (d == 0) break;
         v <<= 6; d--;
       }
-    } return v;
+    }
+    return v;
   }
   int le(int v) { // i以下で最大の要素
     int d = 0;
@@ -43,6 +44,7 @@ struct FastSet {
         if (d == 0) break;
         v <<= 6; v += W; --d;
       }
-    } return v;
+    }
+    return v;
   }
 };
