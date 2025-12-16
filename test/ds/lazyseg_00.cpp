@@ -1,7 +1,7 @@
-// https://judge.yosupo.jp/submission/327259
+// https://judge.yosupo.jp/submission/337599
 
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/lazy_segtree.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/lazy_segtree.cpp"
 
 static constexpr ll mod = 998244353;
 static constexpr ll bit = 30;

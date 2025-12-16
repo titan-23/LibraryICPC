@@ -1,7 +1,6 @@
-// https://judge.yosupo.jp/submission/327260
-
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/sparse_table.cpp"
+// https://judge.yosupo.jp/submission/337598
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/sparse_table.cpp"
 
 int op(int s, int t) {
     return min(s, t);
