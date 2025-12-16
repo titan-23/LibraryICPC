@@ -1,7 +1,6 @@
-// https://atcoder.jp/contests/practice2/submissions/70742422
-
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/segment_tree.cpp"
+// https://atcoder.jp/contests/practice2/submissions/71755266
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/segtree.cpp"
 
 int op(int s, int t) {
     return max(s, t);

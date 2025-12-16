@@ -1,9 +1,8 @@
-// https://judge.yosupo.jp/submission/327255
+// https://judge.yosupo.jp/submission/337596
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/segtree.cpp"
 
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/segment_tree.cpp"
-
-#include "./../../akakoi_lib/math/modint.cpp"
+#include "./../../akakoilib/math/modint.cpp"
 
 const int mod = 998244353;
 struct T {
