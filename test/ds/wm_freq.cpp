@@ -1,6 +1,6 @@
-// https://judge.yosupo.jp/submission/327262
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/wavelet_matrix.cpp"
+// https://judge.yosupo.jp/submission/337620
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/wavelet_matrix.cpp"
 
 void solve() {
     int n, q; cin >> n >> q;

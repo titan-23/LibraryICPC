@@ -1,8 +1,8 @@
-// https://judge.yosupo.jp/submission/327267
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/ds/wavelet_matrix.cpp"
-#include "./../../akakoi_lib/ds/segtree.cpp"
-#include "./../../akakoi_lib/ds/wavelet_matrix_seg.cpp"
+// https://judge.yosupo.jp/submission/337615
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/ds/wavelet_matrix.cpp"
+#include "./../../akakoilib/ds/segtree.cpp"
+#include "./../../akakoilib/ds/wavelet_matrix_seg.cpp"
 
 ll op(ll s, ll t) { return s + t; }
 ll e() { return 0; }

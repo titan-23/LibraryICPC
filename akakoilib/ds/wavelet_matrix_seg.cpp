@@ -1,34 +1,30 @@
 // applyはgetの点のみでよい
-template<typename T, typename Mono, Mono(*op)(Mono, Mono), Mono(*e)()>
+#define all(a) (a).begin(), (a).end()
+template<typename T, typename Mo, Mo(*op)(Mo, Mo), Mo(*e)()>
 class WaveletMatrixSeg {
 private:
   int log;
-  vector<tuple<T, T, Mono>> pos;
+  vector<tuple<T, T, Mo>> pos;
   vector<BitVector> v;
   vector<pair<T, T>> xy;
   vector<T> y;
   vector<int> mid;
-  vector<Segtree<Mono, op, e>> seg;
+  vector<Segtree<Mo, op, e>> seg;
 public:
   WaveletMatrixSeg() {}
-  void set_point(T x, T y, Mono w) { pos.emplace_back(x, y, w); }
+  void set_point(T x, T y, Mo w) {pos.emplace_back(x, y, w);}
   void build() {
     xy.reserve(pos.size());
     for (auto &[x, y, _]: pos) xy.emplace_back(x, y);
-    sort(xy.begin(), xy.end());
-    xy.erase(unique(xy.begin(), xy.end()), xy.end());
-
+    sort(all(xy)); xy.erase(unique(all(xy)), xy.end());
     y.reserve(xy.size());
     for (auto &[x, y_]: xy) y.emplace_back(y_);
-    sort(y.begin(), y.end());
-    y.erase(unique(y.begin(), y.end()), y.end());
-
+    sort(all(y)); y.erase(unique(all(y)), y.end());
     log = y.size() == 0 ? 0 : 32 - __builtin_clz(y.size());
     v.resize(log); mid.resize(log); seg.resize(log);
-
     vector<T> a; a.reserve(xy.size());
-    for (auto &[x, y_]: xy) {
-      a.emplace_back(lower_bound(y.begin(), y.end(), y_) - y.begin());
+    for (auto &[_, v]: xy) {
+      a.emplace_back(lower_bound(all(y), v) - y.begin());
     }
     for (int bit = log-1; bit >= 0; --bit) {
       vector<T> zero, one;
@@ -41,73 +37,62 @@ public:
           zero.emplace_back(a[i]);
         }
       }
-      v[bit].build();
-      mid[bit] = zero.size();
-      a = zero; a.insert(a.end(), one.begin(), one.end());
+      v[bit].build(); mid[bit] = zero.size();
+      a = zero; a.insert(a.end(), all(one));
     }
-
-    vector<vector<Mono>> ws(log, vector<Mono>(xy.size(), e()));
+    vector<vector<Mo>> ws(log, vector<Mo>(xy.size(), e()));
     for (const auto &[x, y_, w]: pos) {
-      int k = lower_bound(xy.begin(), xy.end(), make_pair(x, y_)) - xy.begin();
-      int i_y = lower_bound(y.begin(), y.end(), y_) - y.begin();
+      int k = lower_bound(all(xy), make_pair(x, y_)) - xy.begin();
+      int iy = lower_bound(all(y), y_) - y.begin();
       for (int bit = log-1; bit >= 0; --bit) {
-        if (i_y >> bit & 1) k = v[bit].rank1(k) + mid[bit];
+        if (iy >> bit & 1) k = v[bit].rank1(k) + mid[bit];
         else k = v[bit].rank0(k);
         ws[bit][k] = op(ws[bit][k], w);
       }
     }
-    rep(i, log) seg[i] = Segtree<Mono, op, e>(ws[i]);
+    rep(i, log) seg[i] = Segtree<Mo, op, e>(ws[i]);
   }
-  void update_point(T x1, T y1, Mono val) {
-    int k = lower_bound(xy.begin(), xy.end(), make_pair(x1, y1)) - xy.begin();
-    int i_y = lower_bound(y.begin(), y.end(), y1) - y.begin();
-    for (int bit = log - 1; bit >= 0; --bit) {
-      if (i_y >> bit & 1) k = v[bit].rank1(k) + mid[bit];
+  void update_point(T x1, T y1, Mo val) {
+    int k = lower_bound(all(xy), make_pair(x1, y1)) - xy.begin();
+    int iy = lower_bound(all(y), y1) - y.begin();
+    for (int bit = log-1; bit >= 0; --bit) {
+      if (iy >> bit & 1) k = v[bit].rank1(k) + mid[bit];
       else k = v[bit].rank0(k);
       seg[bit].set(k, val);
     }
   }
   // 領域 [x1, x2) x [y1, y2) の prod を求める / O(log^2N)
-  Mono range_prod(T x1, T x2, T y1, T y2) {
-    assert(0 <= x1 && x1 <= x2); assert(0 <= y1 && y1 <= y2);
-    int l = lower_bound(xy.begin(), xy.end(), make_pair(x1, (T)0)) - xy.begin();
-    int r = lower_bound(xy.begin(), xy.end(), make_pair(x2, (T)0)) - xy.begin();
-    int y1_idx = lower_bound(y.begin(), y.end(), y1) - y.begin();
-    int y2_idx = lower_bound(y.begin(), y.end(), y2) - y.begin();
-    Mono ans = e();
-    stack<tuple<int, int, int, int, int>> s;
-    s.emplace(log-1, l, r, 0, 1<<log);
-    while (!s.empty()) {
-      auto [bit, nl, nr, y_l, y_r] = s.top(); s.pop();
-      if (bit < 0 || nl >= nr) continue;
-      if (y_r <= y1_idx || y_l >= y2_idx) continue;
-      int y_mid = y_l | (1<<bit);
-      int l0 = v[bit].rank0(nl), r0 = v[bit].rank0(nr);
-      int l1 = v[bit].rank1(nl) + mid[bit];
-      int r1 = v[bit].rank1(nr) + mid[bit];
-      if (y1_idx <= y_l && y_r <= y2_idx) {
-        if (l0 < r0) ans = op(ans, seg[bit].prod(l0, r0));
-        if (l1 < r1) ans = op(ans, seg[bit].prod(l1, r1));
-        continue;
+  Mo range_prod(T x1, T x2, T y1, T y2) {
+    int l = lower_bound(all(xy), make_pair(x1, (T)0)) - xy.begin();
+    int r = lower_bound(all(xy), make_pair(x2, (T)0)) - xy.begin();
+    int d = lower_bound(all(y), y1) - y.begin();
+    int u = lower_bound(all(y), y2) - y.begin();
+    if (log == 0) return e();
+    auto dfs = [&] (auto&& dfs, int bit, int l, int r, int y_l, int y_r) -> Mo {
+      if (l >= r || y_r <= d || y_l >= u) return e();
+      int m = y_l + (1 << bit);
+      int l0 = v[bit].rank0(l), r0 = v[bit].rank0(r);
+      int l1 = v[bit].rank1(l) + mid[bit];
+      int r1 = v[bit].rank1(r) + mid[bit];
+      if ((d <= y_l && y_r <= u) || bit == 0) {
+        Mo res = e();
+        if (d < m) res = op(res, seg[bit].prod(l0, r0));
+        if (m < u) res = op(res, seg[bit].prod(l1, r1));
+        return res;
       }
-      if (bit - 1 >= 0) {
-        if (y_l < y2_idx && y_mid > y1_idx) s.emplace(bit-1, l0, r0, y_l, y_mid);
-        if (y_mid < y2_idx && y_r > y1_idx) s.emplace(bit-1, l1, r1, y_mid, y_r);
-      } else {
-        if (l0 < r0 && y_l < y2_idx && y_mid > y1_idx) ans = op(ans, seg[bit].prod(l0, r0));
-        if (l1 < r1 && y_mid < y2_idx && y_r > y1_idx) ans = op(ans, seg[bit].prod(l1, r1));
-      }
-    }
-    return ans;
+      return op(dfs(dfs, bit-1, l0, r0, y_l, m),
+                dfs(dfs, bit-1, l1, r1, m, y_r));
+    };
+    return dfs(dfs, log - 1, l, r, 0, 1 << log);
   }
-  Mono sum(T x1, T x2, T y2) {
-    int l = lower_bound(xy.begin(), xy.end(), make_pair(x1, (T)0)) - xy.begin();
-    int r = lower_bound(xy.begin(), xy.end(), make_pair(x2, (T)0)) - xy.begin();
-    int y2_idx = lower_bound(y.begin(), y.end(), y2) - y.begin();
-    Mono ans = e();
+  Mo sum(T x1, T x2, T y2) {
+    int l = lower_bound(all(xy), make_pair(x1, (T)0)) - xy.begin();
+    int r = lower_bound(all(xy), make_pair(x2, (T)0)) - xy.begin();
+    int u = lower_bound(all(y), y2) - y.begin();
+    Mo ans = e();
     for (int bit = log-1; bit >= 0; --bit) {
       int l0 = v[bit].rank0(l), r0 = v[bit].rank0(r);
-      if (y2_idx>>bit & 1) {
+      if (u>>bit & 1) {
         l += mid[bit] - l0; r += mid[bit] - r0;
         ans += seg[bit].prod(l0, r0);
       } else {

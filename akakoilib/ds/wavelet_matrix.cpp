@@ -63,7 +63,6 @@ struct WaveletMatrix {
     }
     return s;
   }
-  T kth_largest(int l, int r, int k) { return kth_smallest(l, r, r-l-k-1); }
   int range_freq(int l, int r, T x) { // a[l, r)でx未満の要素数
     int ans = 0;
     for (int bit = log-1; bit >= 0; --bit) {
