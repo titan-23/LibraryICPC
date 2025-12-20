@@ -2,25 +2,22 @@ struct BurningBurying {
   int n, start, goal;
   ll offset = 0;
   Dinic dn;
-  BurningBurying(int n) {
-    this->n = n;
-    start = n;
-    goal = n + 1;
-    dn = Dinic(n + 2);
-  }
-  // 0,1
+  BurningBurying(int n) : n(n), start(n), goal(n+1), dn(n+2) {}
+  // 1変数コスト
+  // iを0にしたときのコスト=zero / 1にしたとき=one
   void add_single(int i, ll zero, ll one) {
     if (zero <= one) {
-      // 基本コストがで、をからに変えると zeroi01+one-される zero
+      // 基本コストがzeroで、iを0から1に変えると+(one-zero)される
       offset += zero;
       dn.add(start, i, one - zero);
     } else {
-      // 基本コストがで、をからに変えると onei10-one+される zero
+      // 基本コストがoneで、iを1から0に変えると+(zero-one)される
       offset += one;
       dn.add(i, goal, zero - one);
-      }
     }
-    //(0,0),(0,1),(1,0),(1,1)
+  }
+  // 2変数コスト
+  // (i,j)=(0,0),(0,1),(1,0),(1,1)のコストがそれぞれa,b,c,d
   void add_double(int i, int j, ll a, ll b, ll c, ll d) {
     assert(b + c >= a + d); // 大事！！！
     offset += a;
