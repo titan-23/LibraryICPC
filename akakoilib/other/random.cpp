@@ -1,8 +1,7 @@
 struct Random {
   mt19937_64 rng;
-  Random() {rng.seed(chrono::steady_clock::now().time_since_epoch().count()); }
-  int randint(int l, int r) { // llのときに注意
-    uniform_int_distribution<int> dist(l, r);
-    return dist(rng);
+  Random() { rng.seed(12312); }
+  ll randint(ll l, ll r) {
+    return uniform_int_distribution<ll>(l, r)(rng);
   }
 };
