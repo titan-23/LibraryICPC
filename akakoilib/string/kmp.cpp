@@ -1,9 +1,9 @@
-// p[i] = s[0..i] の接頭辞と接尾辞が一致する最大長。
-vector<ll> kmp(const string &s) {
+// p[i] = s[0..i] の接頭辞と接尾辞が一致する最大長
+vector<int> kmp(const string &s) {
   int n = s.size();
-  vector<ll> p(n);
+  vector<int> p(n);
   for(int i = 1; i < n; i++) {
-    ll g = p[i - 1];
+    int g = p[i - 1];
     while(g && s[i] != s[g]) g = p[g - 1];
     p[i] = g + (s[i] == s[g]);
   }
