@@ -1,9 +1,8 @@
-// https://judge.yosupo.jp/submission/327250
+// https://judge.yosupo.jp/submission/338649
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/algorithm/mo.cpp"
 
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/algorithm/mo.cpp"
-
-#include "./../../akakoi_lib/ds/fenwick_tree.cpp"
+#include "./../../akakoilib/ds/fenwick_tree.cpp"
 
 void solve() {
   int n, q; cin >> n >> q;
