@@ -94,7 +94,7 @@ public:
       int l0 = v[bit].rank0(l), r0 = v[bit].rank0(r);
       if (u>>bit & 1) {
         l += mid[bit] - l0; r += mid[bit] - r0;
-        ans += seg[bit].prod(l0, r0);
+        ans = op(ans, seg[bit].prod(l0, r0));
       } else {
         l = l0; r = r0;
       }
