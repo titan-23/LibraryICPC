@@ -1,6 +1,6 @@
 // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=11036283#1
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/lowlink.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/lowlink.cpp"
 
 void solve() {
   int n, m; cin >> n >> m;
