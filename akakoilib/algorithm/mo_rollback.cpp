@@ -1,63 +1,35 @@
-/**
- * 削除が困難だがロールバックが可能なデータ構造を用いて
- * 区間クエリ [l, r) を効率的に処理する
- * 全体計算量: O(α(N+Q)√N)
- * @param ADD(i)      インデックスiの要素をデータ構造に追加する
- * - 呼び出し回数: O((N + Q)√N)
- * (右端の単調増加で O(N√N) + 左端の調整で O(Q√N))
- * @param REM(idx)    クエリ idx の回答を計算・記録する
- * - 呼び出し回数: O(Q)
- * @param RESET()     データ構造を初期状態に戻す
- * - 呼び出し回数: O(√N) (ブロック切り替わり時のみ)
- * @param SNAPSHOT()  現在の状態を保存する
- * - 呼び出し回数: O(Q) (左端を伸ばす直前)
- * @param ROLLBACK()  直前の SNAPSHOT の状態まで戻す
- * - 呼び出し回数: O(Q)
- */
+// @param RESET() データ構造を初期状態に戻す 回数O(√N)
+// @param SNAPSHOT()  現在の状態を保存する 回数O(Q)
+// @param ROLLBACK()  直前のSNAPSHOTの状態まで戻す 回数O(Q)
 struct MoRollBack {
-  using ADD = function< void(int) >;
-  using REM = function< void(int) >;
-  using RESET = function< void() >;
-  using SNAPSHOT = function< void() >;
-  using ROLLBACK = function< void() >;
-  int width;
-  vector< int > left, right, order;
-  MoRollBack(int n, int q) : width(max(1, (int)sqrt(n))), order(q) {
+  int W; vector<int> L, R;
+  MoRollBack(int n, int q) : W(max(1, (int)sqrt(n))) {}
+  void add_query(int l, int r) { L.emplace_back(l); R.emplace_back(r); }
+  void run(const auto &add, const auto &out, const auto &reset, const auto &snapshot, const auto &rollback) {
+    vector<int> order(L.size());
     iota(begin(order), end(order), 0);
-  }
-  void add(int l, int r) { /* [l, r) */
-    left.emplace_back(l);
-    right.emplace_back(r);
-  }
-  int run(const ADD &add, const REM &rem, const RESET &reset, const SNAPSHOT &snapshot, const ROLLBACK &rollback) {
-    assert(left.size() == order.size());
     sort(begin(order), end(order), [&] (int a, int b) {
-      int ablock = left[a] / width, bblock = left[b] / width;
+      int ablock = L[a] / W, bblock = L[b] / W;
       if (ablock != bblock) return ablock < bblock;
-      return right[a] < right[b];
+      return R[a] < R[b];
     });
     reset();
-    for (int idx : order) {
-      if (right[idx] - left[idx] < width) {
-        for(int i = left[idx]; i < right[idx]; i++) add(i);
-        rem(idx);
-        rollback();
-      }
+    for (int idx : order) if (R[idx]-L[idx] < W) {
+      for (int i = L[idx]; i < R[idx]; i++) add(i);
+      out(idx); rollback();
     }
     int nr = 0, last_block = -1;
-    for (int idx : order) {
-      if (right[idx] - left[idx] < width) continue;
-      int block = left[idx] / width;
+    for (int idx : order) if (R[idx]-L[idx] >= W) {
+      int block = L[idx] / W;
       if(last_block != block) {
         reset();
         last_block = block;
-        nr = (block + 1) * width;
+        nr = (block + 1) * W;
       }
-      while (nr < right[idx]) add(nr++);
+      while (nr < R[idx]) add(nr++);
       snapshot();
-      for (int j = (block+1)*width-1; j >= left[idx]; j--) add(j);
-      rem(idx);
-      rollback();
+      for (int j = (block+1)*W-1; j >= L[idx]; j--) add(j);
+      out(idx); rollback();
     }
   }
 };
