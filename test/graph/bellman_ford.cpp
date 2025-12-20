@@ -1,7 +1,7 @@
-// https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=11044716#1
-#include "./../../akakoi_lib/template/template.cpp"
+// https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=11180056#2
+#include "./../../akakoilib/template/template.cpp"
 const ll INF = 1e18;
-#include "./../../akakoi_lib/graph/bellman_ford.cpp"
+#include "./../../akakoilib/graph/bellman_ford.cpp"
 
 void solve() {
   int n, m, r; cin >> n >> m >> r;
