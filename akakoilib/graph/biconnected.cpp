@@ -8,16 +8,13 @@ struct BiConnectedCC {
   int n;
   vector<vector<int>> G;
   vector<int> ord, low;
-  vector<vector<pair<int, int>>> bc; // 各成分に含まれる辺のリスト
+  vector<vector<pair<int, int>>> bc; // 各成分に含まれる辺
   vector<pair<int, int>> tmp;
-  // Block-Cut Tree 用
   vector<vector<int>> tree; // BCTの隣接リスト
   vector<int> arti;         // 関節点のリスト
   BiConnectedCC(vector<vector<int>> G) : n(G.size()), G(G), ord(n, -1), low(n, -1) {
     int k = 0;
-    rep(i, n) {
-      if (ord[i] == -1) dfs(i, -1, k);
-    }
+    rep(i, n) if (ord[i] == -1) dfs(i, -1, k);
     build_bct();
   }
   void dfs(int v, int p, int &k) { // need `&`

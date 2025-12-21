@@ -15,7 +15,7 @@ ull maximum_independent_set(vector<vector<int>> G) {
         int deg = popcount(E[v] & rest);
         chmax(p, pair<int, int>{deg, v});
         if (deg <= 1) {
-          rest ^= 1ull << v, rest &= ~E[v], now |= 1ull << v;
+          rest ^= 1ull<<v, rest &= ~E[v], now |= 1ull<<v;
           f = true;
         }
       }
