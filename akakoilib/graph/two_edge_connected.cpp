@@ -9,8 +9,7 @@ struct TwoEdgeCC {
   vector<int> id;
   TwoEdgeCC(vector<vector<int>> G) : n(G.size()), num(0), G(G), L(G), id(n, -1) {
     rep(i, n) if (id[i] == -1) {
-      groups.push_back({});
-      dfs(i, num);
+      groups.push_back({}); dfs(i, num);
       num++;
     }
     tree.resize(num);
@@ -25,14 +24,8 @@ struct TwoEdgeCC {
   void dfs(int v, int now) {
     id[v] = now;
     groups.back().push_back(v);
-    for (int x : G[v]) if (id[x] == -1) {
-      bool is_bridge = false;
-      if (L.ord[v] < L.ord[x]) {
-        is_bridge = L.ord[v] < L.low[x];
-      } else {
-        is_bridge = L.ord[x] < L.low[v];
-      }
-      if (!is_bridge) dfs(x, now);
+    for (int x : G[v]) if (id[x] != -1) {
+      if (L.ord[v] >= L.low[x] && L.ord[x] >= L.low[v]) dfs(x, now);
     }
   }
 };

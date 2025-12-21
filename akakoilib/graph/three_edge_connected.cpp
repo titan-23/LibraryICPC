@@ -33,7 +33,6 @@ struct ThreeEdgeCC {
       t.erase(unique(t.begin(), t.end()), t.end());
     }
   }
-private:
   void absorb(int u, int v) {
     deg[u] += deg[v]; swap(nxt[u], nxt[v]);
   }
