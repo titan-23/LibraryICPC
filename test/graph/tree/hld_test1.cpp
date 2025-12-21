@@ -1,7 +1,7 @@
-#include "./../../../akakoi_lib/template/template.cpp"
+#include "./../../../akakoilib/template/template.cpp"
 
-#include "./../../../akakoi_lib/ds/segtree.cpp"
-#include "./../../../akakoi_lib/graph/tree/hld.cpp"
+#include "./../../../akakoilib/ds/segtree.cpp"
+#include "./../../../akakoilib/graph/tree/hld.cpp"
 
 
 const int mod = 998244353;

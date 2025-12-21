@@ -1,5 +1,5 @@
-#include "./../../../akakoi_lib/template/template.cpp"
-#include "./../../../akakoi_lib/graph/flow/max_flow.cpp"
+#include "./../../../akakoilib/template/template.cpp"
+#include "./../../../akakoilib/graph/flow/max_flow.cpp"
 
 void solve() {
     int n, m; cin >> n >> m;

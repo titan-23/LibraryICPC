@@ -1,4 +1,4 @@
-#include "./../../akakoi_lib/template/template.cpp"
+#include "./../../akakoilib/template/template.cpp"
 
 namespace ptree {
     using U = int;
@@ -13,7 +13,7 @@ namespace ptree {
 // (memo) #pragma pack(push, 1) #pragma pack(pop)
 }
 
-#include "./../../akakoi_lib/gomi/p-wbtree.cpp"
+#include "./../../akakoilib/gomi/p-wbtree.cpp"
 
 // -----------------------
 

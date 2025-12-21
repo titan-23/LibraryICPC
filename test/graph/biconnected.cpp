@@ -1,6 +1,6 @@
 // https://judge.yosupo.jp/submission/333228
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/biconnected.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/biconnected.cpp"
 
 void solve() {
   int n, m; cin >> n >> m;

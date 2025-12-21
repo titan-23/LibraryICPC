@@ -1,7 +1,7 @@
 // https://judge.yosupo.jp/submission/327573
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/math/modint.cpp"
-#include "./../../akakoi_lib/graph/potentialized_uf.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/math/modint.cpp"
+#include "./../../akakoilib/graph/potentialized_uf.cpp"
 
 void solve() {
     int n, q; cin >> n >> q;

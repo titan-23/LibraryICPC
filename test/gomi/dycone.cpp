@@ -8,7 +8,7 @@ const ll dy[] = {-1, 0, 0, 1};
 const ll dx[] = {0, -1, 1, 0};
 // --------
 
-#include "./../../akakoi_lib/gomi/dycone.cpp"
+#include "./../../akakoilib/gomi/dycone.cpp"
 
 
 #include <atcoder/modint>

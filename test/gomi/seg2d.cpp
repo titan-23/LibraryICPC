@@ -1,5 +1,5 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/gomi/seg2D.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/gomi/seg2D.cpp"
 
 ll op(ll s, ll t) { return s + t; }
 ll e() { return 0; }

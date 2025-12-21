@@ -1,5 +1,5 @@
-#include "./../../../akakoi_lib/template/template.cpp"
-#include "./../../../akakoi_lib/graph/tree/lct.cpp"
+#include "./../../../akakoilib/template/template.cpp"
+#include "./../../../akakoilib/graph/tree/lct.cpp"
 
 static constexpr int mod = 998244353;
 static constexpr int bit = 31;

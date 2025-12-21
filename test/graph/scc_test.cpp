@@ -1,8 +1,8 @@
 // https://judge.yosupo.jp/submission/325053
 
-#include "./../../akakoi_lib/template/template.cpp"
+#include "./../../akakoilib/template/template.cpp"
 
-#include "./../../akakoi_lib/graph/scc.cpp"
+#include "./../../akakoilib/graph/scc.cpp"
 
 
 void solve() {

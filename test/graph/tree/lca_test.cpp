@@ -1,8 +1,8 @@
 // https://judge.yosupo.jp/submission/327584
 // https://judge.yosupo.jp/submission/327583
-#include "./../../../akakoi_lib/template/template.cpp"
-#include "./../../../akakoi_lib/ds/segtree.cpp"
-#include "./../../../akakoi_lib/graph/tree/lca.cpp"
+#include "./../../../akakoilib/template/template.cpp"
+#include "./../../../akakoilib/ds/segtree.cpp"
+#include "./../../../akakoilib/graph/tree/lca.cpp"
 
 void solve() {
   int n, q; cin >> n >> q;

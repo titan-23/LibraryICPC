@@ -1,4 +1,4 @@
-#include "./../../akakoi_lib/template/template.cpp"
+#include "./../../akakoilib/template/template.cpp"
 
 using ull = unsigned long long;
 using U = int;
@@ -39,7 +39,7 @@ F id() {
     return (ull)1<<bit;
 }
 
-#include "./../../akakoi_lib/gomi/p-wbtree.cpp"
+#include "./../../akakoilib/gomi/p-wbtree.cpp"
 
 void solve() {
     int n, q;

@@ -1,6 +1,6 @@
 // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=11044734#2
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/gomi/seg2D_light.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/gomi/seg2D_light.cpp"
 
 int op(int s, int t) { return s + t; }
 int e() { return 0; }

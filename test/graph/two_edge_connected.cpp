@@ -1,5 +1,5 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/two_edge_connected.cpp"
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/two_edge_connected.cpp"
 
 void solve() {
   int n, m; cin >> n >> m;

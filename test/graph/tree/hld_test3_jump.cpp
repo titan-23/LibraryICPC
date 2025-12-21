@@ -1,6 +1,6 @@
 // https://judge.yosupo.jp/submission/327582
-#include "./../../../akakoi_lib/template/template.cpp"
-#include "./../../../akakoi_lib/graph/tree/hld.cpp"
+#include "./../../../akakoilib/template/template.cpp"
+#include "./../../../akakoilib/graph/tree/hld.cpp"
 
 void solve() {
   int n, q; cin >> n >> q;
