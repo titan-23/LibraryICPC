@@ -24,7 +24,7 @@ struct TwoEdgeCC {
   void dfs(int v, int now) {
     id[v] = now;
     groups.back().push_back(v);
-    for (int x : G[v]) if (id[x] != -1) {
+    for (int x : G[v]) if (id[x] == -1) {
       if (L.ord[v] >= L.low[x] && L.ord[x] >= L.low[v]) dfs(x, now);
     }
   }
