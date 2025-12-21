@@ -7,7 +7,6 @@ void FHT(vector<mint>& a, bool inv = false) {
   }
   return;
 }
-
 vector<mint> XorConvolution(vector<mint> a, vector<mint> b) {
   FHT(a); FHT(b);
   rep(i, a.size()) a[i] *= b[i];

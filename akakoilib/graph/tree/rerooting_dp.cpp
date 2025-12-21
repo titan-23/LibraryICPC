@@ -1,26 +1,19 @@
-template<typename E,
-    typename T, T (*merge)(T, T),
+template<typename E, typename T, T (*merge)(T, T),
     T (*apply_vertex)(T, int),
-    T (*apply_edge)(T, E, int, int),
-    T (*e)()>
-vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
-  int n = G.size();
+    T (*apply_edge)(T, E, int, int), T (*e)()>
+vector<T> rerooting_dp(vector<vector<pair<int, E>>> G) {
+  int n = G.size(), root = 0;
   vector<vector<T>> dp(n);
   rep(i, n) dp[i].resize(G[i].size(), e());
-  int root = 0;
   vector<int> pdx(n, -1), topo;
-  stack<int> s;
+  stack<int> s; s.emplace(root);
   pdx[root] = -2;
-  s.emplace(root);
   while (!s.empty()) {
     int v = s.top(); s.pop();
     topo.emplace_back(v);
     rep(i, G[v].size()) {
       int x = G[v][i].first;
-      if (pdx[x] != -1) {
-        pdx[v] = i;
-        continue;
-      }
+      if (pdx[x] != -1) { pdx[v] = i; continue; }
       s.emplace(x);
     }
   }

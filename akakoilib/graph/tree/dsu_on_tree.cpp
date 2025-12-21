@@ -19,7 +19,7 @@ struct DSUonTree {
     for (int x : G[v]) if (x != p) dfs2(x, v);
     out[v] = t;
   }
-  DSUonTree(vector<vector<int>> G, int root=0) : G(G), n(G.size()), t(0), root(root), sz(n), path(n), in(n), out(n) { dfs1(root); dfs2(root); }
+  DSUonTree(vector<vector<int>> G, int root) : G(G), n(G.size()), t(0), root(root), sz(n), path(n), in(n), out(n) { dfs1(root); dfs2(root); }
   int idx(int u) const { return in[u]; }
   void run(const auto &update, const auto &query, const auto &clear, const auto &reset) {
     auto dsu = [&](auto dsu, int v, int p=-1, bool keep=false) -> void {

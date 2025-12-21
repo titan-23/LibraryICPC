@@ -58,17 +58,21 @@ private:
   }
   auto inner_add_edge(int u, int v, int w) {
     int p = max_edge(u, v);
-    if (p == -1) {sub_add(u, v, w); }
-    else if (W[p] > w) { sub_del(p, P[p], W[p]); sub_del(P[p], p, W[p]); sub_add(u, v, w); }
+    if (p == -1) sub_add(u, v, w);
+    else if (W[p] > w) {
+      sub_del(p, P[p], W[p]);
+      sub_del(P[p], p, W[p]);
+      sub_add(u, v, w);
+    }
   }
   void inner_delete_edge(int u, int v, int w) { sub_del(u, v, w); sub_del(v, u, w); }
   void inner_add_point(int u, T v) {
-    while (1) { sum[u] += v;
+    while (1) {
+      sum[u] += v;
       if (u == P[u]) break;
       u = P[u];
     }
   }
-  T inner_get_sum(int u) { return sum[find(u)]; }
 public:
   Dycone(int n, int q) : n(n), q(q), t(0), group_count(n), P(n), W(n), sz(n), rd(n), sum(n), S(q) {
     rep(i, n) { P[i] = i; rd[i] = i; W[i] = 1; sz[i] = 1; }
@@ -103,13 +107,13 @@ public:
   vector<T> run() { assert(t <= q); vector<T> res(Q.size());
     rep(i, Q.size()) { auto [type, u, v, w] = Q[i];
       switch (type) {
-        case ADD : { inner_add_edge(u, v, S[i]); break; }
-        case DEL : { inner_delete_edge(u, v, S[i]); break; }
-        case ADD_POINT : { inner_add_point(u, w); break; }
-        case GET_SUM : { res[i] = inner_get_sum(u); break; }
-        case GET_COUNT : { res[i] = group_count; break; }
-        case GET_SIZE : { res[i] = sz[find(u)]; break; }
-        case IS_SAME : { res[i] = find(u) == find(v); break; }
+        case ADD: { inner_add_edge(u, v, S[i]); break; }
+        case DEL: { inner_delete_edge(u, v, S[i]); break; }
+        case ADD_POINT: { inner_add_point(u, w); break; }
+        case GET_SUM: { res[i] = sum[find(u)]; break; }
+        case GET_COUNT: { res[i] = group_count; break; }
+        case GET_SIZE: { res[i] = sz[find(u)]; break; }
+        case IS_SAME: { res[i] = find(u)==find(v); break; }
         default: assert(false);
       }
     } return res;

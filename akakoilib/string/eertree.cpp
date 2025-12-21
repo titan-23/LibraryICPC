@@ -1,7 +1,6 @@
 struct EerTree {
 private:
-  int last_idx, n;
-  ll all_count;
+  int last_idx, n; ll all_count;
   string s;
   vector<map<char, int>> child;
   // vector<array<int, 26>> child; // -1埋め
@@ -36,20 +35,15 @@ public:
     int now = get_upper(last_idx, c);
     if (child[now].find(c) != child[now].end()) {
       last_idx = child[now][c];
-      suff.emplace_back(last_idx);
-      n++;
+      suff.emplace_back(last_idx); n++;
       count[last_idx]++;
       all_count += link_dep[last_idx];
       return;
     }
-    int idx = new_node();
-    len[idx] = len[now]+2;
-    child[now][c] = idx;
-    par[idx] = now;
-    count[idx] = 1;
+    int idx = new_node(); len[idx] = len[now]+2;
+    child[now][c] = idx; par[idx] = now; count[idx] = 1;
     start[idx] = n+1-len[idx];
-    suff.emplace_back(idx);
-    last_idx = idx;
+    suff.emplace_back(idx); last_idx = idx;
     if (len[idx] == 1) {
       link[idx] = 1;
     } else {
@@ -57,8 +51,7 @@ public:
       link[idx] = child[k][c];
     }
     link_dep[idx] = link_dep[link[idx]]+1;
-    all_count += link_dep[idx];
-    n++;
+    all_count += link_dep[idx]; n++;
   }
   // s[i]で終わる回文の中で最長のもののidx
   int get_suff(int i) { return suff[i]; }

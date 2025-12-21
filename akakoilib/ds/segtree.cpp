@@ -3,12 +3,21 @@ struct Segtree {
   int n, s;
   vector<T> d;
   Segtree() : n(0) {}
-  Segtree(vector<T> a) : n(a.size()) {
-    s = 1;
+  Segtree(vector<T> a) : n(a.size()), s(1) {
     while (s < n) s <<= 1;
     d.resize(2*s, e());
     rep(i, n) d[i+s] = a[i];
     for (int i = s-1; i > 0; --i) d[i] = op(d[i<<1], d[i<<1|1]);
+  }
+  MST(vector<T> a) : n(a.size()), s(1) { // for MST
+    while (s < n) s <<= 1;
+    d.resize(2*s);
+    rep(i, n) d[i+s].push_back(a[i]);
+    for (int i = s-1; i > 0; --i) {
+      const vector<T> &L = d[i<<1], &R = d[i<<1|1];
+      d[i].resize(L.size()+R.size());
+      merge(L.begin(), L.end(), R.begin(), R.end(), d.begin());
+    }
   }
   void set(int i, T x) {
     i += s;

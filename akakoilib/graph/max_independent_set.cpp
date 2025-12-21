@@ -1,15 +1,13 @@
 using ull = unsigned long long;
 ull maximum_independent_set(vector<vector<int>> G) {
-  const int n = G.size();
+  int n = G.size();
   vector<ull> E(n);
-  rep(i, n) {
-    for (auto& e : G[i]) E[i] |= 1ull << e;
-  }
+  rep(i, n) for (auto& e : G[i]) E[i] |= 1ull << e;
   int ans = 0;
   ull res = 0;
-  auto dfs = [&] (auto&& dfs, ull now, ull rest) -> void {
+  auto dfs = [&] (auto &&dfs, ull now, ull rest) -> void {
     pair<int, int> p = {-1, -1};
-    while (true) {
+    while (1) {
       bool f = false;
       rep(v, n) if ((rest >> v) & 1) {
         int deg = popcount(E[v] & rest);

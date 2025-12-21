@@ -26,7 +26,7 @@ public:
     while (s < n) s <<= 1, log++;
     d.resize(2*s, e()); lazy.resize(s, id());
   }
-  LazySegtree(const vector<T> a) : n(a.size()), s(1), log(0) {
+  LazySegtree(vector<T> a) : n(a.size()), s(1), log(0) {
     while (s < n) s <<= 1, log++;
     d.resize(2*s, e()); lazy.resize(s, id());
     rep(i, n) d[i+s] = a[i];

@@ -1,8 +1,7 @@
 // applyはgetの点のみでよい
 #define all(a) (a).begin(), (a).end()
 template<typename T, typename Mo, Mo(*op)(Mo, Mo), Mo(*e)()>
-class WaveletMatrixSeg {
-private:
+struct WaveletMatrixSeg {
   int log;
   vector<tuple<T, T, Mo>> pos;
   vector<BitVector> v;
@@ -10,7 +9,6 @@ private:
   vector<T> y;
   vector<int> mid;
   vector<Segtree<Mo, op, e>> seg;
-public:
   WaveletMatrixSeg() {}
   void set_point(T x, T y, Mo w) {pos.emplace_back(x, y, w);}
   void build() {

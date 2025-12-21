@@ -431,13 +431,13 @@ vector<Point> getCircleLineIntersection(const Circle& c, Point p1, Point p2) {
   Real b = 2 * (dx * (p1.x - cx) + dy * (p1.y - cy));
   Real c_const = (p1.x - cx) * (p1.x - cx) + (p1.y - cy) * (p1.y - cy) - r * r;
   Real discriminant = b * b - 4 * a * c_const;
-  vector<Point> intersections;
+  vector<Point> res;
   if (almostEqual(discriminant, 0)) {
     Real t = -b / (2 * a);
     Real ix = p1.x + t * dx;
     Real iy = p1.y + t * dy;
-    intersections.emplace_back(ix, iy);
-    intersections.emplace_back(ix, iy);
+    res.emplace_back(ix, iy);
+    res.emplace_back(ix, iy);
   } else if (discriminant > 0) {
     Real sqrt_discriminant = sqrt(discriminant);
     Real t1 = (-b + sqrt_discriminant) / (2 * a);
@@ -446,15 +446,15 @@ vector<Point> getCircleLineIntersection(const Circle& c, Point p1, Point p2) {
     Real iy1 = p1.y + t1 * dy;
     Real ix2 = p1.x + t2 * dx;
     Real iy2 = p1.y + t2 * dy;
-    intersections.emplace_back(ix1, iy1);
-    intersections.emplace_back(ix2, iy2);
+    res.emplace_back(ix1, iy1);
+    res.emplace_back(ix2, iy2);
   }
-  if (almostEqual(intersections[0].x, intersections[1].x)) {
-    if (greaterThan(intersections[0].y, intersections[1].y)) swap(intersections[0], intersections[1]);
-  } else if (greaterThan(intersections[0].x, intersections[1].x)) {
-    swap(intersections[0], intersections[1]);
+  if (almostEqual(res[0].x, res[1].x)) {
+    if (greaterThan(res[0].y, res[1].y)) swap(res[0], res[1]);
+  } else if (greaterThan(res[0].x, res[1].x)) {
+    swap(res[0], res[1]);
   }
-  return intersections;
+  return res;
 }
 /// @brief 2つの円の交点を求める
 vector<Point> getCirclesIntersect(const Circle& c1, const Circle& c2) {
@@ -470,15 +470,15 @@ vector<Point> getCirclesIntersect(const Circle& c1, const Circle& c2) {
   Real ry = (x2 - x1) * (h / d);
   Point p1(x0 + rx, y0 + ry);
   Point p2(x0 - rx, y0 - ry);
-  vector<Point> intersections;
-  intersections.push_back(p1);
-  intersections.push_back(p2);
-  if (almostEqual(intersections[0].x, intersections[1].x)) {
-    if (greaterThan(intersections[0].y, intersections[1].y)) swap(intersections[0], intersections[1]);
-  } else if (greaterThan(intersections[0].x, intersections[1].x)) {
-    swap(intersections[0], intersections[1]);
+  vector<Point> res;
+  res.push_back(p1);
+  res.push_back(p2);
+  if (almostEqual(res[0].x, res[1].x)) {
+    if (greaterThan(res[0].y, res[1].y)) swap(res[0], res[1]);
+  } else if (greaterThan(res[0].x, res[1].x)) {
+    swap(res[0], res[1]);
   }
-  return intersections;
+  return res;
 }
 /// @brief 点から引ける円の接線の接点を求める
 vector<Point> getTangentLinesFromPoint(const Circle& c, const Point& p) {
@@ -495,15 +495,15 @@ vector<Point> getTangentLinesFromPoint(const Circle& c, const Point& p) {
   Real h = sqrt(r * r - a * a);
   Real cx1 = cx + a * dx / d;
   Real cy1 = cy + a * dy / d;
-  vector<Point> tangents;
-  tangents.emplace_back(cx1 + h * dy / d, cy1 - h * dx / d);
-  tangents.emplace_back(cx1 - h * dy / d, cy1 + h * dx / d);
-  if (almostEqual(tangents[0].x, tangents[1].x)) {
-    if (greaterThan(tangents[0].y, tangents[1].y)) swap(tangents[0], tangents[1]);
-  } else if (greaterThan(tangents[0].x, tangents[1].x)) {
-    swap(tangents[0], tangents[1]);
+  vector<Point> res;
+  res.emplace_back(cx1 + h * dy / d, cy1 - h * dx / d);
+  res.emplace_back(cx1 - h * dy / d, cy1 + h * dx / d);
+  if (almostEqual(res[0].x, res[1].x)) {
+    if (greaterThan(res[0].y, res[1].y)) swap(res[0], res[1]);
+  } else if (greaterThan(res[0].x, res[1].x)) {
+    swap(res[0], res[1]);
   }
-  return tangents;
+  return res;
 }
 /// @brief 2つの円の共通接線を求める
 vector<Segment> getCommonTangentsLine(const Circle& c1, const Circle& c2) {

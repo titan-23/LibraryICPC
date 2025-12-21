@@ -1,5 +1,3 @@
-# Convolution
-
 | prime | 2 | primitive root |
 | --- | --- | --- |
 | 998244353 | 23 | 3 |
