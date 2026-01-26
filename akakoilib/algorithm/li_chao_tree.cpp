@@ -5,8 +5,7 @@ struct LiChaoTree {
   };
   int n;
   vector<Line> dat;
-  LiChaoTree(int n_) {
-    n = 1;
+  LiChaoTree(int n_) : n(1) {
     while (n < n_) n *= 2;
     dat.assign(2*n, {0, INF});
   }

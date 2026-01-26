@@ -1,11 +1,11 @@
 struct LCAAuxiliaryTree {
   int n; vector<int> in, out; LCA tree;
   LCAAuxiliaryTree(vector<vector<int>> G) : n(G.size()), in(n, -1), out(n, -1), tree(G, 0) {
-    int time = 0;
-    auto dfs = [&] (auto &&dfs, int v,int p){
-      in[v] = time++;
+    int t = 0;
+    auto dfs = [&] (auto &&dfs, int v,int p) {
+      in[v] = t++;
       for (int x : G[v]) if (x != p) dfs(dfs, x, v);
-      out[v] = time-1;
+      out[v] = t-1;
     };
     dfs(dfs, 0, -1);
   }
@@ -20,7 +20,7 @@ struct LCAAuxiliaryTree {
     stack<int> s;
     for(int v : vs) {
       while (!s.empty() && out[s.top()] < in[v]) s.pop();
-      if(!s.empty()) RES[s.top()].push_back(v);
+      if (!s.empty()) RES[s.top()].push_back(v);
       else root = v;
       s.push(v);
     }

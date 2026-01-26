@@ -1,4 +1,3 @@
-using ull = unsigned long long;
 ull maximum_independent_set(vector<vector<int>> G) {
   int n = G.size();
   vector<ull> E(n);
@@ -20,10 +19,10 @@ ull maximum_independent_set(vector<vector<int>> G) {
       if (!f) break;
       p = {-1, -1};
     }
-    const int sz1 = popcount(now), sz2 = popcount(rest);
+    int sz1 = popcount(now), sz2 = popcount(rest);
     if (chmax(ans, sz1)) res = now;
     if (sz2 == 0 || sz1 + sz2 <= ans) return;
-    const int v = p.second;
+    int v = p.second;
     rest &= ~(1ull << v);
     dfs(dfs, now, rest);
     now |= 1ull << v;

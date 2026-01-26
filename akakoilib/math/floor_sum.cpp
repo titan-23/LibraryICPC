@@ -1,9 +1,7 @@
 // \sum[i=0,n-1]{floor((a*i+b)/m)}
 ll floor_sum(ll n, ll m, ll a, ll b) {
   ll ans = 0;
-  if (a >= m) {
-    ans += (n-1)*n*(a/m)/2; a %= m;
-  }
+  if (a >= m) { ans += (n-1)*n*(a/m)/2; a %= m; }
   if (b >= m) { ans += n*(b/m); b %= m; }
   ll y_max = (a*n+b)/m, x_max = (y_max*m-b);
   if (y_max == 0) return ans;

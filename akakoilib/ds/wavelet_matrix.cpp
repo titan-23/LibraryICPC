@@ -53,8 +53,7 @@ struct WaveletMatrix {
       int l0 = v[bit].rank0(l), r0 = v[bit].rank0(r);
       if (x >> bit & 1) {
         ans += r0 - l0;
-        l += mid[bit] - l0;
-        r += mid[bit] - r0;
+        l += mid[bit] - l0; r += mid[bit] - r0;
       } else {
         l = l0; r = r0;
       }
@@ -66,12 +65,10 @@ struct WaveletMatrix {
   }
   T prev_value(int l, int r, T y) { // a[l, r)でy未満のうち最大
     int x = range_freq(l, r, y);
-    if (x == 0) return -1;
-    return kth_smallest(l, r, x-1);
+    return x == 0 ? -1 : kth_smallest(l, r, x-1);
   }
   T next_value(int l, int r, T x) {
     int c = range_freq(l, r, x);
-    if (c == r - l) return -1;
-    return kth_smallest(l, r, c);
+    return c == r-l ? -1 : kth_smallest(l, r, c);
   }
 };

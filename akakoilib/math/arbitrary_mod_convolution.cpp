@@ -7,7 +7,7 @@ void ntt(vector<mint<M>>& a, bool inv) {
   }
   mint<M> r = R, ir = r.inv();
   for (int k = 1; k < n; k <<= 1) {
-    mint<M> w_base = inv ? ir.pow((M-1)/(k<<1)) : r.pow((M-1)/(k<<1));
+    mint<M> w_base = (inv ? ir : r).pow((M-1)/(k<<1));
     for (int i = 0; i < n; i += k<<1) {
       mint<M> w = 1;
       rep(j, k) {
@@ -17,10 +17,9 @@ void ntt(vector<mint<M>>& a, bool inv) {
       }
     }
   }
-  if (inv) {
-    mint<M> vinv = mint<M>(n).inv();
-    rep(i, n) a[i] *= vinv;
-  }
+  if (!inv) return;
+  mint<M> vinv = mint<M>(n).inv();
+  rep(i, n) a[i] *= vinv;
 }
 template<int M, int R> vector<mint<M>>
 sub(const vector<int> &A, const vector<int> &B, int z) {
@@ -33,7 +32,7 @@ sub(const vector<int> &A, const vector<int> &B, int z) {
   ntt<M, R>(a,1); return a;
 }
 template<typename T>
-vector<T> arbitrary_mod_convolution(const vector<T>& a, const vector<T>& b) {
+vector<T> arbitrary_mod_convolution(vector<T> a, vector<T> b) {
   if(a.empty() || b.empty()) return {};
   int z = a.size() + b.size() - 1;
   vector<int> A(a.size()), B(b.size());

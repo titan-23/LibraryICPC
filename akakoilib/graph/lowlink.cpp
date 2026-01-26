@@ -1,8 +1,8 @@
 struct LowLink {
   int n;
+  vector<vector<int>> G;
   vector<int> ord, low, arti;
   vector<pair<int, int>> bridge;
-  vector<vector<int>> G;
   LowLink(vector<vector<int>> G) : n(G.size()), G(G), ord(n, -1), low(n, -1) {
     int k = 0;
     rep(i, n) if (ord[i] == -1) dfs(i, k, -1);

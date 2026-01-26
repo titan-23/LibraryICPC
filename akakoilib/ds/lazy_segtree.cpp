@@ -1,7 +1,7 @@
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()>
 struct LazySegtree {
 private:
-  int n, log, s;
+  int n, s, log;
   vector<T> d;
   vector<F> lazy;
   void update(int k) { d[k] = op(d[k<<1], d[k<<1|1]); }
@@ -123,9 +123,5 @@ public:
       v = op(d[r], v);
     } while ((r & -r) != r);
     return 0;
-  }
-  vector<T> tovector() {
-    for (int i = 1; i < s; ++i) push(i);
-    return vector<T>(d.begin()+s, d.begin()+s+n);
   }
 };

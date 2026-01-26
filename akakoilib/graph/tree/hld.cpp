@@ -4,14 +4,13 @@ struct HLD {
   vector<int> size, par, dep, head, hld, in, out;
   // in:  頂点idxのHLD配列上のインデックス(頂点→配列)
   // hld: HLD配列のidx番目の要素が元の木のどの頂点か(配列→頂点)
-  HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), t(0), size(n), par(n), dep(n), head(n), hld(n), in(n), out(n) {
+  HLD(vector<vector<int>> G, int root) : G(G), n(G.size()), t(0), size(n, 1), par(n), dep(n), head(n), hld(n), in(n), out(n) {
     dfs_sz(root, -1);
     head[root] = root;
     dfs_hld(root, -1);
   }
   void dfs_sz(int v, int p) {
     par[v] = p;
-    size[v] = 1;
     if (G[v].size() && G[v][0] == p) swap(G[v][0], G[v].back());
     for (int &x : G[v]) if (x != p) { // need `&`
       dep[x] = dep[v] + 1;

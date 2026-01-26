@@ -54,8 +54,8 @@ vector<int64_t> multiply(const vector<int>& a, const vector<int>& b) {
   int sz = 1 << nbase;
   vector<C> fa(sz);
   rep(i, sz) {
-    int x = (i < (int)a.size() ? a[i] : 0);
-    int y = (i < (int)b.size() ? b[i] : 0);
+    int x = (i < a.size() ? a[i] : 0);
+    int y = (i < b.size() ? b[i] : 0);
     fa[i] = C(x, y);
   }
   fft(fa, sz);

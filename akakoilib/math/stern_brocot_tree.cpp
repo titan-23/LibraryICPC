@@ -66,9 +66,7 @@ struct SternBrocotTree {
   }
   Node decode_path(const vector<pair<char, T>> &P) {
     Node now = root();
-    for (const auto &[d, c] : P) {
-      now = (d == 'L') ? now.left(c) : now.right(c);
-    }
+    for (const auto &[d, c] : P) now = (d == 'L') ? now.left(c) : now.right(c);
     return now;
   }
   Node lca(const Node &a, const Node &b) {

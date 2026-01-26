@@ -1,4 +1,3 @@
-// 二重頂点連結成分
 // どの点とそれに接続する辺を取り除いても連結であるようなグラフのこと
 // 成分内の任意の2頂点間には、内素なパス(始点・終点以外で同じ頂点を通らないパス)が2本以上存在する
 // 成分内に関節点を含まない
@@ -7,11 +6,10 @@
 struct BiConnectedCC {
   int n;
   vector<vector<int>> G;
-  vector<int> ord, low;
+  vector<int> ord, low, arti;
   vector<vector<pair<int, int>>> bc; // 各成分に含まれる辺
-  vector<pair<int, int>> tmp;
   vector<vector<int>> tree; // BCTの隣接リスト
-  vector<int> arti;         // 関節点のリスト
+  vector<pair<int, int>> tmp;
   BiConnectedCC(vector<vector<int>> G) : n(G.size()), G(G), ord(n, -1), low(n, -1) {
     int k = 0;
     rep(i, n) if (ord[i] == -1) dfs(i, -1, k);
@@ -36,9 +34,7 @@ struct BiConnectedCC {
             tmp.pop_back();
           }
         }
-      } else {
-        chmin(low[v], ord[x]);
-      }
+      } else chmin(low[v], ord[x]);
     }
     if (p == -1) is_arti = (cnt > 1);
     if (is_arti) arti.push_back(v);
@@ -47,16 +43,11 @@ struct BiConnectedCC {
   void build_bct() {
     tree.assign(n + bc.size(), vector<int>());
     vector<int> last(n, -1);
-    rep(i, bc.size()) {
-      int node = n + i;
-      for (auto &edge : bc[i]) {
-        for (int v : {edge.first, edge.second}) {
-          if (last[v] != i) {
-            last[v] = i;
-            tree[v].push_back(node);
-            tree[node].push_back(v);
-          }
-        }
+    rep(i, bc.size()) for (auto &[x, y] : bc[i]) {
+      for (int v : {x, y}) if (last[v] != i) {
+        last[v] = i;
+        tree[v].push_back(n+i);
+        tree[n+i].push_back(v);
       }
     }
   }

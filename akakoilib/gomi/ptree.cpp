@@ -1,4 +1,3 @@
-namespace ptree {
 struct Node {
   Node const *l, *r;
   U size; F lz; T v; int dep; bool rev;
@@ -78,7 +77,6 @@ pair<NP, NP> split(NP x, U s, F lz) {
 }
 vector<T> tovector(NP root) {
   vector<T> res;
-  if (!root) return res;
   stack<tuple<NP, F, bool>> st;
   st.emplace(root, id(), false);
   while (!st.empty()) {
@@ -116,7 +114,7 @@ struct Tree {
       if (t->size == 1) return mapping(lz, t->v);
       NP lch = r ? t->r : t->l;
       U ls = lch ? lch->size : 0;
-      if (k < ls) { t = lch; }
+      if (k < ls) t = lch;
       else { k -= ls; t = r ? t->l : t->r; }
     }
   }
@@ -147,20 +145,15 @@ struct Tree {
   // T prod(U l, U r) return v(b);
   // Tree apply(U l, U r, F f) return Tree(merge(merge(a, push(b, f)), d));
   // Tree reverse(U l, U r) return Tree(merge(merge(a, toggle(b)), d));
-  vector<T> to_vector() { return tovector(root); }
   void rebuild() {
-    if (size() == 0) { reset(); root = nullptr; return; }
-    vector<T> data = to_vector();
+    vector<T> data = tovector(root);;
     reset();
     *this = Tree(data);
   }
 };
-void reserve(int n) {
-  while (blocks.size()*BSIZE < n) expand();
-}
+void reserve(int n) { while (blocks.size()*BSIZE < n) expand(); }
 pair<Tree, Tree> split(const Tree& t, U k) {
   auto [l, r] = split(t.root, k, id());
   return { Tree(l), Tree(r) };
 }
 Tree merge(const Tree& a, const Tree& b) { return Tree(merge(a.root, b.root)); }
-}

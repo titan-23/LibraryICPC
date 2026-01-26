@@ -1,7 +1,5 @@
 hs.resize(n, 1); vector<u64> R(n+1);
-random_device rd; mt19937_64 rnd(seed == -1 ? rd() : seed);
-uniform_int_distribution<u64> dist(47, (1ull<<61)-1);
-rep(i, n+1) R[i] = dist(rnd);
+rep(i, n+1) R[i] = randint(47, (1ull<<61)-1);
 auto dfs = [&] (auto &&dfs, int v, int p) -> int {
   int d = 0;
   for (int x : G[v]) if (x != p) {

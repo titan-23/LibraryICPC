@@ -1,7 +1,7 @@
 struct LCA {
   int n; vector<int> path, in;
   Segtree<int, op, e> seg;
-  LCA(vector<vector<int>> G, int root) : n((int)G.size()), path(n), in(n, -1) {
+  LCA(vector<vector<int>> G, int root) : n(G.size()), path(n), in(n, -1) {
     vector<int> p(n, -1), a(n);
     int time = -1, ptr = 0, s[n];
     s[ptr++] = root;
