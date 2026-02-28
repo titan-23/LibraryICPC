@@ -1,12 +1,12 @@
 struct EerTree {
   int last_idx, n; ll all_count;
   string s;
-  vector<map<char, int>> child;
+  vector<array<int, 26>> ch;
   vector<int> par, len, link, count, start, link_dep;
   vector<int> suff; // suff[i]:= s[:i+1]の最大回文接尾辞に対応する頂点番号(s[i]を含んで終わる)
   int new_node() {
     int idx = link.size();
-    child.emplace_back(); link.emplace_back();
+    ch.emplace_back(); ch.back().fill(-1); link.emplace_back();
     len.emplace_back(0); par.emplace_back(0);
     count.emplace_back(0); start.emplace_back(0);
     link_dep.emplace_back(0);
@@ -30,19 +30,19 @@ struct EerTree {
   void add(char c) {
     s += c;
     int now = get_upper(last_idx, c);
-    if (child[now].find(c) != child[now].end()) {
-      last_idx = child[now][c];
+    if (ch[now][c-'a'] != -1) {
+      last_idx = ch[now][c-'a'];
       suff.emplace_back(last_idx); n++;
       count[last_idx]++;
       all_count += link_dep[last_idx];
       return;
     }
     int idx = new_node(); len[idx] = len[now]+2;
-    child[now][c] = idx; par[idx] = now; count[idx] = 1;
+    ch[now][c-'a'] = idx; par[idx] = now; count[idx] = 1;
     start[idx] = n+1-len[idx];
     suff.emplace_back(idx); last_idx = idx;
     if (len[idx] == 1) link[idx] = 1;
-    else link[idx] = child[get_upper(link[now], c)][c];
+    else link[idx] = ch[get_upper(link[now], c)][c-'a'];
     link_dep[idx] = link_dep[link[idx]]+1;
     all_count += link_dep[idx]; n++;
   }
@@ -63,10 +63,10 @@ struct EerTree {
     return res;
   }
   ll count_all() { return all_count; } // すべて
-  int count_unique() { return (int)child.size()-2; } // 相異なる
+  int count_unique() { return (int)ch.size()-2; } // 相異なる
   vector<int> get_freq() {
     vector<int> cnt((int)count.size()-2, 0);
-    for (int i = (int)child.size()-1; i >= 2; --i) {
+    for (int i = (int)ch.size()-1; i >= 2; --i) {
       cnt[i-2] += count[i];
       if (link[i]-2 >= 0) cnt[link[i]-2] += cnt[i-2];
     }
