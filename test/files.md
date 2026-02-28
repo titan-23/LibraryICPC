@@ -82,7 +82,7 @@
 - [x] manacher.cpp
 - [x] rolling_hash.cpp
 - [x] sa.cpp
-- [ ] suffix_automaton.cpp
+- [x] suffix_automaton.cpp
 - [x] z.cpp
 
 # template

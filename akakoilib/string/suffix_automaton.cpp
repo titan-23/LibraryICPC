@@ -1,5 +1,10 @@
+// パターン検索: 根(0)からtoを辿る 途中で-1になれば存在しない
+// 異なる部分文字列の総数: Σ(a[i].len - a[a[i].link].len) (1 <= i < a.size())
+// 各状態の出現頻度: 初期状態の各ノードの出現を1とし、lenの降順にSuffix Linkを辿って親ノードに足し合わせる
 struct SuffixAutomaton {
   struct Node {
+    // len: この状態が受理する最長部分文字列の長さ
+    // link: Suffix Link (自身の最長接尾辞で、別の状態に属するノードへのリンク)
     int len, link, to[26];
     Node() : len(0), link(-1) { fill(to, to+26, -1); }
   };
