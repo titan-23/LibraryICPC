@@ -72,8 +72,8 @@
 - [ ] 典型.md
 
 # other
-- [ ] random.cpp
-- [ ] timer.cpp
+- [x] random.cpp
+- [x] timer.cpp
 
 # string
 - [x] aho_corasic.cpp
