@@ -1,37 +1,54 @@
+const int W = 26;
 struct AhoCorasick {
+  char B;
   struct Node {
-    int fail, count, to[26];
-    Node() : fail(0), count(0) { fill(to, to+26, -1); }
+    int cnt, fail;
+    array<int, W> ch;
+    Node() : cnt(0), fail(0) { ch.fill(-1); }
   };
   vector<Node> a;
-  AhoCorasick() { a.emplace_back(); }
-  void add_string(string s) {
-    int now = 0;
+  vector<vector<int>> failtree;
+  int root;
+  AhoCorasick(char B) : B(B), a(1), root(0), failtree(1) { a[0].fail = 0; }
+  int add_string(const string &s) {
+    int v = root;
     for (char c : s) {
-      if (a[now].to[c-'a'] == -1) {
-        a[now].to[c-'a'] = a.size();
+      c -= B;
+      if (a[v].ch[c] == -1) {
+        a[v].ch[c] = a.size();
         a.emplace_back();
       }
-      now = a[now].to[c-'a'];
+      v = a[v].ch[c];
     }
-    a[now].count++;
+    a[v].cnt++;
+    return v;
   }
   void build() {
     queue<int> q;
-    rep(i, 26) {
-      if (a[0].to[i] != -1) q.push(a[0].to[i]);
-      else a[0].to[i] = 0;
+    rep(i, W) {
+      if (a[0].ch[i] != -1) {
+        a[a[0].ch[i]].fail = 0;
+        q.push(a[0].ch[i]);
+      } else { a[0].ch[i] = 0; }
     }
     while (!q.empty()) {
       int v = q.front(); q.pop();
-      a[v].count += a[a[v].fail].count;
-      rep(i, 26) {
-        if (a[v].to[i] != -1) {
-          int x = a[v].to[i];
-          a[x].fail = a[a[v].fail].to[i];
+      a[v].cnt += a[a[v].fail].cnt;
+      rep(i, W) {
+        int x = a[v].ch[i];
+        if (x != -1) {
+          a[x].fail = a[a[v].fail].ch[i];
           q.push(x);
-        } else a[v].to[i] = a[a[v].fail].to[i];
+        } else { a[v].ch[i] = a[a[v].fail].ch[i]; }
       }
     }
+    failtree.resize(a.size());
+    rep(i, a.size()) if (i >= 1) {
+      failtree[i].push_back(a[i].fail);
+      failtree[a[i].fail].push_back(i);
+    }
+  }
+  int next(int v, char c) const {
+    return a[v].ch[c-B];
   }
 };
