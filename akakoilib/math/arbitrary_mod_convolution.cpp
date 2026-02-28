@@ -22,33 +22,33 @@ void ntt(vector<mint<M>>& a, bool inv) {
   rep(i, n) a[i] *= vinv;
 }
 template<int M, int R> vector<mint<M>>
-sub(const vector<int> &A, const vector<int> &B, int z) {
+sub(const vector<ll> &A, const vector<ll> &B, int z) {
   int n = 1; while (n < z) n <<= 1;
   vector<mint<M>> a(n), b(n);
   rep(i, A.size()) a[i] = A[i];
   rep(i, B.size()) b[i] = B[i];
   ntt<M,R>(a,0); ntt<M,R>(b,0);
   rep(i, n) a[i] *= b[i];
-  ntt<M, R>(a,1); return a;
+  ntt<M,R>(a,1); return a;
 }
 template<typename T>
-vector<T> arbitrary_mod_convolution(vector<T> a, vector<T> b) {
+vector<T> arbitrary_mod_convolution(const vector<T> a, const vector<T> b) {
   if(a.empty() || b.empty()) return {};
   int z = a.size() + b.size() - 1;
-  vector<int> A(a.size()), B(b.size());
-  rep(i, a.size()) A[i] = a[i].val();
-  rep(i, b.size()) B[i] = b[i].val();
+  vector<ll> A(a.size()), B(b.size());
+  rep(i, a.size()) A[i] = a[i].x;
+  rep(i, b.size()) B[i] = b[i].x;
   constexpr int m1 = 167772161, m2 = 469762049, m3 = 754974721;
   auto c1 = sub<m1, 3>(A, B, z);
   auto c2 = sub<m2, 3>(A, B, z);
   auto c3 = sub<m3, 11>(A, B, z);
-  ull mod = (T(0) - T(1)).val() + 1;
+  ull mod = (T(0) - T(1)).x + 1;
   vector<T> res(z);
-  ll i12 = mint<m2>(m1).inv().val();
-  ll i123 = mint<m3>((ll)m1*m2).inv().val();
+  ll i12 = mint<m2>(m1).inv().x;
+  ll i123 = mint<m3>((ll)m1*m2).inv().x;
   ll m12 = (ll)m1*m2;
   rep(i, z) {
-    ll v1 = c1[i].val(), v2 = c2[i].val(), v3 = c3[i].val();
+    ll v1 = c1[i].x, v2 = c2[i].x, v3 = c3[i].x;
     ll t1 = (v2 - v1 + m2) * i12 % m2;
     ll x = v1 + m1 * t1;
     ll t2 = (v3 - x % m3 + m3) * i123 % m3;
