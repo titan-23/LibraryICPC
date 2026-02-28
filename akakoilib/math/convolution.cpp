@@ -1,3 +1,8 @@
+// NTT Friendly Primes:
+// 998244353 (2^23, root 3)
+// 167772161 (2^25, root 3)
+// 754974721 (2^24, root 11)
+// 長さ $2^{24}$ まで畳み込み可能 このとき mod は 2663300486
 void NTT(vector<mint> &a, bool inv = false) {
   static vector<mint> r, ir, tmp;
   if (r.empty()) {
@@ -21,6 +26,7 @@ void NTT(vector<mint> &a, bool inv = false) {
   if (inv) for (mint &x : a) x *= mint(n).inv();
 }
 vector<mint> Convolve(vector<mint> a, vector<mint> b) {
+  if (a.empty() || b.empty()) return {};
   int n = 1;
   int z = a.size() + b.size();
   while (n + 1 < z) n <<= 1;

@@ -50,10 +50,9 @@
 - [ ] union_find.cpp
 
 # math
-- [ ] arbitrary_mod_convolution.cpp
-- [ ] bostan_mori.cpp
+- [x] arbitrary_mod_convolution.cpp
+- [x] bostan_mori.cpp
 - [ ] convolution.cpp
-- [ ] convolution.md
 - [ ] crt.cpp
 - [ ] extgcd.cpp
 - [ ] factorize.cpp
