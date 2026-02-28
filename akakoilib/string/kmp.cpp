@@ -9,6 +9,7 @@ vector<int> kmp(const string &s) {
   }
   return p;
 }
+// sからtを検索し、一致する開始位置を返す / O(|S|+|T|)
 vector<int> search(const string &s, const string &t) {
   vector<int> res, p = kmp(t);
   int n = s.size(), m = t.size(), j = 0;

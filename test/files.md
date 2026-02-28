@@ -78,12 +78,12 @@
 # string
 - [x] aho_corasic.cpp
 - [x] eertree.cpp
-- [ ] kmp.cpp
-- [ ] manacher.cpp
-- [ ] rolling_hash.cpp
-- [ ] sa.cpp
+- [x] kmp.cpp
+- [x] manacher.cpp
+- [x] rolling_hash.cpp
+- [x] sa.cpp
 - [ ] suffix_automaton.cpp
-- [ ] z.cpp
+- [x] z.cpp
 
 # template
 - [ ] .vimrc
