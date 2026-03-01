@@ -7,6 +7,9 @@
 - $a^{\phi(m)}\equiv 1 \bmod{m}$ ($\gcd(a,m) = 1$)
 - $(1, 0, \cdots, 0)$ を約数メビウス変換することで $(\mu(1), \mu(2), \cdots, \mu(n))$ を得る ($\zeta * \mu = I$)
 
+- \relax
+- \relax
+
 ### 数列の和
 - $\sum_{i=0}^{\infty}p^i=\frac{1}{1-p}$
 - $\sum_{i=0}^{\infty}p^ii=\frac{p}{(1-p)^2}$
@@ -48,9 +51,12 @@
 |**14**|1|14|91|364|1001|2002|3003|3432|3003|2002|1001|
 |**15**|1|15|105|455|1365|3003|5005|6435|6435|5005|3003|
 
-$\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}$
-$\binom{n}{k}=\frac{n}{k}\binom{n-1}{k-1}$
-$\binom{L}{k}+\dots+\binom{R-1}{k}=\binom{R}{k+1}-\binom{L}{k+1}$
+- \relax
+- \relax
+
+- $\binom{n}{k}=\binom{n-1}{k-1}+\binom{n-1}{k}$
+- $\binom{n}{k}=\frac{n}{k}\binom{n-1}{k-1}$
+- $\binom{L}{k}+\dots+\binom{R-1}{k}=\binom{R}{k+1}-\binom{L}{k+1}$
 
 
 ### 第一種スターリング数
