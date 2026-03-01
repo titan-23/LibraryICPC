@@ -1,50 +1,48 @@
 // https://judge.yosupo.jp/submission/337599
+// https://judge.yosupo.jp/submission/356495
 
 #include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/math/modint.cpp"
 #include "./../../akakoilib/ds/lazy_segtree.cpp"
 
-static constexpr ll mod = 998244353;
-static constexpr ll bit = 30;
-static constexpr ll msk = (1<<bit)-1;
+const int mod = 998244353;
 
-ll op(const ll s, const ll t) {
-    ll s1 = s>>bit, s2 = s&msk;
-    ll t1 = t>>bit, t2 = t&msk;
-    ll c1 = (s1 + t1) % mod;
-    ll c2 = (s2 + t2) % mod;
-    return (c1 << 30) + c2;
+struct T {
+    mint<mod> a, b;
+};
+
+struct F {
+    mint<mod> a, b;
+};
+
+T op(T s, T t) {
+    return {s.a+t.a, s.b+t.b};
 }
 
-ll mapping(const ll f, const ll s) {
-    ll f1 = f>>bit, f2 = f&msk;
-    ll s1 = s>>bit, s2 = s&msk;
-    return (((s1 * f1 + s2 * f2) % mod) << 30) + s2;
+T mapping(F f, T s) {
+    return {s.a*f.a+s.b*f.b, s.b};
 }
 
-ll composition(const ll f, const ll g) {
-    ll f1 = f>>bit, f2 = f&msk;
-    ll g1 = g>>bit, g2 = g&msk;
-    ll z1 = (f1 * g1) % mod;
-    ll z2 = (f1 * g2 + f2) % mod;
-    return (z1 << 30) + z2;
+F composition(F f, F g) {
+    return {f.a*g.a, f.a*g.b+f.b};
 }
 
-ll e() {
-    return 0;
+T e() {
+    return {0, 0};
 }
 
-ll id() {
-    return 1<<bit;
+F id() {
+    return {1, 0};
 }
 
 void solve() {
     int n, q;
     cin >> n >> q;
-    LazySegtree<ll, op, e, ll, mapping, composition, id> seg(n);
+    LazySegtree<T, op, e, F, mapping, composition, id> seg(n);
     rep(i, n) {
         ll a;
         cin >> a;
-        seg.set(i, a<<bit|1);
+        seg.set(i, {a, 1});
     }
     rep(_, q) {
         int com;
@@ -53,12 +51,12 @@ void solve() {
             int l, r;
             ll b, c;
             cin >> l >> r >> b >> c;
-            seg.apply(l, r, b<<bit|c);
+            seg.apply(l, r, {b, c});
         } else {
             int l, r;
             cin >> l >> r;
-            ll ans = seg.prod(l, r) >> bit;
-            cout << ans << '\n';
+            mint<mod> ans = seg.prod(l, r).a;
+            cout << ans.x << '\n';
         }
     }
 }

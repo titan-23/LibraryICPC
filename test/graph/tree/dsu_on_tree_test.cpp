@@ -1,5 +1,4 @@
 #include "./../../../akakoilib/template/template.cpp"
-
 #include "./../../../akakoilib/graph/tree/dsu_on_tree.cpp"
 
 void solve() {
@@ -14,7 +13,6 @@ void solve() {
         G[v].push_back(u);
     }
     DSUonTree tree(G, r);
-    
 }
 
 int main() {

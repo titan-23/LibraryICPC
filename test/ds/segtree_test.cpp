@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/337596
+// https://judge.yosupo.jp/submission/356497
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/ds/segtree.cpp"
 

@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/337598
+// https://judge.yosupo.jp/submission/356498
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/ds/sparse_table.cpp"
 

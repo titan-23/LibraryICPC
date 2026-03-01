@@ -8,14 +8,24 @@
 - [ ] zete_mobius.cpp
 
 # ds
-- [ ] fast_set.cpp
-- [ ] fenwick_tree.cpp
-- [ ] lazy_segtree.cpp
-- [ ] pbds.cpp
-- [ ] segtree.cpp
-- [ ] sparse_table.cpp
-- [ ] wavelet_matrix.cpp
-- [ ] wavelet_matrix_seg.cpp
+- [x] fast_set.cpp
+  - LC: Predecessor Problem
+- [x] fenwick_tree.cpp
+  - LC: Point Add Range Sum
+- [x] lazy_segtree.cpp
+  - LC: Range Affine Range Sum
+- [x] pbds.cpp
+  - LC: Ordered Set
+- [x] segtree.cpp
+  - LC: Point Set Range Composite
+- [x] sparse_table.cpp
+  - LC: Static RMQ
+- [x] wavelet_matrix.cpp
+  - LC: Range Kth Smallest
+  - LC: Static Range Frequency
+- [x] wavelet_matrix_seg.cpp
+  - LC: Rectangle Sum
+  - LC: Point Add Rectangle Sum
 
 # geometry
 - [ ] geometry.cpp
@@ -29,10 +39,12 @@
 # graph
 - [ ] flow/burning_burying.cpp
 - [ ] flow/burning_burying.md
-- [ ] flow/max_flow.cpp
+- [x] flow/max_flow.cpp
+  - AtCoder: Maximum Flow
 - [ ] flow/min_cost_flow.cpp
 - [ ] tree/centroid_decomposition.cpp
-- [ ] tree/dsu_on_tree.cpp
+- [x] tree/dsu_on_tree.cpp
+  - AI
 - [ ] tree/hashed_tree.cpp
 - [ ] tree/hld.cpp
 - [ ] tree/lca.cpp
