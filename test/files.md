@@ -44,7 +44,8 @@
   - LC: Dynamic Tree Vertex Set Path Composite
 - [x] ptree.cpp
   - AtCoder: copy ans paste
-- [ ] rbst.cpp
+- [x] rbst.cpp
+  - LC: Dynamic Sequence Range Affine Range Sum
 
 # graph
 - [ ] flow/burning_burying.cpp

@@ -76,10 +76,29 @@ struct LazyRBST {
 public:
   LazyRBST() : root(nullptr) {}
   LazyRBST(vector<T> a) : root(nullptr) { _build(a); }
-  void apply(int l, int r, F f) { if (l == r) return;
-    auto [a, bc] = split(l); auto [b, c] = bc.split(r - l);
-    if (b.root) b.root->push(f);
-    root = _merge_node(_merge_node(a.root, b.root), c.root);
+  void apply(int l, int r, F f) {
+    auto [a, bc] = _split_node(root, l); auto [b, c] = _split_node(bc, r-l);
+    if (b) b->push(f);
+    root = _merge_node(_merge_node(a, b), c);
+  }
+  T prod(int l, int r) {
+    auto [a, bc] = _split_node(root, l); auto [b, c] = _split_node(bc, r-l);
+    T res = b ? b->dat : e();
+    root = _merge_node(_merge_node(a, b), c); return res;
+  }
+  void insert(int k, T key) {
+    auto [l, r] = _split_node(root, k); NP v = new Node(key, id());
+    root = _merge_node(_merge_node(l, v), r);
+  }
+  T pop(int k) {
+    auto [l, r] = _split_node(root, k); auto [v, rr] = _split_node(r, 1);
+    T res = v->key;
+    root = _merge_node(l, rr); return res;
+  }
+  void reverse(int l, int r) {
+    auto [a, bc] = _split_node(root, l); auto [b, c] = _split_node(bc, r-l);
+    if (b) b->rev ^= 1;
+    root = _merge_node(_merge_node(a, b), c);
   }
   T get(int k) {
     NP v = root;
