@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/327579
+// https://judge.yosupo.jp/submission/356490
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/graph/union_find.cpp"
 

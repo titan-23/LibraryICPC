@@ -8,7 +8,7 @@ struct TwoSat {
   }
   vector<bool> solve() {
     auto [mem, ng, gr] = SccDecomposition(G);
-    int n = g.size() / 2;
+    int n = G.size() / 2;
     vector<bool> ret(n);
     rep(i, n) {
       if (gr[i*2] == gr[i*2+1]) return vector<bool>();

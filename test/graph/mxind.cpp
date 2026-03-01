@@ -1,5 +1,6 @@
 // https://judge.yosupo.jp/submission/327570
 #include "./../../akakoilib/template/template.cpp"
+using ull = unsigned long long;
 #include "./../../akakoilib/graph/max_independent_set.cpp"
 
 void solve() {

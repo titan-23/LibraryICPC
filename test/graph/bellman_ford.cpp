@@ -1,4 +1,5 @@
 // https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=11180056#2
+// https://onlinejudge.u-aizu.ac.jp/services/ice/ GRL_1_B
 #include "./../../akakoilib/template/template.cpp"
 const ll INF = 1e18;
 #include "./../../akakoilib/graph/bellman_ford.cpp"

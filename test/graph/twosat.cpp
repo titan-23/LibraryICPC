@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/327578
+// https://judge.yosupo.jp/submission/356489
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/graph/scc.cpp"
 #include "./../../akakoilib/graph/twosat.cpp"

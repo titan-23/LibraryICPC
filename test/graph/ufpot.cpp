@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/327573
+// https://judge.yosupo.jp/submission/356491
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/math/modint.cpp"
 #include "./../../akakoilib/graph/potentialized_uf.cpp"

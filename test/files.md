@@ -27,17 +27,10 @@
 - [ ] rbst.cpp
 
 # graph
-- [ ] bellman_ford.cpp
-- [ ] biconnected.cpp
 - [ ] flow/burning_burying.cpp
 - [ ] flow/burning_burying.md
 - [ ] flow/max_flow.cpp
 - [ ] flow/min_cost_flow.cpp
-- [ ] lowlink.cpp
-- [ ] max_independent_set.cpp
-- [ ] potentialized_uf.cpp
-- [ ] scc.cpp
-- [ ] three_edge_connected.cpp
 - [ ] tree/centroid_decomposition.cpp
 - [ ] tree/dsu_on_tree.cpp
 - [ ] tree/hashed_tree.cpp
@@ -45,9 +38,27 @@
 - [ ] tree/lca.cpp
 - [ ] tree/lca_auxiliary_tree.cpp
 - [ ] tree/rerooting_dp.cpp
-- [ ] two_edge_connected.cpp
-- [ ] twosat.cpp
-- [ ] union_find.cpp
+- [x] bellman_ford.cpp
+  - AOJ
+- [x] biconnected.cpp
+  - LC: Biconnected Components
+- [x] lowlink.cpp
+  - AOJ: Brige
+  - AOJ: arti
+- [x] max_independent_set.cpp
+  - LC: Maximu ind
+- [x] potentialized_uf.cpp
+  - LC: Unionfind with Potential
+- [x] scc.cpp
+  - LC: Strongly Connected Components
+- [x] three_edge_connected.cpp
+  - LC: Three-Edge-Connected Components
+- [x] two_edge_connected.cpp
+  - LC: Three-Edge-Connected Components
+- [x] twosat.cpp
+  - LC: 2 Sat
+- [x] union_find.cpp
+  - LC: Unionfind
 
 # math
 - [x] arbitrary_mod_convolution.cpp
