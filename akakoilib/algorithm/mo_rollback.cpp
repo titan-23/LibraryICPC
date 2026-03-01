@@ -13,6 +13,7 @@ struct MoRollBack {
     });
     reset();
     for (int idx : order) if (R[idx]-L[idx] < W) {
+      snapshot();
       for (int i = L[idx]; i < R[idx]; i++) add(i);
       out(idx); rollback();
     }

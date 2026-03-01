@@ -11,13 +11,12 @@ struct LiChaoTree {
   }
   void _add_line(Line line, int k, int l, int r) {
     int m = (l + r) / 2;
-    bool left  = line.get(l) < dat[k].get(l);
-    bool mid   = line.get(m) < dat[k].get(m);
-    bool right = line.get(r) < dat[k].get(r);
-    if (mid) { swap(dat[k], line); swap(left, right); }
+    bool l_better = line.get(l) < dat[k].get(l);
+    bool m_better = line.get(m) < dat[k].get(m);
+    if (m_better) swap(dat[k], line);
     if (r - l <= 1) return;
-    if (left != mid) _add_line(line, 2*k, l, m);
-    else if (right != mid) _add_line(line, 2*k+1, m, r);
+    if (l_better != m_better) _add_line(line, 2*k, l, m);
+    else _add_line(line, 2*k+1, m, r);
   }
   void _add_segment(int a, int b, Line line, int k, int l, int r) {
     if (r <= a || b <= l) return;

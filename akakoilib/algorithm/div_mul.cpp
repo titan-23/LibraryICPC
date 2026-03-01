@@ -6,7 +6,7 @@ vector<ll> MultipleZeta(vector<ll> v) {
   return v;
 }
 // 約数高速ゼータ変換
-vector<ll> DvisorZeta(vector<ll> v) {
+vector<ll> DivisorZeta(vector<ll> v) {
   int n = v.size() - 1;
   for (int p : primes) for (int k = 1; k * p <= n; k++) v[k * p] += v[k];
   return v;
