@@ -54,9 +54,13 @@
 - [x] bostan_mori.cpp
   - AI
 - [x] convolution.cpp
-- [ ] crt.cpp
-- [ ] extgcd.cpp
+- [x] crt.cpp
+  - AI
+- [x] extgcd.cpp
+  - AI
 - [ ] factorize.cpp
+  - LC: primery test
+  - LC: factorize
 - [ ] floor_sum.cpp
 - [ ] mod_comb.cpp
 - [ ] modint.cpp
