@@ -38,9 +38,12 @@
 - [ ] geometry.cpp
 
 # gomi
-- [ ] dycone.cpp
-- [ ] lct.cpp
-- [ ] ptree.cpp
+- [x] dycone.cpp
+  - AtCoder: Chirismhas color grid
+- [x] lct.cpp
+  - LC: Dynamic Tree Vertex Set Path Composite
+- [x] ptree.cpp
+  - AtCoder: copy ans paste
 - [ ] rbst.cpp
 
 # graph

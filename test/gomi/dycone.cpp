@@ -1,3 +1,4 @@
+// https://atcoder.jp/contests/abc334/submissions/73753480
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -6,13 +7,12 @@ using ll = long long;
 
 const ll dy[] = {-1, 0, 0, 1};
 const ll dx[] = {0, -1, 1, 0};
+const int mod = 998244353;
 // --------
 
+#include "./../../akakoilib/math/modint.cpp"
 #include "./../../akakoilib/gomi/dycone.cpp"
 
-
-#include <atcoder/modint>
-using mint = atcoder::modint998244353;
 
 void solve() {
   int h, w;
@@ -27,8 +27,7 @@ void solve() {
     }
   }
 
-  OfflineDynamicConnectivity<ll> dc(h*w, 11*h*w);
-  dc.reserve(11*h*w);
+  Dycone<ll> dc(h*w, 11*h*w);
 
   vector<int> IDX;
 
@@ -51,10 +50,10 @@ void solve() {
     dc.add_edge(u, v);
   }
 
-  mint green = 0;
+  mint<mod> green = 0;
   rep(i, h) rep(j, w) {
     if (!A[i][j]) continue;
-    green++;
+    green += 1;
 
     rep(d, 4) {
       int ni = i + dy[d], nj = j + dx[d];
@@ -78,16 +77,16 @@ void solve() {
     }
   }
 
-  mint ans = 0;
-  mint red = h*w - green;
+  mint<mod> ans = 0;
+  mint<mod> red = mint<mod>(h*w)- green;
 
   auto res = dc.run();
   for (int idx : IDX) {
-    ans += res[idx]-red-1;
+    ans += mint<mod>(res[idx])-mint<mod>(red)-mint<mod>(1);
   }
 
   ans = ans / green;
-  cout << ans.val() << endl;
+  cout << ans.x << endl;
 }
 
 int main() {

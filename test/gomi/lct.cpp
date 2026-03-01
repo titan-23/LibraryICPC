@@ -1,6 +1,7 @@
+// https://judge.yosupo.jp/submission/356697
 #include "./../../akakoilib/template/template.cpp"
-#include "./../../akakoilib/math/modint.cpp"
-#include "./../../akakoilib/other/random.cpp"
+// #include "./../../akakoilib/math/modint.cpp"
+// #include "./../../akakoilib/other/random.cpp"
 #include "./../../akakoilib/gomi/lct.cpp"
 
 static constexpr int mod = 998244353;

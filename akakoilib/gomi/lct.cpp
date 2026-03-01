@@ -20,6 +20,7 @@ private:
       _apply_rev(v->l); _apply_rev(v->r);
       v->rev = 0;
     }
+    if (v->lazy == id()) return;
     _apply_f(v->l, v->lazy); _apply_f(v->r, v->lazy);
     v->lazy = id();
   }
@@ -42,7 +43,7 @@ private:
   void _rotate(NP v) {
     NP p = v->p; NP g = p->p;
     _push(p); _push(v);
-    if (g) (g->l == p ? g->l : g->r) = v;
+    if (!p->is_root()) (g->l == p ? g->l : g->r) = v;
     v->p = g;
     if (p->l == v) {
       p->l = v->r;
@@ -67,15 +68,13 @@ private:
   }
   void _link(NP c, NP p) { _expose(c); _expose(p); c->p = p; p->r = c; _update(p); }
   void _cut(NP c) { _expose(c); c->l->p = nullptr; c->l = nullptr; _update(c); }
-  NP _expose(const NP v) {
-    NP pre = v;
-    while (v->p) {
-      _splay(v); v->r = nullptr; _update(v);
-      if (!v->p) break;
-      pre = v->p; _splay(v->p);
-      v->p->r = v; _update(v->p);
+  NP _expose(NP v) {
+    NP r = nullptr;
+    for (NP c = v; c; c = c->p) {
+      _splay(c); c->r = r;
+      _update(c); r = c;
     }
-    v->r = nullptr; _update(v); return pre;
+    _splay(v); return r;
   }
 public:
   LazyLinkCutTree(int n) : pool(n) { rep(i, n) pool[i] = new Node(i, e(), id()); }
