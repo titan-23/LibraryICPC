@@ -54,6 +54,7 @@ struct HLD {
   vector<tuple<bool, int, int>>  path_prod(int u, int v) {
     // true -> (uから遠い方、uに近い方)
     // false -> (uに近い方、uに遠い方)
+    // T op_rev(s, t) { return op(t, s); }
     // rep(i, n) v[hld.in[i]] = A[i];
     // Segtree<T,op,e> seg(v); Segtree<T,op_rev,e> rev(v);
     // seg.set(hld.in[p], v); rev.set(hld.in[p], v);

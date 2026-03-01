@@ -59,11 +59,17 @@
 - [ ] tree/centroid_decomposition.cpp
 - [x] tree/dsu_on_tree.cpp
   - AI
-- [ ] tree/hashed_tree.cpp
-- [ ] tree/hld.cpp
+- [x] tree/hashed_tree.cpp
+  - LC: Rooted Tree Isomorphism Classification
+- [x] tree/hld.cpp
+  - LC: Vertex Set Path Composite
+  - LC: Vertex Add Path Sum
+  - LC: Vertex Add Subtree Sum
+  - LC: Jump on Tree
 - [x] tree/lca.cpp
   - LC: Lowest Common Ancestor
-- [ ] tree/lca_auxiliary_tree.cpp
+- [x] tree/lca_auxiliary_tree.cpp
+  - AI
 - [x] tree/rerooting_dp.cpp
   - LC: Tree Path Composite Sum
 - [x] bellman_ford.cpp

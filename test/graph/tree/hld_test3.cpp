@@ -1,6 +1,5 @@
-// https://judge.yosupo.jp/submission/327581
-// https://judge.yosupo.jp/submission/356740
-// Vertex Add Path Sum
+// https://judge.yosupo.jp/submission/356742
+// Vertex Add Subtree Sum
 #include "./../../../akakoilib/template/template.cpp"
 
 #include "./../../../akakoilib/ds/fenwick_tree.cpp"
@@ -12,9 +11,9 @@ void solve() {
   rep(i, n) cin >> A[i];
   vector<vector<int>> G(n);
   rep(i, n-1) {
-    int u, v; cin >> u >> v;
-    G[u].push_back(v);
-    G[v].push_back(u);
+    int p; cin >> p;
+    G[i+1].push_back(p);
+    G[p].push_back(i+1);
   }
   HLD hld(G, 0);
   BIT fw(n);
@@ -27,12 +26,9 @@ void solve() {
       int p, x; cin >> p >> x;
       fw.add(hld.in[p], x);
     } else {
-      int u, v; cin >> u >> v;
-      ll res = 0;
-      for (auto [_, l, r] : hld.path_prod(u, v)) {
-        res += fw.sum(l, r);
-      }
-      cout << res << "\n";
+      int u; cin >> u;
+      auto [l, r] = hld.subtree_prod(u);
+      cout << fw.sum(l, r) << "\n";
     }
   }
 }
