@@ -52,7 +52,8 @@
 # math
 - [x] arbitrary_mod_convolution.cpp
 - [x] bostan_mori.cpp
-- [ ] convolution.cpp
+  - AI
+- [x] convolution.cpp
 - [ ] crt.cpp
 - [ ] extgcd.cpp
 - [ ] factorize.cpp
