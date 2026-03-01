@@ -1,5 +1,5 @@
 // https://judge.yosupo.jp/submission/337587
-
+// https://judge.yosupo.jp/submission/356494
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/ds/fenwick_tree.cpp"
 

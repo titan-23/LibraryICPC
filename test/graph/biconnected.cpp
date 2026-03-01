@@ -1,6 +1,7 @@
 // https://judge.yosupo.jp/submission/333228
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/biconnected.cpp"
+// https://judge.yosupo.jp/submission/356482
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/biconnected.cpp"
 
 void solve() {
   int n, m; cin >> n >> m;
@@ -9,7 +10,7 @@ void solve() {
     int a, b; cin >> a >> b;
     G[a].push_back(b);
     G[b].push_back(a);
-  } 
+  }
   BiConnectedCC bcc(G);
   vector<vector<int>> components;
   vector<bool> used(n, false);

@@ -1,41 +1,23 @@
-// #pragma GCC target("avx2")
-// #pragma GCC optimize("O3")
-// #pragma GCC optimize("unroll-loops")
+// https://judge.yosupo.jp/submission/356730
+#include "./../../../akakoilib/template/template.cpp"
+// #include "./../../akakoilib/graph/tree/rerooting_dp.cpp"
 
-#include <bits/stdc++.h>
-using namespace std;
-
-// #include <atcoder/all>
-// using namespace atcoder;
-
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-using ll = long long;
-
-
-
-template<typename E,
-    typename T, T (*merge)(T, T),
+template<typename E, typename T, T (*merge)(T, T),
     T (*apply_vertex)(T, int),
-    T (*apply_edge)(T, E, int, int),
-    T (*e)()>
-vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
-  int n = G.size();
+    T (*apply_edge)(T, E, int, int), T (*e)()>
+vector<T> rerooting_dp(vector<vector<pair<int, E>>> G) {
+  int n = G.size(), root = 0;
   vector<vector<T>> dp(n);
   rep(i, n) dp[i].resize(G[i].size(), e());
-  int root = 0;
   vector<int> pdx(n, -1), topo;
-  stack<int> s;
+  stack<int> s; s.emplace(root);
   pdx[root] = -2;
-  s.emplace(root);
   while (!s.empty()) {
     int v = s.top(); s.pop();
     topo.emplace_back(v);
     rep(i, G[v].size()) {
       int x = G[v][i].first;
-      if (pdx[x] != -1) {
-        pdx[v] = i;
-        continue;
-      }
+      if (pdx[x] != -1) { pdx[v] = i; continue; }
       s.emplace(x);
     }
   }
@@ -65,6 +47,13 @@ vector<T> rerooting_dp(const vector<vector<pair<int, E>>> G) {
   }
   return ans;
 }
+// using T = int; // dpの型
+// using E = int; // 辺の型
+// T apply_vertex(T dp_x, int v) {} // 辺込みの部分木の値dp_xに頂点vを付加
+// T merge(T s, T t) {} // 辺込みの部分木のdp値s,tを結合
+// T apply_edge(T dp_x, E edge, int x, int v) {} // 部分木のdp値dp_xに辺edgeを付加 頂点xの親がv
+// T e() {} // dp値の単位元
+
 const int bit = 30;
 const int msk = (1<<30)-1;
 const int mod = 998244353;

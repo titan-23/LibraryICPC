@@ -1,4 +1,6 @@
-ll ModLog(ll x, ll y, ll mod) { // return k s.t. x^k=y (mod m) / O(sqrt(m))
+// return minimum k s.t. x^k=y (mod m) / O(sqrt(m))
+ll ModLog(ll x, ll y, ll mod) {
+  if (1 % mod == y % mod) return 0; // k=0
   ll m = ceil(sqrt(mod)) + 1;
   ll now_y = y;
   map<ll, ll> mp;

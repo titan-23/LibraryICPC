@@ -33,9 +33,7 @@ struct ThreeEdgeCC {
       t.erase(unique(t.begin(), t.end()), t.end());
     }
   }
-  void absorb(int u, int v) {
-    deg[u] += deg[v]; swap(nxt[u], nxt[v]);
-  }
+  void absorb(int u, int v) { deg[u] += deg[v]; swap(nxt[u], nxt[v]); }
   void dfs(int v, int p) {
     seen[v] = 1; pre[v] = id_gen++;
     for (int x : G[v]) if (x != v) {
@@ -57,9 +55,7 @@ struct ThreeEdgeCC {
         continue;
       }
       if (deg[x] == 0) x = path[x];
-      if (low[v] > low[x]) {
-        low[v] = low[x]; swap(x, path[v]);
-      }
+      if (low[v] > low[x]) { low[v] = low[x]; swap(x, path[v]); }
       while (x != n) { absorb(v, x); x = path[x]; }
     }
     post[v] = id_gen;

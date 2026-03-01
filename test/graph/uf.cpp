@@ -1,6 +1,7 @@
 // https://judge.yosupo.jp/submission/327579
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/union_find.cpp"
+// https://judge.yosupo.jp/submission/356490
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/union_find.cpp"
 
 void solve() {
     int n, q; cin >> n >> q;

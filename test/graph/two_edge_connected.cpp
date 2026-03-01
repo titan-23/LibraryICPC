@@ -1,5 +1,7 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/two_edge_connected.cpp"
+// https://judge.yosupo.jp/submission/356488
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/lowlink.cpp"
+#include "./../../akakoilib/graph/two_edge_connected.cpp"
 
 void solve() {
   int n, m; cin >> n >> m;

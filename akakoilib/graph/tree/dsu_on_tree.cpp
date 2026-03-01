@@ -3,10 +3,7 @@ struct DSUonTree {
   int n, t, root;
   vector<int> sz, path, in, out;
   int dfs1(int v, int p=-1) {
-    sz[v] = 1;
-    if (G[v].size() >= 2 && G[v][0] == p) {
-      swap(G[v][0], G[v][1]);
-    }
+    if (G[v].size() >= 2 && G[v][0] == p) swap(G[v][0], G[v][1]);
     for (int &x : G[v]) if (x != p) { // need `&`
       sz[v] += dfs1(x, v);
       if (sz[x] > sz[G[v][0]]) swap(x, G[v][0]);
@@ -19,7 +16,7 @@ struct DSUonTree {
     for (int x : G[v]) if (x != p) dfs2(x, v);
     out[v] = t;
   }
-  DSUonTree(vector<vector<int>> G, int root=0) : G(G), n(G.size()), t(0), root(root), sz(n), path(n), in(n), out(n) { dfs1(root); dfs2(root); }
+  DSUonTree(vector<vector<int>> G, int root) : G(G), n(G.size()), t(0), root(root), sz(n, 1), path(n), in(n), out(n) { dfs1(root); dfs2(root); }
   int idx(int u) const { return in[u]; }
   void run(const auto &update, const auto &query, const auto &clear, const auto &reset) {
     auto dsu = [&](auto dsu, int v, int p=-1, bool keep=false) -> void {

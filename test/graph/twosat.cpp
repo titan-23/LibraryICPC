@@ -1,7 +1,8 @@
 // https://judge.yosupo.jp/submission/327578
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/scc.cpp"
-#include "./../../akakoi_lib/graph/twosat.cpp"
+// https://judge.yosupo.jp/submission/356489
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/scc.cpp"
+#include "./../../akakoilib/graph/twosat.cpp"
 
 void solve() {
     string x; cin >> x >> x;

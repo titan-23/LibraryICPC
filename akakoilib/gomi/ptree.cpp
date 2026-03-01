@@ -1,4 +1,4 @@
-namespace ptree {
+// reset(), using U, T, F
 struct Node {
   Node const *l, *r;
   U size; F lz; T v; int dep; bool rev;
@@ -19,7 +19,7 @@ NP newnode(NP l, NP r, F lz, T v, U size, int dep, bool rev) {
   *ptr = Node{l, r, size, lz, v, dep, rev};
   return ptr++;
 }
-void reset() { idx = 0; ptr = nullptr; lim = nullptr; }
+void reset() { idx = 0; ptr = nullptr; lim = nullptr; } // 始めに呼ぶ！
 U size(NP x) { return x ? x->size : 0; }
 int dep(NP x) { return x ? x->dep : 0; }
 T v(NP x) { return x ? x->v : e(); }
@@ -28,6 +28,7 @@ NP gen(NP l, NP r) {
 }
 NP push(NP x, F lz) {
   if (!x) return nullptr;
+  if (lz == id()) return x;
   return newnode(x->l, x->r, composition(lz, x->lz), mapping(lz, x->v), x->size, x->dep, x->rev);
 }
 NP toggle(NP x) {
@@ -64,8 +65,9 @@ NP merge(NP a, NP b) {
   return gen(x.first, x.second);
 }
 pair<NP, NP> split(NP x, U s, F lz) {
-  if (size(x) == s) return {push(x, lz), nullptr};
-  if (s == 0) return {nullptr, push(x, lz)};
+  if (!x) return {nullptr, nullptr};
+  if (s >= size(x)) return {push(x, lz), nullptr};
+  if (s <= 0) return {nullptr, push(x, lz)};
   lz = composition(lz, x->lz);
   NP xl, xr; push_rev(x, xl, xr);
   if (s <= size(xl)) {
@@ -78,7 +80,6 @@ pair<NP, NP> split(NP x, U s, F lz) {
 }
 vector<T> tovector(NP root) {
   vector<T> res;
-  if (!root) return res;
   stack<tuple<NP, F, bool>> st;
   st.emplace(root, id(), false);
   while (!st.empty()) {
@@ -108,7 +109,6 @@ struct Tree {
     };
     root = dfs(dfs, 0, v.size());
   }
-  U size() { return ptree::size(root); }
   T get(U k) {
     NP t = root; F lz = id(); bool r = false;
     while (1) {
@@ -116,7 +116,7 @@ struct Tree {
       if (t->size == 1) return mapping(lz, t->v);
       NP lch = r ? t->r : t->l;
       U ls = lch ? lch->size : 0;
-      if (k < ls) { t = lch; }
+      if (k < ls) t = lch;
       else { k -= ls; t = r ? t->l : t->r; }
     }
   }
@@ -125,15 +125,15 @@ struct Tree {
       if (!n) return nullptr;
       return newnode(n->l, n->r, composition(f, n->lz), mapping(f, n->v), n->size, n->dep, n->rev ^ r);
     };
-    auto dfs = [&](auto self, NP t, U k) -> NP {
+    auto dfs = [&](auto dfs, NP t, U k) -> NP {
       if (t->size == 1) return newnode(nullptr, nullptr, id(), val, 1, 0, false);
       NP l = t->l, r = t->r;
       if (t->rev) swap(l, r);
       l = push(l, t->rev, t->lz);
       r = push(r, t->rev, t->lz);
       U sz = l ? l->size : 0;
-      if (k < sz) l = self(self, l, k);
-      else r = self(self, r, k - sz);
+      if (k < sz) l = dfs(dfs, l, k);
+      else r = dfs(dfs, r, k - sz);
       return gen(l, r);
     };
     return Tree(dfs(dfs, root, k));
@@ -147,20 +147,15 @@ struct Tree {
   // T prod(U l, U r) return v(b);
   // Tree apply(U l, U r, F f) return Tree(merge(merge(a, push(b, f)), d));
   // Tree reverse(U l, U r) return Tree(merge(merge(a, toggle(b)), d));
-  vector<T> to_vector() { return tovector(root); }
   void rebuild() {
-    if (size() == 0) { reset(); root = nullptr; return; }
-    vector<T> data = to_vector();
+    vector<T> data = tovector(root);;
     reset();
     *this = Tree(data);
   }
 };
-void reserve(int n) {
-  while (blocks.size()*BSIZE < n) expand();
-}
+void reserve(int n) { while (blocks.size()*BSIZE < n) expand(); }
 pair<Tree, Tree> split(const Tree& t, U k) {
   auto [l, r] = split(t.root, k, id());
   return { Tree(l), Tree(r) };
 }
 Tree merge(const Tree& a, const Tree& b) { return Tree(merge(a.root, b.root)); }
-}

@@ -21,15 +21,13 @@ bool is_primell(ll n) {
   }
   return true;
 }
-Random trnd;
 ll pollard_rho(ll n) {
   if (is_primell(n)) return n;
   while (1) {
-    ll x = trnd.randint(0, n-1); // need ll
-    ll c = trnd.randint(0, n-1); // need ll
-    ll y = ((i128)x*x+c)%n;
-    ll d = 1;
+    ll x = trnd.randint(0, n-1);
+    ll c = trnd.randint(0, n-1);
     auto f = [&] (ll x) -> i128 { return ((i128)x*x+c) % n; };
+    ll y = f(x), d = 1;
     while (d == 1) {
       d = gcd(abs(x-y), n);
       x = f(x);

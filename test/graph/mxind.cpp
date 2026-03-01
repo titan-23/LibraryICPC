@@ -1,6 +1,7 @@
 // https://judge.yosupo.jp/submission/327570
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/max_independent_set.cpp"
+#include "./../../akakoilib/template/template.cpp"
+using ull = unsigned long long;
+#include "./../../akakoilib/graph/max_independent_set.cpp"
 
 void solve() {
     int n, m; cin >> n >> m;

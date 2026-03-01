@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/337621
+// https://judge.yosupo.jp/submission/356500
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/ds/wavelet_matrix.cpp"
 

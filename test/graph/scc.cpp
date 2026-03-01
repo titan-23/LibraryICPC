@@ -1,6 +1,7 @@
 // https://judge.yosupo.jp/submission/327575
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/graph/scc.cpp"
+// https://judge.yosupo.jp/submission/356485
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/graph/scc.cpp"
 
 void solve() {
     int n, m; cin >> n >> m;

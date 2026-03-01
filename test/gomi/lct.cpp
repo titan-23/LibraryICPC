@@ -1,7 +1,8 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/math/modint.cpp"
-#include "./../../akakoi_lib/other/random.cpp"
-#include "./../../akakoi_lib/gomi/lct.cpp"
+// https://judge.yosupo.jp/submission/356697
+#include "./../../akakoilib/template/template.cpp"
+// #include "./../../akakoilib/math/modint.cpp"
+// #include "./../../akakoilib/other/random.cpp"
+#include "./../../akakoilib/gomi/lct.cpp"
 
 static constexpr int mod = 998244353;
 static constexpr int bit = 31;

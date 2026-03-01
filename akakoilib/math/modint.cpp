@@ -1,11 +1,11 @@
-// mint(12341689)*mint(1245289)/mint(347105)+mint(15784452)-mint(571039874).pow(12378401)
-// 998244353 -> 599560347
-// 1000000007 -> 873963942
+// mint(123456789)*mint(888777666)/mint(777666555)-mint(666555444).pow(555444333)+mint(987654321)
+// 998244353 -> 514992251
+// 1000000007 -> 435462530
 using ull = unsigned long long;
 template <ull mod>
 struct mint {
   ull x;
-  mint(const ull x = 0) : x(x % mod) {}
+  mint(const ull x = 0) : x(x % mod) {} // `x >= 0 !`
   mint operator-() const { return mint(mod - x); }
   mint operator+(const mint &y) const { return mint(*this) += y; }
   mint operator-(const mint &y) const { return mint(*this) -= y; }

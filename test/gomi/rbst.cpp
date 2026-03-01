@@ -1,12 +1,14 @@
-#include "./../../akakoi_lib/template/template.cpp"
-#include "./../../akakoi_lib/math/modint.cpp"
-#include "./../../akakoi_lib/other/random.cpp"
-#include "./../../akakoi_lib/gomi/rbst.cpp"
+// https://judge.yosupo.jp/submission/356722
+#include "./../../akakoilib/template/template.cpp"
+#include "./../../akakoilib/math/modint.cpp"
+#include "./../../akakoilib/other/random.cpp"
 
 static constexpr ll mod = 998244353;
 static constexpr ll bit = 30;
 static constexpr ll msk = (1<<bit)-1;
 
+using T = ll;
+using F = ll;
 ll op(const ll s, const ll t) {
     ll s1 = s>>bit, s2 = s&msk;
     ll t1 = t>>bit, t2 = t&msk;
@@ -29,13 +31,12 @@ ll composition(const ll f, const ll g) {
     return (z1 << 30) + z2;
 }
 
-ll e() {
-    return 0;
-}
+ll e() { return 0; }
+ll id() { return 1<<bit; }
 
-ll id() {
-    return 1<<bit;
-}
+Random trnd;
+
+#include "./../../akakoilib/gomi/rbst.cpp"
 
 void dynamic_sequence_range_affine_range_sum() {
     int n, q;
@@ -47,7 +48,7 @@ void dynamic_sequence_range_affine_range_sum() {
         A[i] = a<<bit|1ll;
     }
 
-    using Tree = LazyRBST<ll, op, e, ll, mapping, composition, id>;
+    using Tree = LazyRBST;
     Tree s(A);
 
     rep(qdx, q) {

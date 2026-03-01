@@ -1,19 +1,18 @@
-#include "./../../akakoi_lib/template/template.cpp"
+// https://atcoder.jp/contests/joisc2012/submissions/73756572
+#include "./../../akakoilib/template/template.cpp"
 
-namespace ptree {
-    using U = int;
-    using T = char;
-    using F = int;
-    T op(T s, T t) { return 'a'; }
-    T mapping(F f, T s) { return s; }
-    F composition(F f, F g) { return f; }
-    T e() { return 'a'; }
-    F id() { return 0; }
+using U = int;
+using T = char;
+using F = int;
+T op(T s, T t) { return 'a'; }
+T mapping(F f, T s) { return s; }
+F composition(F f, F g) { return f; }
+T e() { return 'a'; }
+F id() { return 0; }
 // U, T, op, e, F, mapping, composition, id
 // (memo) #pragma pack(push, 1) #pragma pack(pop)
-}
 
-#include "./../../akakoi_lib/gomi/p-wbtree.cpp"
+#include "./../../akakoilib/gomi/ptree.cpp"
 
 // -----------------------
 
@@ -23,25 +22,19 @@ void solve() {
     int sz = s.size();
     vector<char> S(sz);
     rep(i, sz) S[i] = s[i];
-    ptree::init();
-    ptree::PLWT wb(S);
-    int n;
-    cin >> n;
+    reset();
+    Tree wb(S);
+    int n; cin >> n;
     rep(i, n) {
-        if (n > 20 && i % (n/20) == 0) {
-            ptree::PLWT::rebuild(wb);
-        }
-        int a, b, c;
-        cin >> a >> b >> c;
-        auto ab = wb.split(b).first.split(a).second;
-        auto [y, z] = wb.split(c);
-        wb = y.merge(ab).merge(z).split(m).first;
+        if (n > 20 && i % (n/20) == 0) wb.rebuild();
+        int a, b, c; cin >> a >> b >> c;
+        auto ab = split(split(wb, b).first, a).second;
+        auto [y, z] = split(wb, c);
+        wb = split(merge(merge(y, ab), z), m).first;
     }
-    vector<char> ans = wb.tovector();
-    for (const char &c : ans) {
-        cout << c;
-    }
-    cout << endl;
+    vector<char> ans = tovector(wb.root);
+    for (const char &c : ans) cout << c;
+    cout << "\n";
 }
 
 int main() {

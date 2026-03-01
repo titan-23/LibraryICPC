@@ -13,8 +13,7 @@ struct Mo {
     }
     return res;
   }
-  Mo(int n) {
-    max_n = 1 << 20;
+  Mo(int n) : max_n(1<<20) {
     while (max_n <= n) max_n <<= 1;
   }
   void add_query(int l, int r) { lr.emplace_back(l, r); }
