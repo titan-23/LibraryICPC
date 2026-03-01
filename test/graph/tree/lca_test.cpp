@@ -1,7 +1,11 @@
-// https://judge.yosupo.jp/submission/327584
-// https://judge.yosupo.jp/submission/327583
+// https://judge.yosupo.jp/submission/356731
 #include "./../../../akakoilib/template/template.cpp"
 #include "./../../../akakoilib/ds/segtree.cpp"
+
+using T = int;
+T op(T s, T t) { return min(s, t); }
+T e() { return 1e9; }
+
 #include "./../../../akakoilib/graph/tree/lca.cpp"
 
 void solve() {

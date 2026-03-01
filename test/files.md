@@ -61,7 +61,8 @@
   - AI
 - [ ] tree/hashed_tree.cpp
 - [ ] tree/hld.cpp
-- [ ] tree/lca.cpp
+- [x] tree/lca.cpp
+  - LC: Lowest Common Ancestor
 - [ ] tree/lca_auxiliary_tree.cpp
 - [x] tree/rerooting_dp.cpp
   - LC: Tree Path Composite Sum
