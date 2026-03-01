@@ -1,4 +1,4 @@
-// https://judge.yosupo.jp/submission/337643
+// https://judge.yosupo.jp/submission/356476
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/math/stern_brocot_tree.cpp"
 

@@ -63,12 +63,17 @@
   - LC: factorize
 - [x] floor_sum.cpp
   - LC: Sum of Floor of Linear
-- [ ] mod_comb.cpp
-- [ ] modint.cpp
-- [ ] modlog.cpp
-- [ ] stern_brocot_tree.cpp
-- [ ] ternary_search.cpp
-- [ ] xor_convolution.cpp
+- [x] mod_comb.cpp
+- [x] modint.cpp
+  - LC: Binomial Coefficient (Prime Mod)
+- [x] modlog.cpp
+- [x] stern_brocot_tree.cpp
+  - AtCoder: Nearest Faction
+  - LC: SternBrocotTree
+- [x] ternary_search.cpp
+  - AI
+- [x] xor_convolution.cpp
+  - Bitwise Xor Convolution
 
 # memo
 - [ ] comb.md

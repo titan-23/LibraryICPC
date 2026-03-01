@@ -19,5 +19,8 @@ struct ModComb {
     if (r < 0 || n < r) return mint(0);
     return fact[n] * factinv[r] * factinv[n-r];
   }
-  mint nHr(int n, int r) const { return nCr(n+r-1, r); }
+  mint nHr(int n, int r) const {
+    if (n == 0 && r == 0) return mint(1);
+    return nCr(n+r-1, r);
+  }
 };

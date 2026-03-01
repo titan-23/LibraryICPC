@@ -1,3 +1,4 @@
+// https://atcoder.jp/contests/abc333/submissions/73737264
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/math/stern_brocot_tree.cpp"
 
