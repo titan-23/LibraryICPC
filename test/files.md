@@ -58,10 +58,11 @@
   - AI
 - [x] extgcd.cpp
   - AI
-- [ ] factorize.cpp
+- [x] factorize.cpp
   - LC: primery test
   - LC: factorize
-- [ ] floor_sum.cpp
+- [x] floor_sum.cpp
+  - LC: Sum of Floor of Linear
 - [ ] mod_comb.cpp
 - [ ] modint.cpp
 - [ ] modlog.cpp
