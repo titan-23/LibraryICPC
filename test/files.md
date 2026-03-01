@@ -1,11 +1,18 @@
 # algorithm
-- [ ] cht.cpp
-- [ ] div_mul.cpp
-- [ ] li_chao_tree.cpp
-- [ ] mo.cpp
-- [ ] mo_rollback.cpp
-- [ ] subset.cpp
-- [ ] zete_mobius.cpp
+- [x] cht.cpp
+  - AI
+- [x] div_mul.cpp
+  - AI
+- [x] li_chao_tree.cpp
+  - AI
+- [x] mo.cpp
+  - LC: Static Range Inversions Query
+- [x] mo_rollback.cpp
+  - AI
+- [x] subset.cpp
+  - AI
+- [x] zete_mobius.cpp
+  - AI
 
 # ds
 - [x] fast_set.cpp

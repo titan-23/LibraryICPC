@@ -1,4 +1,5 @@
 // https://judge.yosupo.jp/submission/338649
+// https://judge.yosupo.jp/submission/356509
 #include "./../../akakoilib/template/template.cpp"
 #include "./../../akakoilib/algorithm/mo.cpp"
 
